@@ -5,6 +5,10 @@ import checker.CheckerConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import commands.AbstractCommand;
+import commands.AbstractCommand.CommandOutput;
+import databases.MyDatabase;
 import fileio.input.LibraryInput;
 
 import java.io.File;
@@ -12,6 +16,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -73,7 +79,29 @@ public final class Main {
 
         ArrayNode outputs = objectMapper.createArrayNode();
 
-        ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
-        objectWriter.writeValue(new File(filePath2), outputs);
+
+        // My code starts here
+        MyDatabase.getInstance().setSongsConvert(library.getSongs());
+        MyDatabase.getInstance().setPodcastsConvert(library.getPodcasts());
+        MyDatabase.getInstance().setUsersConvert(library.getUsers());
+
+
+        File file1 = new File(CheckerConstants.TESTS_PATH + filePath1);
+        System.out.println(filePath1);
+        TypeFactory typeFactory = objectMapper.getTypeFactory();
+        List<AbstractCommand.CommandInput> commandInput =
+                objectMapper.readValue(file1, typeFactory.constructCollectionType(List.class, AbstractCommand.CommandInput.class));
+
+        ArrayList<CommandOutput> commandOutputs = new ArrayList<>();
+        for (AbstractCommand.CommandInput input: commandInput) {
+            AbstractCommand command = input.getCommandFromInput();
+            command.executeCommand();
+            commandOutputs.add(command.getCommandOutput());
+        }
+
+        objectMapper.writerWithDefaultPrettyPrinter().
+                forType(typeFactory.constructCollectionType(List.class, AbstractCommand.CommandOutput.class))
+                .writeValue(new File(filePath2), commandOutputs);
+
     }
 }

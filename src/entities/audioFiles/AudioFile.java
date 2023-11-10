@@ -8,6 +8,10 @@ public abstract class AudioFile {
 		this.duration = duration;
 	}
 
+	public AudioFile() {
+
+	}
+
 	public String getName() {
 		return this.name;
 	}
