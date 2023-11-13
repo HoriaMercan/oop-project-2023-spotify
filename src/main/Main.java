@@ -84,6 +84,7 @@ public final class Main {
         MyDatabase.getInstance().setSongsConvert(library.getSongs());
         MyDatabase.getInstance().setPodcastsConvert(library.getPodcasts());
         MyDatabase.getInstance().setUsersConvert(library.getUsers());
+        MyDatabase.getInstance().setPublicPlaylists(new ArrayList<>());
 
 
         File file1 = new File(CheckerConstants.TESTS_PATH + filePath1);
@@ -94,6 +95,7 @@ public final class Main {
 
         ArrayList<CommandOutput> commandOutputs = new ArrayList<>();
         for (AbstractCommand.CommandInput input: commandInput) {
+//            System.out.println(input.getTimestamp());
             AbstractCommand command = input.getCommandFromInput();
             command.executeCommand();
             commandOutputs.add(command.getCommandOutput());

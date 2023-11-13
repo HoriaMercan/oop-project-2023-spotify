@@ -71,9 +71,12 @@ public class SearchCommand extends AbstractCommand {
 		SearchOutput output = (SearchOutput) this.commandOutput;
 		String type = input.getType();
 		List<String> results = switch (type) {
-			case "song" -> SearchBarAPI.getSongsByFilter(input.getUsername(), input.getFilters());
-			case "playlist" -> SearchBarAPI.getPlaylistsByFilter(input.getUsername(), input.getFilters());
-			case "podcast" -> SearchBarAPI.getPodcastsByFilter(input.getUsername(), input.getFilters());
+			case "song" -> SearchBarAPI.getSongsByFilter(input.getUsername(),
+					input.getTimestamp(), input.getFilters());
+			case "playlist" -> SearchBarAPI.getPlaylistsByFilter(input.getUsername(),
+					input.getTimestamp(), input.getFilters());
+			case "podcast" -> SearchBarAPI.getPodcastsByFilter(input.getUsername(),
+					input.getTimestamp(), input.getFilters());
 			default -> new ArrayList<>();
 		};
 

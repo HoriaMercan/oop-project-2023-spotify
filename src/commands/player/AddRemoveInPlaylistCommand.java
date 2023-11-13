@@ -1,6 +1,7 @@
 package commands.player;
 
 import commands.AbstractCommand;
+import gateways.PlayerAPI;
 
 public class AddRemoveInPlaylistCommand extends AbstractCommand {
 	public AddRemoveInPlaylistCommand(AddRemoveInPlaylistInput addRemoveInPlaylistInput) {
@@ -27,5 +28,20 @@ public class AddRemoveInPlaylistCommand extends AbstractCommand {
 		public AddRemoveInPlaylistOutput(CommandInput commandInput) {
 			super(commandInput);
 		}
+	}
+
+	@Override
+	public AddRemoveInPlaylistOutput getCommandOutput() {
+		return (AddRemoveInPlaylistOutput) this.commandOutput;
+	}
+
+	@Override
+	public void executeCommand() {
+		AddRemoveInPlaylistInput input = (AddRemoveInPlaylistInput) this.commandInput;
+		AddRemoveInPlaylistOutput output = (AddRemoveInPlaylistOutput) this.commandOutput;
+
+		output.setMessage(
+				PlayerAPI.getAddRemoveMessage(
+						input.getUsername(), input.getTimestamp(), input.getPlaylistId()));
 	}
 }

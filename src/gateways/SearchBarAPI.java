@@ -1,7 +1,6 @@
 package gateways;
 
-import commands.player.StatusCommand.StatusOutput.Stats;
-import entities.User.UserPlayer1;
+import entities.User.UserPlayer;
 import entities.audioCollections.Podcast;
 import entities.audioFiles.AudioFile;
 import entities.helpers.Filter;
@@ -38,7 +37,7 @@ public class SearchBarAPI {
 			default -> false;
 		};
 	}
-	public static List<String> getSongsByFilter(String username, Filter filter) {
+	public static List<String> getSongsByFilter(String username, Integer timestamp, Filter filter) {
 
 		List<Song> songs = database.getSongs();
 		List<String> resultSongs;
@@ -46,11 +45,12 @@ public class SearchBarAPI {
 		Predicate<Song> byTag = song -> filter.getTags().isEmpty()
 				|| isIncluded(song.getTags(), filter.getTags());
 		Predicate<Song> byGenre = song ->
-				song.getGenre().toLowerCase().startsWith(filter.getGenre());
+				song.getGenre().toLowerCase().startsWith(filter.getGenre().toLowerCase());
 		Predicate<Song> byName = song -> song.getName().startsWith(filter.getName());
-		Predicate<Song> byLyrics = song -> song.getLyrics().contains(filter.getLyrics());
+		Predicate<Song> byLyrics = song -> song.getLyrics().toLowerCase()
+				.contains(filter.getLyrics().toLowerCase());
 		Predicate<Song> byAlbum = song -> song.getAlbum().startsWith(filter.getAlbum());
-		Predicate<Song> byArtist = song -> song.getArtist().contains(filter.getArtist());
+		Predicate<Song> byArtist = song -> filter.getArtist().isEmpty() || song.getArtist().equalsIgnoreCase(filter.getArtist());
 		Predicate<Song> byReleaseYear = song ->
 				isRelativeToReleaseYear(song.getReleaseYear(), filter.getReleaseYear());
 		Function<Song, String> songToName = AudioFile::getName;
@@ -66,10 +66,11 @@ public class SearchBarAPI {
 			user.getPlayer().setLastSearched(resultSongs);
 			user.getPlayer().setTypeSearched("song");
 			user.getPlayer().setLastSelected("");
+			user.getPlayer().unsetContext(timestamp);
 		}
 		return resultSongs;
 	}
-	public static List<String> getPlaylistsByFilter(String username, Filter filter) {
+	public static List<String> getPlaylistsByFilter(String username, Integer timestamp, Filter filter) {
 		List<String> resultPlaylists = new ArrayList<>();
 		User user = database.findUserByUsername(username);
 		if (user == null)
@@ -79,7 +80,8 @@ public class SearchBarAPI {
 
 		Predicate<Playlist> byPermission = playlist -> playlist.isPublic() || playlist.getOwner().equals(username);
 		Predicate<Playlist> byName = playlist -> playlist.getName().contains(filter.getName());
-		Predicate<Playlist> byOwner = playlist -> playlist.getOwner().equals(filter.getOwner());
+		Predicate<Playlist> byOwner = playlist -> filter.getOwner().isEmpty() ||
+				playlist.getOwner().equals(filter.getOwner());
 
 		Function<Playlist, String> playlistToName = Playlist::getName;
 
@@ -91,9 +93,10 @@ public class SearchBarAPI {
 		user.getPlayer().setLastSearched(resultPlaylists);
 		user.getPlayer().setTypeSearched("playlist");
 		user.getPlayer().setLastSelected("");
+		user.getPlayer().unsetContext(timestamp);
 		return resultPlaylists;
 	}
-	public static List<String> getPodcastsByFilter(String username, Filter filter) {
+	public static List<String> getPodcastsByFilter(String username, Integer timestamp, Filter filter) {
 		List<String> resultPodcasts;
 
 		List<Podcast>podcasts = database.getPodcasts();
@@ -111,13 +114,14 @@ public class SearchBarAPI {
 			user.getPlayer().setLastSearched(resultPodcasts);
 			user.getPlayer().setTypeSearched("podcast");
 			user.getPlayer().setLastSelected("");
+			user.getPlayer().unsetContext(timestamp);
 		}
 		return resultPodcasts;
 	}
 
 	// make the selection and get the message
 	public static String getSelectionMessage(String username, Integer itemNumber) {
-		UserPlayer1 player = database.findUserByUsername(username).getPlayer();
+		UserPlayer player = database.findUserByUsername(username).getPlayer();
 		List<String> lastSearched = player.getLastSearched();
 		if (lastSearched.isEmpty()) {
 			return "Please conduct a search before making a selection.";
@@ -126,8 +130,9 @@ public class SearchBarAPI {
 			return "The selected ID is too high.";
 		}
 
+
 		player.setLastSelected(lastSearched.get(itemNumber - 1));
-		System.out.println("Last select:" + lastSearched.get(itemNumber - 1));
+//		System.out.println("Last select:" + lastSearched.get(itemNumber - 1));
 		return "Successfully selected " + player.getLastSelected() + ".";
 	}
 }

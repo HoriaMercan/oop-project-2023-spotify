@@ -2,7 +2,7 @@ package commands.player;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import commands.AbstractCommand;
-import entities.User.UserPlayer1;
+import entities.User.UserPlayer;
 import gateways.PlayerAPI;
 
 public class StatusCommand extends AbstractCommand {
@@ -62,7 +62,7 @@ public class StatusCommand extends AbstractCommand {
 
 			private boolean paused;
 			Stats(){}
-			Stats(UserPlayer1 userPlayer, Integer currentTime) {
+			Stats(UserPlayer userPlayer, Integer currentTime) {
 				this.name = "";
 			}
 

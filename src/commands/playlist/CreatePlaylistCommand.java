@@ -1,6 +1,7 @@
 package commands.playlist;
 
 import commands.AbstractCommand;
+import gateways.PlayerAPI;
 
 public class CreatePlaylistCommand extends AbstractCommand {
 	public CreatePlaylistCommand(CreatePlaylistInput createPlaylistInput) {
@@ -9,7 +10,15 @@ public class CreatePlaylistCommand extends AbstractCommand {
 	}
 
 	public static class CreatePlaylistInput extends AbstractCommand.CommandInput {
-		public String playlistName;
+		public String getPlaylistName() {
+			return playlistName;
+		}
+
+		public void setPlaylistName(String playlistName) {
+			this.playlistName = playlistName;
+		}
+
+		protected String playlistName;
 		@Override
 		public AbstractCommand getCommandFromInput() {
 			return new CreatePlaylistCommand(this);
@@ -20,5 +29,19 @@ public class CreatePlaylistCommand extends AbstractCommand {
 		public CreatePlaylistOutput(CommandInput commandInput) {
 			super(commandInput);
 		}
+	}
+
+	@Override
+	public CreatePlaylistOutput getCommandOutput() {
+		return (CreatePlaylistOutput)this.commandOutput;
+	}
+
+	@Override
+	public void executeCommand() {
+		CreatePlaylistInput input = (CreatePlaylistInput) this.commandInput;
+		CreatePlaylistOutput output = (CreatePlaylistOutput) this.commandOutput;
+
+		output.setMessage(PlayerAPI.getCreatePlaylistCommand(
+				input.getUsername(), input.getPlaylistName()));
 	}
 }

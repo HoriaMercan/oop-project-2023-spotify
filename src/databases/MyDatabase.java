@@ -83,6 +83,10 @@ public class MyDatabase {
 		return playlists;
 	}
 
+	public void addPlaylistInDatabase(Playlist playlist) {
+		playlists.add(playlist);
+	}
+
 	public void setPublicPlaylists(ArrayList<Playlist> playlists) {
 		this.playlists = playlists;
 	}

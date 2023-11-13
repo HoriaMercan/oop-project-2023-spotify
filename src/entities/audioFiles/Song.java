@@ -2,6 +2,7 @@ package entities.audioFiles;
 
 import fileio.input.SongInput;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class Song extends AudioFile{
@@ -11,6 +12,20 @@ public class Song extends AudioFile{
 	protected String genre;
 	protected Integer releaseYear;
 	protected String artist;
+
+	protected HashSet<String> usersLike = new HashSet<>();
+
+	public boolean isSongLikedByUser(String username) {
+		return usersLike.contains(username);
+	}
+
+	public void songLikeByUser(String username) {
+		usersLike.add(username);
+	}
+
+	public boolean songUnlikeByUser(String username) {
+		return usersLike.remove(username);
+	}
 
 	public Song() {
 		super();
