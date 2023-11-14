@@ -95,7 +95,6 @@ public final class Main {
 
         ArrayList<CommandOutput> commandOutputs = new ArrayList<>();
         for (AbstractCommand.CommandInput input: commandInput) {
-//            System.out.println(input.getTimestamp());
             AbstractCommand command = input.getCommandFromInput();
             command.executeCommand();
             commandOutputs.add(command.getCommandOutput());

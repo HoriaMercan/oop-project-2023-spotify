@@ -320,12 +320,37 @@ public class User {
 			}
 		}
 
-		public void runNext() {
+		public void runNext(Integer timestamp) {
+			updatePlayer(timestamp);
+//			String typeLoadedCopy =  UserPlayer.this.typeLoaded;
+//			Integer repeatStatusCopy = UserPlayer.this.repeatStatus;
+			if (Selector.end()) {
+				return;
+			}
+
 			Selector.next();
+			/* TODO: change condition for different repeat status */
+//			if (Selector.end()) {
+//				index = this.context.size() - 1;
+//				UserPlayer.this.typeLoaded = typeLoadedCopy;
+//				currentAudioFileTime = Selector.current().getDuration();
+//				this.repeatStatus = repeatStatusCopy;
+//				this.isPaused = true;
+//				return;
+//			}
+
 			currentAudioFileTime = 0;
+
+			if (this.isPaused) {
+				this.isPaused = false;
+			}
+
 		}
 
 		public void runPrev() {
+			if (this.isPaused) {
+				this.isPaused = false;
+			}
 			if (currentAudioFileTime > 1) {
 				currentAudioFileTime = 0;
 				return;
@@ -340,8 +365,8 @@ public class User {
 		}
 
 		public String getCurrentPlayedName() {
-			if (Selector.end())
-				return "";
+//			if (Selector.end())
+//				return "";
 			return Selector.current().getName();
 		}
 		public Integer getRemainedTime() {

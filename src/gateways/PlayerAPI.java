@@ -65,6 +65,9 @@ public class PlayerAPI {
 		}
 
 		player.loadPlayer(timestamp);
+		player.setLastSelected("");
+		player.setLastSearched(null);
+		player.setTypeSearched("");
 		return "Playback loaded successfully.";
 	}
 
@@ -145,12 +148,12 @@ public class PlayerAPI {
 	public static String getLikeMessage(String username, Integer timestamp) {
 		User user = database.findUserByUsername(username);
 		String currentType = getCurrentPlayedType(username, timestamp);
-		if (currentType.equals("song")) {
+		if (currentType.equals("song") || currentType.equals("playlist")) {
 			Song song = (Song) user.getPlayer().getCurrentPlayed();
 			if(song.songUnlikeByUser(username)) {
 				return "Unlike registered successfully.";
 			}
-			song.songLikeByUser(username);
+			song.songLikeByUser(username, timestamp);
 			return "Like registered successfully.";
 		} else if (currentType.isEmpty()) {
 			return "Please load a source before liking or unliking.";

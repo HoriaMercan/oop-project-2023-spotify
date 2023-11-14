@@ -12,6 +12,17 @@ public class Playlist extends AudioCollection {
 
 	private HashSet<String> usersFollow = new HashSet<>();
 
+	public void getFollowedBy(String username) {
+		usersFollow.add(username);
+	}
+
+	public Integer followersNo() {
+		return usersFollow.size();
+	}
+	public boolean getUnfollowed(String username) {
+		return usersFollow.remove(username);
+	}
+
 	public String getVisibility() {
 		return isPublic ? "public" : "private";
 	}

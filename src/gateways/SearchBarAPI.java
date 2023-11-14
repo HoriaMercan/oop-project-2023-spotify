@@ -123,7 +123,7 @@ public class SearchBarAPI {
 	public static String getSelectionMessage(String username, Integer itemNumber) {
 		UserPlayer player = database.findUserByUsername(username).getPlayer();
 		List<String> lastSearched = player.getLastSearched();
-		if (lastSearched.isEmpty()) {
+		if (lastSearched == null) {
 			return "Please conduct a search before making a selection.";
 		}
 		if (lastSearched.size() < itemNumber) {

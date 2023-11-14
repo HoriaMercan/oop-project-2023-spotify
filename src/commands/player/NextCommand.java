@@ -39,7 +39,11 @@ public class NextCommand extends AbstractCommand {
 			return;
 		}
 
-		user.getPlayer().runNext();
+		user.getPlayer().runNext(input.getTimestamp());
+		if (user.getPlayer().getTypeLoaded().isEmpty()) {
+			output.setMessage("Please load a source before skipping to the next track.");
+			return;
+		}
 		output.setMessage("Skipped to next track successfully. The current track is "+
 				user.getPlayer().getCurrentPlayedName() +".");
 	}
