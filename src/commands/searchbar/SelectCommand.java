@@ -3,14 +3,15 @@ package commands.searchbar;
 import commands.AbstractCommand;
 import gateways.SearchBarAPI;
 
-public class SelectCommand extends AbstractCommand {
+public final class SelectCommand extends AbstractCommand {
 	public SelectCommand(SelectInput selectInput) {
 		super(selectInput);
 		this.commandOutput = new SelectOutput(selectInput);
 	}
 
-	public static class SelectInput extends AbstractCommand.CommandInput {
+	public final static class SelectInput extends AbstractCommand.CommandInput {
 		private Integer itemNumber;
+
 		public SelectInput() {
 			super();
 		}
@@ -18,9 +19,11 @@ public class SelectCommand extends AbstractCommand {
 		public void setItemNumber(Integer itemNumber) {
 			this.itemNumber = itemNumber;
 		}
+
 		public Integer getItemNumber() {
 			return this.itemNumber;
 		}
+
 		public SelectInput(String username, Integer timestamp) {
 			super(username, timestamp);
 		}
@@ -31,7 +34,7 @@ public class SelectCommand extends AbstractCommand {
 		}
 	}
 
-	public static class SelectOutput extends AbstractCommand.CommandOutput {
+	public final static class SelectOutput extends AbstractCommand.CommandOutput {
 		public SelectOutput(CommandInput commandInput) {
 			super(commandInput);
 		}

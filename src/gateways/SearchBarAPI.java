@@ -22,7 +22,7 @@ public class SearchBarAPI {
 
 	// Method to check whether all elements of a list are included
 	// in other
-	private static <T> boolean isIncluded (List<T>list, List<T>sublist) {
+	private static <T> boolean isIncluded(List<T> list, List<T> sublist) {
 		Set<T> set = new HashSet<T>(list);
 		set.addAll(new ArrayList<>(sublist));
 		return set.size() == list.size();
@@ -37,6 +37,7 @@ public class SearchBarAPI {
 			default -> false;
 		};
 	}
+
 	public static List<String> getSongsByFilter(String username, Integer timestamp, Filter filter) {
 
 		List<Song> songs = database.getSongs();
@@ -70,13 +71,14 @@ public class SearchBarAPI {
 		}
 		return resultSongs;
 	}
+
 	public static List<String> getPlaylistsByFilter(String username, Integer timestamp, Filter filter) {
 		List<String> resultPlaylists = new ArrayList<>();
 		User user = database.findUserByUsername(username);
 		if (user == null)
 			return resultPlaylists;
 
-		List<Playlist>playlists = database.getPublicPlaylists();
+		List<Playlist> playlists = database.getPublicPlaylists();
 
 		Predicate<Playlist> byPermission = playlist -> playlist.isPublic() || playlist.getOwner().equals(username);
 		Predicate<Playlist> byName = playlist -> playlist.getName().contains(filter.getName());
@@ -96,10 +98,11 @@ public class SearchBarAPI {
 		user.getPlayer().unsetContext(timestamp);
 		return resultPlaylists;
 	}
+
 	public static List<String> getPodcastsByFilter(String username, Integer timestamp, Filter filter) {
 		List<String> resultPodcasts;
 
-		List<Podcast>podcasts = database.getPodcasts();
+		List<Podcast> podcasts = database.getPodcasts();
 
 		Predicate<Podcast> byName = podcast -> podcast.getName().startsWith(filter.getName());
 		Predicate<Podcast> byOwner = podcast -> podcast.getOwner().startsWith(filter.getOwner());

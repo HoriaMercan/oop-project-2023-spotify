@@ -6,80 +6,82 @@ import databases.MyDatabase;
 import entities.audioFiles.Song;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-public class ShowPreferredSongsCommand extends AbstractCommand {
-	public ShowPreferredSongsCommand(ShowPreferredSongsInput showPreferredSongsInput) {
-		super(showPreferredSongsInput);
-		this.commandOutput = new ShowPreferredSongsOutput(showPreferredSongsInput);
-	}
+public final class ShowPreferredSongsCommand extends AbstractCommand {
+    public ShowPreferredSongsCommand(final ShowPreferredSongsInput showPreferredSongsInput) {
+        super(showPreferredSongsInput);
+        this.commandOutput = new ShowPreferredSongsOutput(showPreferredSongsInput);
+    }
 
-	public static class ShowPreferredSongsInput extends AbstractCommand.CommandInput {
-		@Override
-		public AbstractCommand getCommandFromInput() {
-			return new ShowPreferredSongsCommand(this);
-		}
-	}
+    @Override
+    public void executeCommand() {
+        ShowPreferredSongsInput input = (ShowPreferredSongsInput) commandInput;
+        ShowPreferredSongsOutput output = (ShowPreferredSongsOutput) commandOutput;
 
-	public static class ShowPreferredSongsOutput extends AbstractCommand.CommandOutput {
-		@JsonIgnore
-		protected String message;
-		List<String> result = new ArrayList<>();
+        List<Song> songs = MyDatabase.getInstance().getSongs();
 
-		public List<String> getResult() {
-			return result;
-		}
+        ArrayList<SongTimestamp> stList = new ArrayList<>();
+        for (Song song : songs) {
+            if (song.isSongLikedByUser(commandInput.getUsername())) {
+                stList.add(new SongTimestamp(song.getName(),
+                        song.getTimestampOfLike(input.getUsername())));
+            }
+        }
 
-		public ShowPreferredSongsOutput(CommandInput commandInput) {
-			super(commandInput);
-		}
-	}
+        output.result = stList.stream().sorted().map(SongTimestamp::getSongName).toList();
 
-	@Override
-	public ShowPreferredSongsOutput getCommandOutput() {
-		return (ShowPreferredSongsOutput) commandOutput;
-	}
+    }
 
-	private class SongTimestamp implements Comparable {
-		protected String songName;
-		protected Integer timestamp;
-		SongTimestamp(String songName, Integer timestamp) {
-			this.songName = songName;
-			this.timestamp = timestamp;
-		}
+    @Override
+    public ShowPreferredSongsOutput getCommandOutput() {
+        return (ShowPreferredSongsOutput) commandOutput;
+    }
 
-		public String getSongName() {
-			return songName;
-		}
+    public static final class ShowPreferredSongsInput extends AbstractCommand.CommandInput {
+        @Override
+        public AbstractCommand getCommandFromInput() {
+            return new ShowPreferredSongsCommand(this);
+        }
+    }
 
-		@Override
-		public int compareTo(Object o) {
-			SongTimestamp st = (SongTimestamp) o;
-			if (this.timestamp < st.timestamp)
-				return -1;
-			if (this.timestamp.equals(st.timestamp))
-				return this.songName.compareTo(st.songName);
-			return 1;
-		}
-	}
-	@Override
-	public void executeCommand() {
-		ShowPreferredSongsInput input = (ShowPreferredSongsInput) commandInput;
-		ShowPreferredSongsOutput output = (ShowPreferredSongsOutput) commandOutput;
+    public static final class ShowPreferredSongsOutput extends AbstractCommand.CommandOutput {
+        @JsonIgnore
+        private String message;
+        private List<String> result = new ArrayList<>();
 
-		List<Song> songs = MyDatabase.getInstance().getSongs();
+        public ShowPreferredSongsOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
 
-		ArrayList<SongTimestamp> stList = new ArrayList<>();
-		for (Song song : songs) {
-			if (song.isSongLikedByUser(commandInput.getUsername())) {
-				stList.add(new SongTimestamp(song.getName(),
-						song.getTimestampOfLike(input.getUsername())));
-			}
-		}
+        public List<String> getResult() {
+            return result;
+        }
+    }
 
-		output.result = stList.stream().sorted().map(SongTimestamp::getSongName).toList();
+    private class SongTimestamp implements Comparable {
+        protected String songName;
+        protected Integer timestamp;
 
-	}
+        SongTimestamp(final String songName, final Integer timestamp) {
+            this.songName = songName;
+            this.timestamp = timestamp;
+        }
+
+        public String getSongName() {
+            return songName;
+        }
+
+        @Override
+        public int compareTo(final Object o) {
+            SongTimestamp st = (SongTimestamp) o;
+            if (this.timestamp < st.timestamp) {
+                return -1;
+            }
+            if (this.timestamp.equals(st.timestamp)) {
+                return this.songName.compareTo(st.songName);
+            }
+            return 1;
+        }
+    }
 }

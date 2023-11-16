@@ -4,7 +4,7 @@ import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.User;
 
-public class PrevCommand extends AbstractCommand {
+public class 	PrevCommand extends AbstractCommand {
 	public PrevCommand(PrevInput prevInput) {
 		super(prevInput);
 		this.commandOutput = new PrevOutput(prevInput);

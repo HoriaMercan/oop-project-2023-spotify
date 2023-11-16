@@ -32,6 +32,7 @@ public class PlayerAPI {
 	private static List<PodcastEpisode> getEpisodesFromPodcast(Podcast p) {
 		return new ArrayList<>(p.getEpisodes());
 	}
+
 	public static String getLoadMessage(String username, Integer timestamp) {
 		User user = database.findUserByUsername(username);
 		UserPlayer player = user.getPlayer();
@@ -39,7 +40,7 @@ public class PlayerAPI {
 		if (player.getLastSelected().isEmpty()) {
 			return "Please select a source before attempting to load.";
 		}
-		switch(player.getTypeSearched()) {
+		switch (player.getTypeSearched()) {
 			case "song":
 				player.setContext(getSongListFromStrings(player.getLastSelected()), timestamp);
 				break;
@@ -82,8 +83,7 @@ public class PlayerAPI {
 			stats.setPaused(true);
 			stats.setShuffle(false);
 			stats.setRepeat("No Repeat");
-		}
-		else {
+		} else {
 			stats.setName(player.getCurrentPlayed().getName());
 			stats.setRemainedTime(player.getRemainedTime());
 			stats.setPaused(player.isPaused());
@@ -123,7 +123,8 @@ public class PlayerAPI {
 		user.getPlayer().updatePlayer(timestamp);
 		return user.getPlayer().getTypeLoaded();
 	}
-	public static String getAddRemoveMessage(String username, Integer timestamp,Integer playlistID) {
+
+	public static String getAddRemoveMessage(String username, Integer timestamp, Integer playlistID) {
 		User user = database.findUserByUsername(username);
 		user.getPlayer().updatePlayer(timestamp);
 		if (user.getPlayer().getTypeLoaded().isEmpty()) {
@@ -150,7 +151,7 @@ public class PlayerAPI {
 		String currentType = getCurrentPlayedType(username, timestamp);
 		if (currentType.equals("song") || currentType.equals("playlist")) {
 			Song song = (Song) user.getPlayer().getCurrentPlayed();
-			if(song.songUnlikeByUser(username)) {
+			if (song.songUnlikeByUser(username)) {
 				return "Unlike registered successfully.";
 			}
 			song.songLikeByUser(username, timestamp);

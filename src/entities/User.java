@@ -6,7 +6,7 @@ import fileio.input.UserInput;
 
 import java.util.*;
 
-public class User {
+public final class User {
 	final String username;
 	final String city;
 	final Integer age;
@@ -21,10 +21,14 @@ public class User {
 		userPlaylists.put(userPlaylists.size() + 1, playlistName);
 	}
 
-	public boolean isPlaylistIDInUserList(Integer id) {return userPlaylists.containsKey(id);}
+	public boolean isPlaylistIDInUserList(Integer id) {
+		return userPlaylists.containsKey(id);
+	}
+
 	public String getPlaylistFromID(Integer id) {
 		return userPlaylists.get(id);
 	}
+
 	public User(String username, String city, Integer age) {
 		this.username = username;
 		this.city = city;
@@ -37,7 +41,9 @@ public class User {
 		public HashMap<String, Integer> podcastRemainderTime = new HashMap<>();
 		public HashMap<String, Integer> podcastRemainderEpisode = new HashMap<>();
 
-		protected UserPlayer() {}
+		protected UserPlayer() {
+		}
+
 		public List<String> getLastSearched() {
 			return lastSearched;
 		}
@@ -73,12 +79,14 @@ public class User {
 				if (podcastRemainderTime.containsKey(playedPodcastName)) {
 					currentAudioFileTime = podcastRemainderTime.get(playedPodcastName);
 					index = podcastRemainderEpisode.get(playedPodcastName);
-				}
-				else {
+				} else {
 					currentAudioFileTime = 0;
 					index = 0;
 				}
-			} else {currentAudioFileTime = 0; index = 0;}
+			} else {
+				currentAudioFileTime = 0;
+				index = 0;
+			}
 
 		}
 
@@ -95,6 +103,7 @@ public class User {
 				podcastRemainderEpisode.put(playedPodcastName, index);
 			}
 		}
+
 		public void unsetContext(Integer timestamp) {
 			saveContext(timestamp);
 
@@ -109,10 +118,8 @@ public class User {
 				updatePlayer(currentTime);
 				this.isPaused = !this.isPaused;
 				return "Playback paused successfully.";
-			}
-			else {
+			} else {
 				this.lastUpdatedTime = currentTime;
-				this.playTime = currentTime;
 				this.isPaused = !this.isPaused;
 				return "Playback resumed successfully.";
 			}
@@ -150,61 +157,45 @@ public class User {
 
 		private String typeLoaded = "";
 		private List<? extends AudioFile> context;
-		private Integer playTime;
 		private boolean isPaused;
-		
+
 		private boolean isShuffle;
 		private Integer repeatStatus;
 
 		boolean repeatOnce = false;
 
 		private void changeRepeatToNoRepeat() {
-			this.Selector.setEnd(
-					() -> UserPlayer.this.index >= UserPlayer.this.context.size()
-			);
-			this.Selector.setNext(
-					() -> UserPlayer.this.index += 1
-			);
+			this.Selector.setEnd(() -> UserPlayer.this.index >= UserPlayer.this.context.size());
+			this.Selector.setNext(() -> UserPlayer.this.index += 1);
 		}
 
 		private void changeRepeatToRepeatAll() {
-			Selector.setEnd(
-					() -> false
-			);
-			Selector.setNext(
-					() -> UserPlayer.this.index = (UserPlayer.this.index + 1) % UserPlayer.this.context.size()
-			);
+			Selector.setEnd(() -> false);
+			Selector.setNext(() -> UserPlayer.this.index = (UserPlayer.this.index + 1) %
+					UserPlayer.this.context.size());
 		}
 
 		private void changeRepeatToRepeatCurrentSong() {
 			UserPlayer.this.repeatOnce = false;
-			Selector.setEnd(
-					() -> UserPlayer.this.index >= UserPlayer.this.context.size()
-			);
-			Selector.setNext(
-					new AudioFileSelectorNext() {
-						@Override
-						public void __next() {
-							if (!UserPlayer.this.repeatOnce) {
-								UserPlayer.this.repeatOnce = true;
-								UserPlayer.this.repeatStatus = 0;
-							}
-							else {
-								UserPlayer.this.index += 1;
+			Selector.setEnd(() -> UserPlayer.this.index >= UserPlayer.this.context.size());
+			Selector.setNext(new AudioFileSelectorNext() {
+				@Override
+				public void __next() {
+					if (!UserPlayer.this.repeatOnce) {
+						UserPlayer.this.repeatOnce = true;
+						UserPlayer.this.repeatStatus = 0;
+					} else {
+						UserPlayer.this.index += 1;
 
-							}
-						}
 					}
-			);
+				}
+			});
 		}
 
 		private void changeRepeatToRepeatInfinite() {
-			Selector.setEnd(
-					() -> false
-			);
-			Selector.setNext(
-					() -> {}
-			);
+			Selector.setEnd(() -> false);
+			Selector.setNext(() -> {
+			});
 		}
 
 		public String changeRepeatStatus() {
@@ -261,12 +252,10 @@ public class User {
 			for (int i = 0; i < this.context.size(); i++) {
 				indexArrays.add(i);
 			}
-			this.Selector = new AudioFileSelector(
-					() -> UserPlayer.this.context.get(indexArrays.get(UserPlayer.this.index)),
+			this.Selector = new AudioFileSelector(() -> UserPlayer.this.context
+					.get(indexArrays.get(UserPlayer.this.index)),
 					() -> UserPlayer.this.index += 1,
-					() -> UserPlayer.this.index >= UserPlayer.this.context.size(),
-					outOfBound
-			);
+					() -> UserPlayer.this.index >= UserPlayer.this.context.size(), outOfBound);
 
 			UserPlayer.this.repeatStatus = 0;
 		}
@@ -329,15 +318,6 @@ public class User {
 			}
 
 			Selector.next();
-			/* TODO: change condition for different repeat status */
-//			if (Selector.end()) {
-//				index = this.context.size() - 1;
-//				UserPlayer.this.typeLoaded = typeLoadedCopy;
-//				currentAudioFileTime = Selector.current().getDuration();
-//				this.repeatStatus = repeatStatusCopy;
-//				this.isPaused = true;
-//				return;
-//			}
 
 			currentAudioFileTime = 0;
 
@@ -355,11 +335,11 @@ public class User {
 				currentAudioFileTime = 0;
 				return;
 			}
-			if (this.index == 0)
-				return;
+			if (this.index == 0) return;
 
 			this.index -= 1;
 		}
+
 		public AudioFile getCurrentPlayed() {
 			return Selector.current();
 		}
@@ -369,13 +349,15 @@ public class User {
 //				return "";
 			return Selector.current().getName();
 		}
+
 		public Integer getRemainedTime() {
 			return Selector.current().getDuration() - currentAudioFileTime;
 		}
+
 		final AudioFileSelectorOutOfBound outOfBound = new AudioFileSelectorOutOfBound() {
 			@Override
 			public AudioFile outOfBound() {
-				return UserPlayer.this.context.get(context.size()-1);
+				return UserPlayer.this.context.get(context.size() - 1);
 			}
 
 			@Override
@@ -392,9 +374,9 @@ public class User {
 		AudioFileSelector Selector;
 		Integer lastUpdatedTime;
 		Integer currentAudioFileTime = 0;
+
 		public void updatePlayer(Integer currentTime) {
-			if (typeLoaded.isEmpty())
-				return;
+			if (typeLoaded.isEmpty()) return;
 			if (lastUpdatedTime == null) {
 				return;
 			}
@@ -420,7 +402,7 @@ public class User {
 			}
 			if (typeLoaded.equals("podcast")) {
 //				this.podcastsPlayed.put()
-				this.podcastRemainderEpisode.put(this.playedPodcastName,index);
+				this.podcastRemainderEpisode.put(this.playedPodcastName, index);
 				this.podcastRemainderTime.put(this.playedPodcastName, currentAudioFileTime);
 			}
 
@@ -437,14 +419,16 @@ public class User {
 	public User(UserInput input) {
 		this(input.getUsername(), input.getCity(), input.getAge());
 	}
+
 	public String getUsername() {
 		return username;
 	}
+
 	public String getCity() {
 		return city;
 	}
+
 	public Integer getAge() {
 		return age;
 	}
-
 }
