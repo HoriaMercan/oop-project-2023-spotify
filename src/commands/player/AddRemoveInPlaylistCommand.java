@@ -3,45 +3,48 @@ package commands.player;
 import commands.AbstractCommand;
 import gateways.PlayerAPI;
 
-public class AddRemoveInPlaylistCommand extends AbstractCommand {
-	public AddRemoveInPlaylistCommand(AddRemoveInPlaylistInput addRemoveInPlaylistInput) {
-		super(addRemoveInPlaylistInput);
-		this.commandOutput = new AddRemoveInPlaylistOutput(addRemoveInPlaylistInput);
-	}
+public final class AddRemoveInPlaylistCommand extends AbstractCommand {
+    public AddRemoveInPlaylistCommand(final AddRemoveInPlaylistInput addRemoveInPlaylistInput) {
+        super(addRemoveInPlaylistInput);
+        this.commandOutput = new AddRemoveInPlaylistOutput(addRemoveInPlaylistInput);
+    }
 
-	public static class AddRemoveInPlaylistInput extends AbstractCommand.CommandInput {
-		private Integer playlistId;
+    @Override
+    public void executeCommand() {
+        AddRemoveInPlaylistInput input = (AddRemoveInPlaylistInput) this.commandInput;
+        AddRemoveInPlaylistOutput output = (AddRemoveInPlaylistOutput) this.commandOutput;
 
-		public void setPlaylistId(Integer playlistId) {
-			this.playlistId = playlistId;
-		}
-		public Integer getPlaylistId() {
-			return this.playlistId;
-		}
-		@Override
-		public AbstractCommand getCommandFromInput() {
-			return new AddRemoveInPlaylistCommand(this);
-		}
-	}
+        output.setMessage(
+                PlayerAPI.getAddRemoveMessage(
+                        input.getUsername(), input.getTimestamp(), input.getPlaylistId()));
+    }
 
-	public static class AddRemoveInPlaylistOutput extends AbstractCommand.CommandOutput {
-		public AddRemoveInPlaylistOutput(CommandInput commandInput) {
-			super(commandInput);
-		}
-	}
+    @Override
+    public AddRemoveInPlaylistOutput getCommandOutput() {
+        return (AddRemoveInPlaylistOutput) this.commandOutput;
+    }
 
-	@Override
-	public AddRemoveInPlaylistOutput getCommandOutput() {
-		return (AddRemoveInPlaylistOutput) this.commandOutput;
-	}
+    public static final class AddRemoveInPlaylistInput extends AbstractCommand.CommandInput {
+        private Integer playlistId;
 
-	@Override
-	public void executeCommand() {
-		AddRemoveInPlaylistInput input = (AddRemoveInPlaylistInput) this.commandInput;
-		AddRemoveInPlaylistOutput output = (AddRemoveInPlaylistOutput) this.commandOutput;
+        public Integer getPlaylistId() {
+            return this.playlistId;
+        }
 
-		output.setMessage(
-				PlayerAPI.getAddRemoveMessage(
-						input.getUsername(), input.getTimestamp(), input.getPlaylistId()));
-	}
+        public void setPlaylistId(final Integer playlistId) {
+            this.playlistId = playlistId;
+        }
+
+        @Override
+        public AbstractCommand getCommandFromInput() {
+            return new AddRemoveInPlaylistCommand(this);
+        }
+    }
+
+    public static final class AddRemoveInPlaylistOutput
+            extends AbstractCommand.CommandOutput {
+        public AddRemoveInPlaylistOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
+    }
 }

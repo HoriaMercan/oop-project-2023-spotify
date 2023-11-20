@@ -3,45 +3,46 @@ package commands.playlist;
 import commands.AbstractCommand;
 import gateways.PlayerAPI;
 
-public class CreatePlaylistCommand extends AbstractCommand {
-	public CreatePlaylistCommand(CreatePlaylistInput createPlaylistInput) {
-		super(createPlaylistInput);
-		this.commandOutput = new CreatePlaylistOutput(createPlaylistInput);
-	}
+public final class CreatePlaylistCommand extends AbstractCommand {
+    public CreatePlaylistCommand(final CreatePlaylistInput createPlaylistInput) {
+        super(createPlaylistInput);
+        this.commandOutput = new CreatePlaylistOutput(createPlaylistInput);
+    }
 
-	public static class CreatePlaylistInput extends AbstractCommand.CommandInput {
-		public String getPlaylistName() {
-			return playlistName;
-		}
+    @Override
+    public void executeCommand() {
+        CreatePlaylistInput input = (CreatePlaylistInput) this.commandInput;
+        CreatePlaylistOutput output = (CreatePlaylistOutput) this.commandOutput;
 
-		public void setPlaylistName(String playlistName) {
-			this.playlistName = playlistName;
-		}
+        output.setMessage(PlayerAPI.getCreatePlaylistCommand(
+                input.getUsername(), input.getPlaylistName()));
+    }
 
-		protected String playlistName;
-		@Override
-		public AbstractCommand getCommandFromInput() {
-			return new CreatePlaylistCommand(this);
-		}
-	}
+    @Override
+    public CreatePlaylistOutput getCommandOutput() {
+        return (CreatePlaylistOutput) this.commandOutput;
+    }
 
-	public static class CreatePlaylistOutput extends AbstractCommand.CommandOutput {
-		public CreatePlaylistOutput(CommandInput commandInput) {
-			super(commandInput);
-		}
-	}
+    public static final class CreatePlaylistInput extends AbstractCommand.CommandInput {
+        private String playlistName;
 
-	@Override
-	public CreatePlaylistOutput getCommandOutput() {
-		return (CreatePlaylistOutput)this.commandOutput;
-	}
+        public String getPlaylistName() {
+            return playlistName;
+        }
 
-	@Override
-	public void executeCommand() {
-		CreatePlaylistInput input = (CreatePlaylistInput) this.commandInput;
-		CreatePlaylistOutput output = (CreatePlaylistOutput) this.commandOutput;
+        public void setPlaylistName(final String playlistName) {
+            this.playlistName = playlistName;
+        }
 
-		output.setMessage(PlayerAPI.getCreatePlaylistCommand(
-				input.getUsername(), input.getPlaylistName()));
-	}
+        @Override
+        public AbstractCommand getCommandFromInput() {
+            return new CreatePlaylistCommand(this);
+        }
+    }
+
+    public static final class CreatePlaylistOutput extends AbstractCommand.CommandOutput {
+        public CreatePlaylistOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
+    }
 }

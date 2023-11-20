@@ -3,65 +3,65 @@ package commands.player;
 import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.User;
-import gateways.PlayerAPI;
 
-public class ShuffleCommand extends AbstractCommand {
-	public ShuffleCommand(ShuffleInput shuffleInput) {
-		super(shuffleInput);
-		this.commandOutput = new ShuffleOutput(shuffleInput);
-	}
+public final class ShuffleCommand extends AbstractCommand {
+    public ShuffleCommand(final ShuffleInput shuffleInput) {
+        super(shuffleInput);
+        this.commandOutput = new ShuffleOutput(shuffleInput);
+    }
 
-	public static class ShuffleInput extends AbstractCommand.CommandInput {
-		public Integer getSeed() {
-			return seed;
-		}
+    @Override
+    public void executeCommand() {
+        ShuffleInput input = (ShuffleInput) this.commandInput;
+        ShuffleOutput output = (ShuffleOutput) this.commandOutput;
 
-		public void setSeed(Integer seed) {
-			this.seed = seed;
-		}
+        User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
+        user.getPlayer().updatePlayer(input.getTimestamp());
+        if (user.getPlayer().getTypeLoaded().isEmpty()) {
+            output.setMessage("Please load a source before using the shuffle function.");
+            return;
+        }
 
-		private Integer seed;
-		@Override
-		public AbstractCommand getCommandFromInput() {
-			return new ShuffleCommand(this);
-		}
-	}
+        if (!user.getPlayer().getTypeLoaded().equals("playlist")) {
+            output.setMessage("The loaded source is not a playlist.");
+            return;
+        }
 
-	public static class ShuffleOutput extends AbstractCommand.CommandOutput {
-		public ShuffleOutput(CommandInput commandInput) {
-			super(commandInput);
-		}
-	}
+        if (user.getPlayer().isShuffle()) {
+            user.getPlayer().undoShuffle();
+            output.setMessage("Shuffle function deactivated successfully.");
+            return;
+        }
 
-	@Override
-	public ShuffleOutput getCommandOutput() {
-		return (ShuffleOutput) commandOutput;
-	}
+        user.getPlayer().doShuffle(input.getSeed());
+        output.setMessage("Shuffle function activated successfully.");
+    }
 
-	@Override
-	public void executeCommand() {
-		ShuffleInput input = (ShuffleInput) this.commandInput;
-		ShuffleOutput output = (ShuffleOutput) this.commandOutput;
+    @Override
+    public ShuffleOutput getCommandOutput() {
+        return (ShuffleOutput) commandOutput;
+    }
 
-		User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
-		user.getPlayer().updatePlayer(input.getTimestamp());
-		if (user.getPlayer().getTypeLoaded().isEmpty()) {
-			output.setMessage("Please load a source before using the shuffle function.");
-			return;
-		}
+    public static final class ShuffleInput extends AbstractCommand.CommandInput {
+        private Integer seed;
 
-		if (!user.getPlayer().getTypeLoaded().equals("playlist")) {
-			output.setMessage("The loaded source is not a playlist.");
-			return;
-		}
+        public Integer getSeed() {
+            return seed;
+        }
 
-		if (user.getPlayer().isShuffle()) {
-			user.getPlayer().undoShuffle();
-			output.setMessage("Shuffle function deactivated successfully.");
-			return;
-		}
+        public void setSeed(final Integer seed) {
+            this.seed = seed;
+        }
 
-		user.getPlayer().doShuffle(input.getSeed());
-		output.setMessage("Shuffle function activated successfully.");
-	}
+        @Override
+        public AbstractCommand getCommandFromInput() {
+            return new ShuffleCommand(this);
+        }
+    }
+
+    public static final class ShuffleOutput extends AbstractCommand.CommandOutput {
+        public ShuffleOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
+    }
 }

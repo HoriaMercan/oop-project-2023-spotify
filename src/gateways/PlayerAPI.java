@@ -12,153 +12,223 @@ import entities.audioFiles.Song;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerAPI {
-	private static final MyDatabase database;
+public final class PlayerAPI {
+    private static final MyDatabase DATABASE;
 
-	static {
-		database = MyDatabase.getInstance();
-	}
+    static {
+        DATABASE = MyDatabase.getInstance();
+    }
 
-	private static List<Song> getSongListFromStrings(String s) {
-		List<Song> list = new ArrayList<Song>();
-		list.add(database.findSongByName(s));
-		return list;
-	}
+    private PlayerAPI() {
+    }
 
-	private static List<Song> getSongListFromPlaylist(Playlist p) {
-		return new ArrayList<>(p.getSongs());
-	}
+    private static List<Song> getSongListFromStrings(final String s) {
+        List<Song> list = new ArrayList<Song>();
+        list.add(DATABASE.findSongByName(s));
+        return list;
+    }
 
-	private static List<PodcastEpisode> getEpisodesFromPodcast(Podcast p) {
-		return new ArrayList<>(p.getEpisodes());
-	}
+    private static List<Song> getSongListFromPlaylist(final Playlist p) {
+        return new ArrayList<>(p.getSongs());
+    }
 
-	public static String getLoadMessage(String username, Integer timestamp) {
-		User user = database.findUserByUsername(username);
-		UserPlayer player = user.getPlayer();
+    private static List<PodcastEpisode> getEpisodesFromPodcast(final Podcast p) {
+        return new ArrayList<>(p.getEpisodes());
+    }
 
-		if (player.getLastSelected().isEmpty()) {
-			return "Please select a source before attempting to load.";
-		}
-		switch (player.getTypeSearched()) {
-			case "song":
-				player.setContext(getSongListFromStrings(player.getLastSelected()), timestamp);
-				break;
+    private static String modifyAndUpdatePlayer(final UserPlayer player, final Integer timestamp) {
+        switch (player.getTypeSearched()) {
+            case "song":
+                player.setContext(getSongListFromStrings(player.getLastSelected()), timestamp);
+                return "";
 
-			case "playlist":
-				Playlist playlist = database.findPlaylistByName(player.getLastSelected());
-				if (playlist.getSongs().isEmpty()) {
-					return "You can't load an empty audio collection!";
-				}
-				player.setContext(getSongListFromPlaylist(playlist), timestamp);
-				break;
+            case "playlist":
+                Playlist playlist = DATABASE.findPlaylistByName(player.getLastSelected());
+                if (playlist.getSongs().isEmpty()) {
+                    return "You can't load an empty audio collection!";
+                }
+                player.setContext(getSongListFromPlaylist(playlist), timestamp);
+                return "";
 
-			case "podcast":
-				Podcast podcast = database.findPodcastByName(player.getLastSelected());
-				if (podcast.getEpisodes().isEmpty()) {
-					return "You can't load an empty audio collection!";
-				}
-				player.setContext(getEpisodesFromPodcast(podcast), timestamp);
-				player.setPlayedPodcastName(podcast.getName());
-				break;
-			default:
-				break;
-		}
+            case "podcast":
+                Podcast podcast = DATABASE.findPodcastByName(player.getLastSelected());
+                if (podcast.getEpisodes().isEmpty()) {
+                    return "You can't load an empty audio collection!";
+                }
+                player.setContext(getEpisodesFromPodcast(podcast), timestamp);
+                player.setPlayedPodcastName(podcast.getName());
+                return "";
+            default:
+                break;
+        }
+        return "";
+    }
 
-		player.loadPlayer(timestamp);
-		player.setLastSelected("");
-		player.setLastSearched(null);
-		player.setTypeSearched("");
-		return "Playback loaded successfully.";
-	}
+    /**
+     * This method loads the last selected file/collection selected by an user and
+     * returns the equivalent message
+     *
+     * @param username  Username of the command initiator
+     * @param timestamp Timestamp of command
+     */
+    public static String getLoadMessage(final String username, final Integer timestamp) {
+        User user = DATABASE.findUserByUsername(username);
+        UserPlayer player = user.getPlayer();
 
-	public static void setStatus(Stats stats, String username, Integer timestamp) {
-		User user = database.findUserByUsername(username);
-		UserPlayer player = user.getPlayer();
-		player.updatePlayer(timestamp);
+        if (player.getLastSelected().isEmpty()) {
+            return "Please select a source before attempting to load.";
+        }
 
-		if (player.getTypeLoaded().isEmpty()) {
-			stats.setName("");
-			stats.setRemainedTime(0);
-			stats.setPaused(true);
-			stats.setShuffle(false);
-			stats.setRepeat("No Repeat");
-		} else {
-			stats.setName(player.getCurrentPlayed().getName());
-			stats.setRemainedTime(player.getRemainedTime());
-			stats.setPaused(player.isPaused());
-			stats.setShuffle(player.isShuffle());
-			stats.setRepeat(player.getRepeatStatus());
-		}
+        String res = modifyAndUpdatePlayer(player, timestamp);
+        if (!res.isEmpty()) {
+            return res;
+        }
+
+        player.loadPlayer(timestamp);
+        player.setLastSelected("");
+        player.setLastSearched(null);
+        player.setTypeSearched("");
+        return "Playback loaded successfully.";
+    }
+
+    /**
+     * This function is used for generating the desired output
+     * of status command by setting up all the parameters
+     *
+     * @param stats the status object to be set
+     * @param username the username of the command initiator
+     * @param timestamp the timestamp of the command
+     */
+    public static void setStatus(final Stats stats, final String username,
+                                 final Integer timestamp) {
+        User user = DATABASE.findUserByUsername(username);
+        UserPlayer player = user.getPlayer();
+        player.updatePlayer(timestamp);
+
+        if (player.getTypeLoaded().isEmpty()) {
+            stats.setName("");
+            stats.setRemainedTime(0);
+            stats.setPaused(true);
+            stats.setShuffle(false);
+            stats.setRepeat("No Repeat");
+        } else {
+            stats.setName(player.getCurrentPlayed().getName());
+            stats.setRemainedTime(player.getRemainedTime());
+            stats.setPaused(player.isPaused());
+            stats.setShuffle(player.isShuffle());
+            stats.setRepeat(player.getRepeatStatus());
+        }
 
 
-	}
+    }
 
-	public static String getPlayPauseMessage(String username, Integer timestamp) {
-		User user = database.findUserByUsername(username);
-		user.getPlayer().updatePlayer(timestamp);
-		if (user.getPlayer().getTypeLoaded().isEmpty()) {
-			return "Please load a source before attempting to pause or resume playback.";
-		}
-		return user.getPlayer().playPause(timestamp);
-	}
+    /**
+     * This function execute a play/pause command and returns a desired message
+     * or throws an error message regarding the action performed
+     *
+     * @param username the username of the command initiator
+     * @param timestamp the timestamp of the command
+     * @return A specific message correlated with the actions performed
+     */
+    public static String getPlayPauseMessage(final String username, final Integer timestamp) {
+        User user = DATABASE.findUserByUsername(username);
+        user.getPlayer().updatePlayer(timestamp);
+        if (user.getPlayer().getTypeLoaded().isEmpty()) {
+            return "Please load a source before attempting to pause or resume playback.";
+        }
+        return user.getPlayer().playPause(timestamp);
+    }
 
-	public static String getCreatePlaylistCommand(String username, String playlistName) {
-		User user = database.findUserByUsername(username);
+    /**
+     * This function execute the specific actions in the database and returns
+     * a message or returns the error got performing this action
+     *
+     * @param username username of the command initiator
+     * @param playlistName playlist name chosen by an user
+     * @return a String specifying the message of command
+     */
+    public static String getCreatePlaylistCommand(final String username,
+                                                  final String playlistName) {
+        User user = DATABASE.findUserByUsername(username);
 
-		Playlist playlist = database.findPlaylistByName(playlistName);
-		if (playlist != null) {
-			return "A playlist with the same name already exists.";
-		}
+        Playlist playlist = DATABASE.findPlaylistByName(playlistName);
+        if (playlist != null) {
+            return "A playlist with the same name already exists.";
+        }
 
-		playlist = new Playlist(username, true, new ArrayList<Song>());
-		playlist.setName(playlistName);
-		database.addPlaylistInDatabase(playlist);
-		user.addPlaylistInUserList(playlistName);
-		return "Playlist created successfully.";
-	}
+        playlist = new Playlist(username, true, new ArrayList<Song>());
+        playlist.setName(playlistName);
+        DATABASE.addPlaylistInDatabase(playlist);
+        user.addPlaylistInUserList(playlistName);
+        return "Playlist created successfully.";
+    }
 
-	public static String getCurrentPlayedType(String username, Integer timestamp) {
-		User user = database.findUserByUsername(username);
-		user.getPlayer().updatePlayer(timestamp);
-		return user.getPlayer().getTypeLoaded();
-	}
+    /**
+     * This function returns the audio file name which is played by an user at a certain
+     * time
+     *
+     * @param username username of the command initiator
+     * @param timestamp the timestamp of the command
+     * @return a String specifying the message of command
+     */
+    public static String getCurrentPlayedType(final String username, final Integer timestamp) {
+        User user = DATABASE.findUserByUsername(username);
+        user.getPlayer().updatePlayer(timestamp);
+        return user.getPlayer().getTypeLoaded();
+    }
 
-	public static String getAddRemoveMessage(String username, Integer timestamp, Integer playlistID) {
-		User user = database.findUserByUsername(username);
-		user.getPlayer().updatePlayer(timestamp);
-		if (user.getPlayer().getTypeLoaded().isEmpty()) {
-			return "Please load a source before adding to or removing from the playlist.";
-		}
-		if (!user.getPlayer().getTypeLoaded().equals("song")) {
-			return "The loaded source is not a song.";
-		}
-		if (!user.isPlaylistIDInUserList(playlistID)) {
-			return "The specified playlist does not exist.";
-		}
+    /**
+     * This function adds the current played song to a playlist specified by
+     * a user
+     *
+     * @param username username of the command initiator
+     * @param timestamp the timestamp of the command
+     * @param playlistID the id associated with an user's playlist
+     * @return a String specifying the message of command
+     */
+    public static String getAddRemoveMessage(final String username, final Integer timestamp,
+                                             final Integer playlistID) {
+        User user = DATABASE.findUserByUsername(username);
+        user.getPlayer().updatePlayer(timestamp);
+        if (user.getPlayer().getTypeLoaded().isEmpty()) {
+            return "Please load a source before adding to or removing from the playlist.";
+        }
+        if (!user.getPlayer().getTypeLoaded().equals("song")) {
+            return "The loaded source is not a song.";
+        }
+        if (!user.isPlaylistIDInUserList(playlistID)) {
+            return "The specified playlist does not exist.";
+        }
 
-		Song song = (Song) user.getPlayer().getCurrentPlayed();
-		Playlist playlist = database.findPlaylistByName(user.getPlaylistFromID(playlistID));
-		if (playlist.removeSongFromPlaylist(song)) {
-			return "Successfully removed from playlist.";
-		}
-		playlist.addSongInPlaylist(song);
-		return "Successfully added to playlist.";
-	}
+        Song song = (Song) user.getPlayer().getCurrentPlayed();
+        Playlist playlist = DATABASE.findPlaylistByName(user.getPlaylistFromID(playlistID));
+        if (playlist.removeSongFromPlaylist(song)) {
+            return "Successfully removed from playlist.";
+        }
+        playlist.addSongInPlaylist(song);
+        return "Successfully added to playlist.";
+    }
 
-	public static String getLikeMessage(String username, Integer timestamp) {
-		User user = database.findUserByUsername(username);
-		String currentType = getCurrentPlayedType(username, timestamp);
-		if (currentType.equals("song") || currentType.equals("playlist")) {
-			Song song = (Song) user.getPlayer().getCurrentPlayed();
-			if (song.songUnlikeByUser(username)) {
-				return "Unlike registered successfully.";
-			}
-			song.songLikeByUser(username, timestamp);
-			return "Like registered successfully.";
-		} else if (currentType.isEmpty()) {
-			return "Please load a source before liking or unliking.";
-		}
-		return "Loaded source is not a song.";
-	}
+    /**
+     * This function execute a like command and returns a message
+     *
+     * @param username username of the command initiator
+     * @param timestamp the timestamp of the command
+     * @return a String specifying the message of command
+     */
+    public static String getLikeMessage(final String username, final Integer timestamp) {
+        User user = DATABASE.findUserByUsername(username);
+        String currentType = getCurrentPlayedType(username, timestamp);
+        if (currentType.equals("song") || currentType.equals("playlist")) {
+            Song song = (Song) user.getPlayer().getCurrentPlayed();
+            if (song.songUnlikeByUser(username)) {
+                return "Unlike registered successfully.";
+            }
+            song.songLikeByUser(username, timestamp);
+            return "Like registered successfully.";
+        } else if (currentType.isEmpty()) {
+            return "Please load a source before liking or unliking.";
+        }
+        return "Loaded source is not a song.";
+    }
 }

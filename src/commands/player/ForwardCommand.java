@@ -4,50 +4,50 @@ import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.User;
 
-public class ForwardCommand extends AbstractCommand {
-	public ForwardCommand(ForwardInput forwardInput) {
-		super(forwardInput);
-		this.commandOutput = new ForwardOutput(forwardInput);
-	}
+public final class ForwardCommand extends AbstractCommand {
+    public ForwardCommand(final ForwardInput forwardInput) {
+        super(forwardInput);
+        this.commandOutput = new ForwardOutput(forwardInput);
+    }
 
-	public static class ForwardInput extends AbstractCommand.CommandInput {
-		@Override
-		public AbstractCommand getCommandFromInput() {
-			return new ForwardCommand(this);
-		}
-	}
+    @Override
+    public void executeCommand() {
+        ForwardInput input = (ForwardInput) this.commandInput;
+        ForwardOutput output = (ForwardOutput) this.commandOutput;
 
-	public static class ForwardOutput extends AbstractCommand.CommandOutput {
-		public ForwardOutput(CommandInput commandInput) {
-			super(commandInput);
-		}
-	}
+        User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
+        user.getPlayer().updatePlayer(input.getTimestamp());
 
-	@Override
-	public ForwardOutput getCommandOutput() {
-		return (ForwardOutput) this.commandOutput;
-	}
+        if (user.getPlayer().getTypeLoaded().isEmpty()) {
+            output.setMessage("Please load a source before attempting to forward.");
+            return;
+        }
 
-	@Override
-	public void executeCommand() {
-		ForwardInput input = (ForwardInput) this.commandInput;
-		ForwardOutput output = (ForwardOutput) this.commandOutput;
+        if (!user.getPlayer().getTypeLoaded().equals("podcast")) {
+            output.setMessage("The loaded source is not a podcast.");
+            return;
+        }
 
-		User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
-		user.getPlayer().updatePlayer(input.getTimestamp());
+        user.getPlayer().runForward();
+        output.setMessage("Skipped forward successfully.");
 
-		if (user.getPlayer().getTypeLoaded().isEmpty()) {
-			output.setMessage("Please load a source before attempting to forward.");
-			return;
-		}
+    }
 
-		if (!user.getPlayer().getTypeLoaded().equals("podcast")) {
-			output.setMessage("The loaded source is not a podcast.");
-			return;
-		}
+    @Override
+    public ForwardOutput getCommandOutput() {
+        return (ForwardOutput) this.commandOutput;
+    }
 
-		user.getPlayer().runForward();
-		output.setMessage("Skipped forward successfully.");
+    public static final class ForwardInput extends AbstractCommand.CommandInput {
+        @Override
+        public AbstractCommand getCommandFromInput() {
+            return new ForwardCommand(this);
+        }
+    }
 
-	}
+    public static final class ForwardOutput extends AbstractCommand.CommandOutput {
+        public ForwardOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
+    }
 }

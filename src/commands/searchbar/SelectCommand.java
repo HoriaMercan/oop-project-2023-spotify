@@ -4,53 +4,52 @@ import commands.AbstractCommand;
 import gateways.SearchBarAPI;
 
 public final class SelectCommand extends AbstractCommand {
-	public SelectCommand(SelectInput selectInput) {
-		super(selectInput);
-		this.commandOutput = new SelectOutput(selectInput);
-	}
+    public SelectCommand(final SelectInput selectInput) {
+        super(selectInput);
+        this.commandOutput = new SelectOutput(selectInput);
+    }
 
-	public final static class SelectInput extends AbstractCommand.CommandInput {
-		private Integer itemNumber;
+    @Override
+    public void executeCommand() {
+        SelectInput input = (SelectInput) commandInput;
+        SelectOutput output = (SelectOutput) commandOutput;
 
-		public SelectInput() {
-			super();
-		}
+        output.setMessage(SearchBarAPI.getSelectionMessage(input.getUsername(),
+                input.getItemNumber()));
+    }
 
-		public void setItemNumber(Integer itemNumber) {
-			this.itemNumber = itemNumber;
-		}
+    public SelectOutput getCommandOutput() {
+        return (SelectOutput) this.commandOutput;
+    }
 
-		public Integer getItemNumber() {
-			return this.itemNumber;
-		}
+    public static final class SelectInput extends AbstractCommand.CommandInput {
+        private Integer itemNumber;
 
-		public SelectInput(String username, Integer timestamp) {
-			super(username, timestamp);
-		}
+        public SelectInput() {
+            super();
+        }
 
-		@Override
-		public AbstractCommand getCommandFromInput() {
-			return new SelectCommand(this);
-		}
-	}
+        public SelectInput(final String username, final Integer timestamp) {
+            super(username, timestamp);
+        }
 
-	public final static class SelectOutput extends AbstractCommand.CommandOutput {
-		public SelectOutput(CommandInput commandInput) {
-			super(commandInput);
-		}
-	}
+        public Integer getItemNumber() {
+            return this.itemNumber;
+        }
 
+        public void setItemNumber(final Integer itemNumber) {
+            this.itemNumber = itemNumber;
+        }
 
-	public SelectOutput getCommandOutput() {
-		return (SelectOutput) this.commandOutput;
-	}
+        @Override
+        public AbstractCommand getCommandFromInput() {
+            return new SelectCommand(this);
+        }
+    }
 
-	@Override
-	public void executeCommand() {
-		SelectInput input = (SelectInput) commandInput;
-		SelectOutput output = (SelectOutput) commandOutput;
-
-		output.setMessage(SearchBarAPI.getSelectionMessage(input.getUsername(),
-				input.getItemNumber()));
-	}
+    public static final class SelectOutput extends AbstractCommand.CommandOutput {
+        public SelectOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
+    }
 }

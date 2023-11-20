@@ -5,51 +5,51 @@ import databases.MyDatabase;
 import entities.User;
 import gateways.PlayerAPI;
 
-public class RepeatCommand extends AbstractCommand {
-	public RepeatCommand(RepeatInput repeatInput) {
-		super(repeatInput);
-		this.commandOutput = new RepeatOutput(repeatInput);
-	}
+public final class RepeatCommand extends AbstractCommand {
+    public RepeatCommand(final RepeatInput repeatInput) {
+        super(repeatInput);
+        this.commandOutput = new RepeatOutput(repeatInput);
+    }
 
-	public static class RepeatInput extends AbstractCommand.CommandInput {
-		@Override
-		public AbstractCommand getCommandFromInput() {
-			return new RepeatCommand(this);
-		}
-	}
+    @Override
+    public void executeCommand() {
+        RepeatInput input = (RepeatInput) this.commandInput;
+        RepeatOutput output = (RepeatOutput) this.commandOutput;
 
-	public static class RepeatOutput extends AbstractCommand.CommandOutput {
-		public RepeatOutput(CommandInput commandInput) {
-			super(commandInput);
-		}
-	}
+        User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
 
-	@Override
-	public RepeatOutput getCommandOutput() {
-		return (RepeatOutput) this.commandOutput;
-	}
+        if (user.getPlayer().getTypeLoaded().isEmpty()) {
+            output.setMessage("Please load a source before setting the repeat status.");
+            return;
+        }
 
-	@Override
-	public void executeCommand() {
-		RepeatInput input = (RepeatInput) this.commandInput;
-		RepeatOutput output = (RepeatOutput) this.commandOutput;
+        boolean paused = user.getPlayer().isPaused();
 
-		User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
+        if (!paused) {
+            PlayerAPI.getPlayPauseMessage(input.getUsername(), input.getTimestamp());
+        }
+        String message = user.getPlayer().changeRepeatStatus();
+        output.setMessage("Repeat mode changed to " + message + ".");
+        if (!paused) {
+            PlayerAPI.getPlayPauseMessage(input.getUsername(), input.getTimestamp());
+        }
+    }
 
-		if (user.getPlayer().getTypeLoaded().isEmpty()) {
-			output.setMessage("Please load a source before setting the repeat status.");
-			return;
-		}
+    @Override
+    public RepeatOutput getCommandOutput() {
+        return (RepeatOutput) this.commandOutput;
+    }
 
-		boolean paused = user.getPlayer().isPaused();
+    public static final class RepeatInput extends AbstractCommand.CommandInput {
+        @Override
+        public AbstractCommand getCommandFromInput() {
+            return new RepeatCommand(this);
+        }
+    }
 
-		if (!paused) {
-			PlayerAPI.getPlayPauseMessage(input.getUsername(), input.getTimestamp());
-		}
-		String message = user.getPlayer().changeRepeatStatus();
-		output.setMessage("Repeat mode changed to " + message + ".");
-		if (!paused) {
-			PlayerAPI.getPlayPauseMessage(input.getUsername(), input.getTimestamp());
-		}
-	}
+    public static final class RepeatOutput extends AbstractCommand.CommandOutput {
+        public RepeatOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
+    }
 }

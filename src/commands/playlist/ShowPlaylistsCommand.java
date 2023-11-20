@@ -13,87 +13,89 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ShowPlaylistsCommand extends AbstractCommand {
-	public ShowPlaylistsCommand(ShowPlaylistsInput showPlaylistsInput) {
-		super(showPlaylistsInput);
-		this.commandOutput = new ShowPlaylistsOutput(showPlaylistsInput);
-	}
+public final class ShowPlaylistsCommand extends AbstractCommand {
+    public ShowPlaylistsCommand(final ShowPlaylistsInput showPlaylistsInput) {
+        super(showPlaylistsInput);
+        this.commandOutput = new ShowPlaylistsOutput(showPlaylistsInput);
+    }
 
-	public static class ShowPlaylistsInput extends AbstractCommand.CommandInput {
-		public Integer playlistId;
-		@Override
-		public AbstractCommand getCommandFromInput() {
-			return new ShowPlaylistsCommand(this);
-		}
-	}
+    @Override
+    public void executeCommand() {
+        ShowPlaylistsInput input = (ShowPlaylistsInput) this.commandInput;
+        ShowPlaylistsOutput output = (ShowPlaylistsOutput) this.commandOutput;
 
+        List<Playlist> playlistsResult = MyDatabase.getInstance().getPublicPlaylists().stream().
+                filter(playlist -> playlist.getOwner().equals(input.getUsername()))
+                .toList();
 
-	public static class ShowPlaylistsOutput extends AbstractCommand.CommandOutput {
-		@JsonIgnore
-		protected String message;
+        Function<Song, String> toSongName = AudioFile::getName;
+        for (Playlist playlist : playlistsResult) {
+            output.result.add(new ShowPlaylistsResults(
+                    playlist.getName(), playlist.getSongs().stream().map(toSongName)
+                    .collect(Collectors.toList()),
+                    playlist.getVisibility(), playlist.followersNo()
+            ));
+        }
+    }
 
-		public static class ShowPlaylistsResults {
-			String name;
-			List<String> songs;
+    @Override
+    public ShowPlaylistsOutput getCommandOutput() {
+        return (ShowPlaylistsOutput) this.commandOutput;
+    }
 
-			String visibility;
-			Integer followers;
+    public static final class ShowPlaylistsInput extends AbstractCommand.CommandInput {
+        @Override
+        public AbstractCommand getCommandFromInput() {
+            return new ShowPlaylistsCommand(this);
+        }
+    }
 
-			ShowPlaylistsResults() {}
-			public ShowPlaylistsResults(String name, List<String> songs, String visibility, Integer followers) {
-				this.name = name;
-				this.songs = songs;
-				this.visibility = visibility;
-				this.followers = followers;
-			}
+    public static final class ShowPlaylistsOutput extends AbstractCommand.CommandOutput {
+        private final List<ShowPlaylistsResults> result = new ArrayList<>();
+        @JsonIgnore
+        private String message;
 
-			public String getName() {
-				return name;
-			}
+        public ShowPlaylistsOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
 
-			public List<String> getSongs() {
-				return songs;
-			}
+        public List<ShowPlaylistsResults> getResult() {
+            return result;
+        }
 
-			public String getVisibility() {
-				return visibility;
-			}
+        public static final class ShowPlaylistsResults {
+            private String name;
+            private List<String> songs;
 
-			public Integer getFollowers() {
-				return followers;
-			}
-		}
-		List<ShowPlaylistsResults> result = new ArrayList<>();
+            private String visibility;
+            private Integer followers;
 
-		public List<ShowPlaylistsResults> getResult() {
-			return result;
-		}
+            ShowPlaylistsResults() {
+            }
 
-		public ShowPlaylistsOutput(CommandInput commandInput) {
-			super(commandInput);
-		}
-	}
+            public ShowPlaylistsResults(final String name, final List<String> songs,
+                                        final String visibility, final Integer followers) {
+                this.name = name;
+                this.songs = songs;
+                this.visibility = visibility;
+                this.followers = followers;
+            }
 
-	@Override
-	public ShowPlaylistsOutput getCommandOutput() {
-		return (ShowPlaylistsOutput) this.commandOutput;
-	}
+            public String getName() {
+                return name;
+            }
 
-	@Override
-	public void executeCommand() {
-		ShowPlaylistsInput input = (ShowPlaylistsInput) this.commandInput;
-		ShowPlaylistsOutput output = (ShowPlaylistsOutput) this.commandOutput;
+            public List<String> getSongs() {
+                return songs;
+            }
 
-		List<Playlist>playlistsResult = MyDatabase.getInstance().getPublicPlaylists().stream().
-				filter(playlist -> playlist.getOwner().equals(input.getUsername()))
-				.toList();
+            public String getVisibility() {
+                return visibility;
+            }
 
-		Function<Song, String> toSongName = AudioFile::getName;
-		for (Playlist playlist: playlistsResult) {
-			output.result.add(new ShowPlaylistsResults(
-					playlist.getName(), playlist.getSongs().stream().map(toSongName).collect(Collectors.toList()),
-					playlist.getVisibility(), playlist.getFollowersNumber()
-			));
-		}
-	}
+            public Integer getFollowers() {
+                return followers;
+            }
+        }
+    }
 }

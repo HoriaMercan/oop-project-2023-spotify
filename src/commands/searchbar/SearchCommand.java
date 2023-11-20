@@ -1,91 +1,82 @@
 package commands.searchbar;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import commands.AbstractCommand;
-import databases.MyDatabase;
 import entities.helpers.Filter;
 import gateways.SearchBarAPI;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.String;
 
-public class SearchCommand extends AbstractCommand {
-	public SearchCommand(SearchInput searchInput) {
-		super(searchInput);
-		this.commandOutput = new SearchOutput(searchInput);
-	}
+public final class SearchCommand extends AbstractCommand {
+    public SearchCommand(final SearchInput searchInput) {
+        super(searchInput);
+        this.commandOutput = new SearchOutput(searchInput);
+    }
 
-	public static class SearchInput extends AbstractCommand.CommandInput {
-		public String getType() {
-			return type;
-		}
+    @Override
+    public void executeCommand() {
+        SearchInput input = (SearchInput) this.commandInput;
+        SearchOutput output = (SearchOutput) this.commandOutput;
+        String type = input.getType();
+        List<String> results = switch (type) {
+            case "song" -> SearchBarAPI.getSongsByFilter(input.getUsername(),
+                    input.getTimestamp(), input.getFilters());
+            case "playlist" -> SearchBarAPI.getPlaylistsByFilter(input.getUsername(),
+                    input.getTimestamp(), input.getFilters());
+            case "podcast" -> SearchBarAPI.getPodcastsByFilter(input.getUsername(),
+                    input.getTimestamp(), input.getFilters());
+            default -> new ArrayList<>();
+        };
 
-		public void setType(String type) {
-			this.type = type;
-		}
+        output.setResults(results);
+        output.setMessage("Search returned " + results.size() + " results");
+    }
 
-		public Filter getFilters() {
-			return filters;
-		}
+    @Override
+    public SearchOutput getCommandOutput() {
+        return (SearchOutput) this.commandOutput;
+    }
 
-		public void setFilters(Filter filters) {
-			this.filters = filters;
-		}
+    public static final class SearchInput extends AbstractCommand.CommandInput {
+        private Filter filters;
+        private String type;
 
-		private String type;
-		Filter filters;
+        public String getType() {
+            return type;
+        }
 
-		@Override
-		public SearchCommand getCommandFromInput() {
-			return new SearchCommand(this);
-		}
-	}
+        public void setType(final String type) {
+            this.type = type;
+        }
 
+        public Filter getFilters() {
+            return filters;
+        }
 
+        public void setFilters(final Filter filters) {
+            this.filters = filters;
+        }
 
+        @Override
+        public SearchCommand getCommandFromInput() {
+            return new SearchCommand(this);
+        }
+    }
 
-	public static class SearchOutput extends AbstractCommand.CommandOutput {
+    public static final class SearchOutput extends AbstractCommand.CommandOutput {
 
-		public SearchOutput(CommandInput commandInput) {
-			super(commandInput);
-		}
+        private List<String> results;
 
-		public List<String> getResults() {
-			return results;
-		}
+        public SearchOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
 
-		public void setResults(List<String>results) {
-			this.results = results;
-		}
+        public List<String> getResults() {
+            return results;
+        }
 
-		public List<String> results;
-	}
-
-	@Override
-	public void executeCommand() {
-		SearchInput input = (SearchInput) this.commandInput;
-		SearchOutput output = (SearchOutput) this.commandOutput;
-		String type = input.getType();
-		List<String> results = switch (type) {
-			case "song" -> SearchBarAPI.getSongsByFilter(input.getUsername(),
-					input.getTimestamp(), input.getFilters());
-			case "playlist" -> SearchBarAPI.getPlaylistsByFilter(input.getUsername(),
-					input.getTimestamp(), input.getFilters());
-			case "podcast" -> SearchBarAPI.getPodcastsByFilter(input.getUsername(),
-					input.getTimestamp(), input.getFilters());
-			default -> new ArrayList<>();
-		};
-
-		output.setResults(results);
-		output.setMessage("Search returned " + results.size() + " results");
-	}
-
-	@Override
-	public SearchOutput getCommandOutput() {
-		return (SearchOutput) this.commandOutput;
-	}
+        public void setResults(final List<String> results) {
+            this.results = results;
+        }
+    }
 }

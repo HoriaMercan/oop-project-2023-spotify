@@ -7,34 +7,34 @@ import fileio.input.PodcastInput;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Podcast extends AudioCollection {
-	private List<PodcastEpisode> episodes;
-	public Podcast() {
-	}
+public final class Podcast extends AudioCollection {
+    private List<PodcastEpisode> episodes;
 
-	public Podcast(String name, String owner, List<PodcastEpisode> episodes) {
-		this.name = name;
-		this.owner = owner;
-		this.episodes = episodes;
-	}
+    public Podcast() {
+    }
 
-	public Podcast(PodcastInput input) {
-		ArrayList<PodcastEpisode>episodes = new ArrayList<PodcastEpisode>();
+    public Podcast(final String name, final String owner, final List<PodcastEpisode> episodes) {
+        this.name = name;
+        this.owner = owner;
+        this.episodes = episodes;
+    }
 
-		for (EpisodeInput every: input.getEpisodes()) {
-			episodes.add(new PodcastEpisode(every));
-		}
-		this.name = input.getName();
-		this.owner = input.getOwner();
-		this.episodes = episodes;
-	}
+    public Podcast(final PodcastInput input) {
+        this.episodes = new ArrayList<>();
 
-	public List<PodcastEpisode> getEpisodes() {
-		return episodes;
-	}
+        for (EpisodeInput every : input.getEpisodes()) {
+            this.episodes.add(new PodcastEpisode(every));
+        }
+        this.name = input.getName();
+        this.owner = input.getOwner();
+    }
 
-	public void setEpisodes(final List<PodcastEpisode> episodes) {
-		this.episodes = episodes;
-	}
+    public List<PodcastEpisode> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(final List<PodcastEpisode> episodes) {
+        this.episodes = episodes;
+    }
 
 }

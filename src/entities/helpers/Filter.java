@@ -6,79 +6,81 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Filter {
-	private String owner = "";
-	private String name = "";
-	private List<String> tags = new ArrayList<>();
-	private String genre = "";
-	private String lyrics = "";
-	private String artist = "";
-	private String releaseYear = "";
-	private String album = "";
+public final class Filter {
+    private String owner = "";
+    private String name = "";
+    private List<String> tags = new ArrayList<>();
+    private String genre = "";
+    private String lyrics = "";
+    private String artist = "";
+    private String releaseYear = "";
+    private String album = "";
 
 
-	public String getName() {
-		return name;
-	}
+    Filter() {
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getOwner() {
-		return owner;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
+    public String getOwner() {
+        return owner;
+    }
 
-	public List<String> getTags() {
-		return tags;
-	}
+    public void setOwner(final String owner) {
+        this.owner = owner;
+    }
 
-	public void setTags(List<String> tags) {
-		this.tags = tags;
-	}
+    public List<String> getTags() {
+        return tags;
+    }
 
-	public String getGenre() {
-		return genre;
-	}
+    public void setTags(final List<String> tags) {
+        this.tags = tags;
+    }
 
-	public void setGenre(String genre) {
-		this.genre = genre;
-	}
-	Filter() {}
+    public String getGenre() {
+        return genre;
+    }
 
-	public String getLyrics() {
-		return lyrics;
-	}
+    public void setGenre(final String genre) {
+        this.genre = genre;
+    }
 
-	public void setLyrics(String lyrics) {
-		this.lyrics = lyrics;
-	}
+    public String getLyrics() {
+        return lyrics;
+    }
 
-	public String getArtist() {
-		return artist;
-	}
+    public void setLyrics(final String lyrics) {
+        this.lyrics = lyrics;
+    }
 
-	public void setArtist(String artist) {
-		this.artist = artist;
-	}
+    public String getArtist() {
+        return artist;
+    }
 
-	public String getReleaseYear() {
-		return releaseYear;
-	}
+    public void setArtist(final String artist) {
+        this.artist = artist;
+    }
 
-	public void setReleaseYear(String releaseYear) {
-		this.releaseYear = releaseYear;
-	}
+    public String getReleaseYear() {
+        return releaseYear;
+    }
 
-	public String getAlbum() {
-		return album;
-	}
+    public void setReleaseYear(final String releaseYear) {
+        this.releaseYear = releaseYear;
+    }
 
-	public void setAlbum(String album) {
-		this.album = album;
-	}
+    public String getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(final String album) {
+        this.album = album;
+    }
 }

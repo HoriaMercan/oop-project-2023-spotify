@@ -3,42 +3,43 @@ package commands.player;
 import commands.AbstractCommand;
 import gateways.PlayerAPI;
 
-public class PlayPauseCommand extends AbstractCommand{
-	public PlayPauseCommand(PlayPauseInput playPauseInput) {
-		super(playPauseInput);
-		this.commandOutput = new PlayPauseOutput(playPauseInput);
+public final class PlayPauseCommand extends AbstractCommand {
+    public PlayPauseCommand(final PlayPauseInput playPauseInput) {
+        super(playPauseInput);
+        this.commandOutput = new PlayPauseOutput(playPauseInput);
 
-	}
-	public static class PlayPauseInput extends AbstractCommand.CommandInput {
-		public PlayPauseInput() {
-			super();
-		}
+    }
 
-		@Override
-		public AbstractCommand getCommandFromInput() {
-			return new PlayPauseCommand(this);
-		}
-	}
+    @Override
+    public void executeCommand() {
+        PlayPauseInput input = (PlayPauseInput) this.commandInput;
+        PlayPauseOutput output = (PlayPauseOutput) this.commandOutput;
 
-	public static class PlayPauseOutput extends AbstractCommand.CommandOutput {
-		public PlayPauseOutput(CommandInput commandInput) {
-			super(commandInput);
-		}
-	}
+        output.setMessage(PlayerAPI.getPlayPauseMessage(
+                input.getUsername(), input.getTimestamp()
+        ));
 
-	@Override
-	public PlayPauseOutput getCommandOutput() {
-		return (PlayPauseOutput) this.commandOutput;
-	}
+    }
 
-	@Override
-	public void executeCommand() {
-		PlayPauseInput input = (PlayPauseInput) this.commandInput;
-		PlayPauseOutput output = (PlayPauseOutput) this.commandOutput;
+    @Override
+    public PlayPauseOutput getCommandOutput() {
+        return (PlayPauseOutput) this.commandOutput;
+    }
 
-		output.setMessage(PlayerAPI.getPlayPauseMessage(
-				input.getUsername(), input.getTimestamp()
-		));
+    public static final class PlayPauseInput extends AbstractCommand.CommandInput {
+        public PlayPauseInput() {
+            super();
+        }
 
-	}
+        @Override
+        public AbstractCommand getCommandFromInput() {
+            return new PlayPauseCommand(this);
+        }
+    }
+
+    public static final class PlayPauseOutput extends AbstractCommand.CommandOutput {
+        public PlayPauseOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
+    }
 }

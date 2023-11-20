@@ -4,43 +4,45 @@ import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.User;
 
-public class 	PrevCommand extends AbstractCommand {
-	public PrevCommand(PrevInput prevInput) {
-		super(prevInput);
-		this.commandOutput = new PrevOutput(prevInput);
-	}
+public final class PrevCommand extends AbstractCommand {
+    public PrevCommand(final PrevInput prevInput) {
+        super(prevInput);
+        this.commandOutput = new PrevOutput(prevInput);
+    }
 
-	public static class PrevInput extends AbstractCommand.CommandInput {
-		@Override
-		public AbstractCommand getCommandFromInput() {
-			return new PrevCommand(this);
-		}
-	}
+    @Override
+    public void executeCommand() {
+        PrevInput input = (PrevInput) this.commandInput;
+        PrevOutput output = (PrevOutput) this.commandOutput;
 
-	public static class PrevOutput extends AbstractCommand.CommandOutput {
-		public PrevOutput(CommandInput commandInput) {
-			super(commandInput);
-		}
-	}
+        User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
+        user.getPlayer().updatePlayer(input.getTimestamp());
 
-	@Override
-	public PrevOutput getCommandOutput() {return (PrevOutput) this.commandOutput;}
+        if (user.getPlayer().getTypeLoaded().isEmpty()) {
+            output.setMessage("Please load a source before returning to the previous track.");
+            return;
+        }
 
-	@Override
-	public void executeCommand() {
-		PrevInput input = (PrevInput) this.commandInput;
-		PrevOutput output = (PrevOutput) this.commandOutput;
+        user.getPlayer().runPrev();
+        output.setMessage("Returned to previous track successfully. The current track is "
+                + user.getPlayer().getCurrentPlayedName() + ".");
+    }
 
-		User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
-		user.getPlayer().updatePlayer(input.getTimestamp());
+    @Override
+    public PrevOutput getCommandOutput() {
+        return (PrevOutput) this.commandOutput;
+    }
 
-		if (user.getPlayer().getTypeLoaded().isEmpty()) {
-			output.setMessage("Please load a source before returning to the previous track.");
-			return;
-		}
+    public static final class PrevInput extends AbstractCommand.CommandInput {
+        @Override
+        public AbstractCommand getCommandFromInput() {
+            return new PrevCommand(this);
+        }
+    }
 
-		user.getPlayer().runPrev();
-		output.setMessage("Returned to previous track successfully. The current track is "+
-				user.getPlayer().getCurrentPlayedName() +".");
-	}
+    public static final class PrevOutput extends AbstractCommand.CommandOutput {
+        public PrevOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
+    }
 }

@@ -2,57 +2,75 @@ package entities.audioFileSelector;
 
 import entities.audioFiles.AudioFile;
 
+/**
+ * Class AudioFileSelector offers the methods necessary to operate through
+ * audio files by puzzling every primitive method and building the formal API commands
+ * that can be changes easily (an implementation with lambda expressions might be
+ * very useful for a big part of changes)
+ */
 public class AudioFileSelector {
-	protected AudioFileSelectorCurrent basic;
-	protected AudioFileSelectorEnd end;
-	protected AudioFileSelectorNext next;
-	protected AudioFileSelectorOutOfBound outOfBound;
+    protected AudioFileSelectorCurrent basic;
+    protected AudioFileSelectorEnd end;
+    protected AudioFileSelectorNext next;
+    protected AudioFileSelectorOutOfBound outOfBound;
 
-	AudioFileSelector(AudioFileSelectorCurrent basic,
-					  AudioFileSelectorNext next,
-					  AudioFileSelectorEnd end) {
-		this.basic = basic;
-		this.next = next;
-		this.end = end;
-	}
+    AudioFileSelector(final AudioFileSelectorCurrent basic,
+                      final AudioFileSelectorNext next,
+                      final AudioFileSelectorEnd end) {
+        this.basic = basic;
+        this.next = next;
+        this.end = end;
+    }
 
-	public AudioFileSelector(AudioFileSelectorCurrent basic,
-							 AudioFileSelectorNext next,
-							 AudioFileSelectorEnd end,
-							 AudioFileSelectorOutOfBound outOfBound) {
-		this(basic, next, end);
-		this.outOfBound = outOfBound;
-	}
+    public AudioFileSelector(final AudioFileSelectorCurrent basic,
+                             final AudioFileSelectorNext next,
+                             final AudioFileSelectorEnd end,
+                             final AudioFileSelectorOutOfBound outOfBound) {
+        this(basic, next, end);
+        this.outOfBound = outOfBound;
+    }
 
-	public AudioFileSelector(AudioFileSelectorOutOfBound outOfBound) {
-		this.outOfBound = outOfBound;
-	}
+    public AudioFileSelector(final AudioFileSelectorOutOfBound outOfBound) {
+        this.outOfBound = outOfBound;
+    }
 
-	public AudioFile current() {
-		if (end()) {
-			return outOfBound.outOfBound();
-		}
-		return basic.__current();
-	}
+    /**
+     * @return the current AudioFile object that is shown by player
+     */
+    public AudioFile current() {
+        if (end()) {
+            return outOfBound.outOfBound();
+        }
+        return basic.current();
+    }
 
-	public boolean end() {
-		return end.__end();
-	}
-	public void next() {
-		next.__next();
-		if (end.__end()) {
-			outOfBound.nextWhenEnded();
-		}
-	}
+    /**
+     * @return Player got to the end
+     */
+    public boolean end() {
+        return end.end();
+    }
 
-	public void setBasic(AudioFileSelectorCurrent basic) {
-		this.basic = basic;
-	}
+    /**
+     * The selector moves to the next song, by considering the active properties of
+     * the player
+     */
+    public void next() {
+        next.next();
+        if (end.end()) {
+            outOfBound.nextWhenEnded();
+        }
+    }
 
-	public void setEnd(AudioFileSelectorEnd end) {
-		this.end = end;
-	}
-	public void setNext(AudioFileSelectorNext next) {
-		this.next = next;
-	}
+    public final void setBasic(final AudioFileSelectorCurrent basic) {
+        this.basic = basic;
+    }
+
+    public final void setEnd(final AudioFileSelectorEnd end) {
+        this.end = end;
+    }
+
+    public final void setNext(final AudioFileSelectorNext next) {
+        this.next = next;
+    }
 }

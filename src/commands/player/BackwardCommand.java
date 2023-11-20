@@ -4,49 +4,49 @@ import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.User;
 
-public class BackwardCommand extends AbstractCommand {
-	public BackwardCommand(BackwardInput backwardInput) {
-		super(backwardInput);
-		this.commandOutput = new BackwardOutput(backwardInput);
-	}
+public final class BackwardCommand extends AbstractCommand {
+    public BackwardCommand(final BackwardInput backwardInput) {
+        super(backwardInput);
+        this.commandOutput = new BackwardOutput(backwardInput);
+    }
 
-	public static class BackwardInput extends AbstractCommand.CommandInput {
-		@Override
-		public AbstractCommand getCommandFromInput() {
-			return new BackwardCommand(this);
-		}
-	}
+    @Override
+    public void executeCommand() {
+        BackwardInput input = (BackwardInput) this.commandInput;
+        BackwardOutput output = (BackwardOutput) this.commandOutput;
 
-	public static class BackwardOutput extends AbstractCommand.CommandOutput {
-		public BackwardOutput(CommandInput commandInput) {
-			super(commandInput);
-		}
-	}
+        User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
+        user.getPlayer().updatePlayer(input.getTimestamp());
 
-	@Override
-	public BackwardOutput getCommandOutput() {
-		return (BackwardOutput) this.commandOutput;
-	}
+        if (user.getPlayer().getTypeLoaded().isEmpty()) {
+            output.setMessage("Please select a source before rewinding.");
+            return;
+        }
 
-	@Override
-	public void executeCommand() {
-		BackwardInput input = (BackwardInput) this.commandInput;
-		BackwardOutput output = (BackwardOutput) this.commandOutput;
+        if (!user.getPlayer().getTypeLoaded().equals("podcast")) {
+            output.setMessage("The loaded source is not a podcast.");
+            return;
+        }
 
-		User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
-		user.getPlayer().updatePlayer(input.getTimestamp());
+        user.getPlayer().runBackward();
+        output.setMessage("Rewound successfully.");
+    }
 
-		if (user.getPlayer().getTypeLoaded().isEmpty()) {
-			output.setMessage("Please select a source before rewinding.");
-			return;
-		}
+    @Override
+    public BackwardOutput getCommandOutput() {
+        return (BackwardOutput) this.commandOutput;
+    }
 
-		if (!user.getPlayer().getTypeLoaded().equals("podcast")) {
-			output.setMessage("The loaded source is not a podcast.");
-			return;
-		}
+    public static final class BackwardInput extends AbstractCommand.CommandInput {
+        @Override
+        public AbstractCommand getCommandFromInput() {
+            return new BackwardCommand(this);
+        }
+    }
 
-		user.getPlayer().runBackward();
-		output.setMessage("Rewound successfully.");
-	}
+    public static final class BackwardOutput extends AbstractCommand.CommandOutput {
+        public BackwardOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
+    }
 }

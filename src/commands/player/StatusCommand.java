@@ -2,94 +2,102 @@ package commands.player;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import commands.AbstractCommand;
-import entities.User.UserPlayer;
 import gateways.PlayerAPI;
 
-public class StatusCommand extends AbstractCommand {
-	public StatusCommand(StatusInput statusInput) {
-		super(statusInput);
-		this.commandOutput = new StatusOutput(statusInput);
-	}
+public final class StatusCommand extends AbstractCommand {
+    public StatusCommand(final StatusInput statusInput) {
+        super(statusInput);
+        this.commandOutput = new StatusOutput(statusInput);
+    }
 
-	public static class StatusInput extends AbstractCommand.CommandInput {
-		@Override
-		public AbstractCommand getCommandFromInput() {
-			return new StatusCommand(this);
-		}
-	}
+    @Override
+    public void executeCommand() {
+        StatusInput input = (StatusInput) this.commandInput;
+        StatusOutput output = (StatusOutput) this.commandOutput;
 
+        PlayerAPI.setStatus(output.getStats(), input.getUsername(), input.getTimestamp());
+    }
 
-	public static class StatusOutput extends AbstractCommand.CommandOutput {
-		@JsonIgnore
-		private String message;
-		private Stats stats = new Stats();
-		public class Stats {
-			private String name;
-			private Integer remainedTime;
-			private String repeat;
-			private boolean shuffle;
+    public StatusOutput getCommandOutput() {
+        return (StatusOutput) this.commandOutput;
+    }
 
-			public String getName() {
-				return name;
-			}
-			public void setName(String name) {
-				this.name = name;
-			}
-			public Integer getRemainedTime() {
-				return remainedTime;
-			}
-			public void setRemainedTime(Integer remainedTime) {
-				this.remainedTime = remainedTime;
-			}
-			public String getRepeat() {
-				return repeat;
-			}
-			public void setRepeat(String repeat) {
-				this.repeat = repeat;
-			}
-			public boolean isShuffle() {
-				return shuffle;
-			}
-			public void setShuffle(boolean shuffle) {
-				this.shuffle = shuffle;
-			}
-			public boolean isPaused() {
-				return paused;
-			}
-			public void setPaused(boolean paused) {
-				this.paused = paused;
-			}
+    public static final class StatusInput extends AbstractCommand.CommandInput {
+        @Override
+        public AbstractCommand getCommandFromInput() {
+            return new StatusCommand(this);
+        }
+    }
 
-			private boolean paused;
-			Stats(){}
-			Stats(UserPlayer userPlayer, Integer currentTime) {
-				this.name = "";
-			}
+    public static final class StatusOutput extends AbstractCommand.CommandOutput {
+        @JsonIgnore
+        private String message;
+        private Stats stats = new Stats();
 
-		}
+        public StatusOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
 
-		public Stats getStats() {
-			return stats;
-		}
+        public Stats getStats() {
+            return stats;
+        }
 
-		public void setStats(Stats stats) {
-			this.stats = stats;
-		}
-		public StatusOutput(CommandInput commandInput) {
-			super(commandInput);
-		}
-	}
+        public void setStats(final Stats stats) {
+            this.stats = stats;
+        }
+
+        public final class Stats {
+            private String name;
+            private Integer remainedTime;
+            private String repeat;
+            private boolean shuffle;
+            private boolean paused;
+
+            Stats() {
+            }
 
 
-	public StatusOutput getCommandOutput() {
-		return (StatusOutput) this.commandOutput;
-	}
 
-	@Override
-	public void executeCommand() {
-		StatusInput input = (StatusInput) this.commandInput;
-		StatusOutput output = (StatusOutput) this.commandOutput;
+            public String getName() {
+                return name;
+            }
 
-		PlayerAPI.setStatus(output.getStats(), input.getUsername(), input.getTimestamp());
-	}
+            public void setName(final String name) {
+                this.name = name;
+            }
+
+            public Integer getRemainedTime() {
+                return remainedTime;
+            }
+
+            public void setRemainedTime(final Integer remainedTime) {
+                this.remainedTime = remainedTime;
+            }
+
+            public String getRepeat() {
+                return repeat;
+            }
+
+            public void setRepeat(final String repeat) {
+                this.repeat = repeat;
+            }
+
+            public boolean isShuffle() {
+                return shuffle;
+            }
+
+            public void setShuffle(final boolean shuffle) {
+                this.shuffle = shuffle;
+            }
+
+            public boolean isPaused() {
+                return paused;
+            }
+
+            public void setPaused(final boolean paused) {
+                this.paused = paused;
+            }
+
+        }
+    }
 }
