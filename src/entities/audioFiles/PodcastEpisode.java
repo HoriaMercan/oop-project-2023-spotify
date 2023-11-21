@@ -1,24 +1,25 @@
 package entities.audioFiles;
 
 import fileio.input.EpisodeInput;
-import fileio.input.PodcastInput;
 
-public class PodcastEpisode extends AudioFile{
+public final class PodcastEpisode extends AudioFile {
 
-	protected String description;
+    private String description;
 
-	public PodcastEpisode(String name, Integer duration, String description) {
-		super(name, duration);
-		this.description = description;
-	}
-	public PodcastEpisode(EpisodeInput input) {
-		this(input.getName(), input.getDuration(), input.getDescription());
-	}
+    public PodcastEpisode(final String name, final Integer duration, final String description) {
+        super(name, duration);
+        this.description = description;
+    }
 
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public PodcastEpisode(final EpisodeInput input) {
+        this(input.getName(), input.getDuration(), input.getDescription());
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
+    }
 }

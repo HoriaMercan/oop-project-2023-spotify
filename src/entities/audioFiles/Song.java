@@ -6,104 +6,132 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class Song extends AudioFile{
-	protected String album;
-	protected List<String> tags;
-	protected String lyrics;
-	protected String genre;
-	protected Integer releaseYear;
-	protected String artist;
+public final class Song extends AudioFile {
+    private String album;
+    private List<String> tags;
+    private String lyrics;
+    private String genre;
+    private Integer releaseYear;
+    private String artist;
 
-	protected HashSet<String> usersLike = new HashSet<>();
-	protected HashMap<String, Integer>userLikedAtTime = new HashMap<>();
+    private final HashSet<String> usersLike = new HashSet<>();
+    private final HashMap<String, Integer> userLikedAtTime = new HashMap<>();
 
-	public boolean isSongLikedByUser(String username) {
-		return usersLike.contains(username);
-	}
+    public Song() {
+        super();
+    }
 
-	public Integer getTimestampOfLike(String username) {
-		return userLikedAtTime.get(username);
-	}
-	public void songLikeByUser(String username, Integer timestamp) {
-		usersLike.add(username);
-		userLikedAtTime.put(username, timestamp);
+    public Song(final String name, final Integer duration, final String album,
+                final List<String> tags, final String lyrics, final String genre,
+                final Integer releaseYear, final String artist) {
+        super(name, duration);
+        this.album = album;
+        this.tags = tags;
+        this.lyrics = lyrics;
+        this.genre = genre;
+        this.releaseYear = releaseYear;
+        this.artist = artist;
+    }
 
-	}
+    public Song(final SongInput song) {
+        this(song.getName(), song.getDuration(), song.getAlbum(), song.getTags(),
+                song.getLyrics(), song.getGenre(), song.getReleaseYear(), song.getArtist());
+    }
 
-	public boolean songUnlikeByUser(String username) {
-		if (usersLike.contains(username)) {
-			userLikedAtTime.remove(username);
-		}
-		return usersLike.remove(username);
-	}
+    /**
+     * @param username username
+     * @return checks whether a user liked this song or no
+     */
+    public boolean isSongLikedByUser(final String username) {
+        return usersLike.contains(username);
+    }
 
-	public Integer likesNo() {
-		return usersLike.size();
-	}
+    /**
+     * @param username user
+     * @return returns the moment at which the song was liked
+     */
+    public Integer getTimestampOfLike(final String username) {
+        return userLikedAtTime.get(username);
+    }
 
-	public Song() {
-		super();
-	}
+    /**
+     * Song gets liked by user
+     *
+     * @param username user
+     * @param timestamp time
+     */
+    public void songLikeByUser(final String username, final Integer timestamp) {
+        usersLike.add(username);
+        userLikedAtTime.put(username, timestamp);
 
-	public void setAlbum(String album) {
-		this.album = album;
-	}
+    }
 
-	public List<String> getTags() {
-		return tags;
-	}
+    /**
+     * Song gets unliked by user
+     *
+     * @param username user
+     * @return True if user liked the song before the function call
+     */
+    public boolean songUnlikeByUser(final String username) {
+        if (usersLike.contains(username)) {
+            userLikedAtTime.remove(username);
+        }
+        return usersLike.remove(username);
+    }
 
-	public void setTags(List<String> tags) {
-		this.tags = tags;
-	}
+    /**
+     * @return Number of likes got by the song
+     */
+    public Integer likesNo() {
+        return usersLike.size();
+    }
 
-	public void setLyrics(String lyrics) {
-		this.lyrics = lyrics;
-	}
+    public List<String> getTags() {
+        return tags;
+    }
 
-	public void setGenre(String genre) {
-		this.genre = genre;
-	}
+    public void setTags(final List<String> tags) {
+        this.tags = tags;
+    }
 
-	public void setReleaseYear(Integer releaseYear) {
-		this.releaseYear = releaseYear;
-	}
+    public String getAlbum() {
+        return album;
+    }
 
-	public void setArtist(String artist) {
-		this.artist = artist;
-	}
+    public void setAlbum(final String album) {
+        this.album = album;
+    }
 
+    public String getLyrics() {
+        return this.lyrics;
+    }
 
-	public Song(String name, Integer duration, String album, List<String>tags,
-				String lyrics, String genre, Integer releaseYear, String artist) {
-		super(name, duration);
-		this.album = album;
-		this.tags = tags;
-		this.lyrics = lyrics;
-		this.genre = genre;
-		this.releaseYear = releaseYear;
-		this.artist = artist;
-	}
-	public Song(SongInput song) {
-		this(song.getName(), song.getDuration(), song.getAlbum(), song.getTags(),
-				song.getLyrics(), song.getGenre(), song.getReleaseYear(), song.getArtist());
-	}
+    public void setLyrics(final String lyrics) {
+        this.lyrics = lyrics;
+    }
 
+    public String getGenre() {
+        return this.genre;
+    }
 
-	public String getAlbum() {
-		return album;
-	}
-	public String getLyrics() {
-		return this.lyrics;
-	}
-	public String getGenre() {
-		return this.genre;
-	}
-	public Integer getReleaseYear() {
-		return releaseYear;
-	}
-	public String getArtist() {
-		return artist;
-	}
+    public void setGenre(final String genre) {
+        this.genre = genre;
+    }
+
+    public Integer getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(final Integer releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(final String artist) {
+        this.artist = artist;
+    }
 
 }

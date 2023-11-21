@@ -327,14 +327,14 @@ public final class User {
         }
 
         /**
-         * This function set a new context (selector type/ audio files) when something is loaded
+         * This function set a new contextIn (selector type/ audio files) when something is loaded
          *
-         * @param context   List of audio files to be loaded in the player
+         * @param contextIn   List of audio files to be loaded in the player
          * @param timestamp time
          */
-        public void setContext(final List<? extends AudioFile> context, final Integer timestamp) {
+        public void setContext(final List<? extends AudioFile> contextIn, final Integer timestamp) {
             unsetContext(timestamp);
-            this.context = context;
+            this.context = contextIn;
             indexArrays = new ArrayList<>();
             for (int i = 0; i < this.context.size(); i++) {
                 indexArrays.add(i);

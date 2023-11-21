@@ -28,6 +28,9 @@ import commands.statistics.GetTop5PlaylistsCommand;
 import commands.statistics.GetTop5SongsCommand;
 import commands.statistics.ShowPreferredSongsCommand;
 
+/**
+ * Base class of all commands
+ */
 public abstract class AbstractCommand {
     protected final CommandInput commandInput;
     protected CommandOutput commandOutput;
