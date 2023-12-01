@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import commands.admin.AddAlbumCommand;
+import commands.admin.AddEventCommand;
+import commands.admin.AddMerchCommand;
 import commands.admin.AddUserCommand;
 import commands.general.PrintCurrentPageCommand;
 import commands.general.ShowAlbumsCommand;
@@ -103,7 +105,8 @@ public abstract class AbstractCommand {
             @Type(value = ShowAlbumsCommand.ShowAlbumsInput.class, name = "showAlbums"),
             @Type(value = PrintCurrentPageCommand.PrintCurrentPageInput.class,
                     name = "printCurrentPage"),
-
+            @Type(value = AddEventCommand.AddEventInput.class, name = "addEvent"),
+            @Type(value = AddMerchCommand.AddMerchInput.class, name = "addMerch"),
     })
     public static class CommandInput {
         private String username;
@@ -151,9 +154,9 @@ public abstract class AbstractCommand {
             property = "command",
             defaultImpl = CommandOutput.class
     )
-    @JsonSubTypes({
+    @JsonSubTypes(value = {
             @Type(value = SearchCommand.SearchOutput.class, name = "search"),
-            @JsonSubTypes.Type(value = SelectCommand.SelectOutput.class,
+            @Type(value = SelectCommand.SelectOutput.class,
                     name = "select"),
             @Type(value = LoadCommand.LoadOutput.class, name = "load"),
             @Type(value = PlayPauseCommand.PlayPauseOutput.class,
@@ -193,6 +196,8 @@ public abstract class AbstractCommand {
             @Type(value = ShowAlbumsCommand.ShowAlbumsOutput.class, name = "showAlbums"),
             @Type(value = PrintCurrentPageCommand.PrintCurrentPageOutput.class,
                     name = "printCurrentPage"),
+            @Type(value = AddEventCommand.AddEventOutput.class, name = "addEvent"),
+            @Type(value = AddMerchCommand.AddMerchOutput.class, name = "addMerch"),
     })
     public static class CommandOutput {
         protected String user;

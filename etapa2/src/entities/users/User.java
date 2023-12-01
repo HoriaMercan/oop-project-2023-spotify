@@ -1,5 +1,6 @@
 package entities.users;
 
+import databases.MyDatabase;
 import entities.audioFiles.Song;
 import entities.users.functionalities.PageHandler;
 import entities.users.functionalities.UserPlayer;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public final class User extends AbstractUser {
     private final UserPlayer player = new UserPlayer();
@@ -89,6 +91,41 @@ public final class User extends AbstractUser {
 
     public void setOnline(boolean online) {
         isOnline = online;
+    }
+
+    /**
+     *
+     */
+    public String changeLastSelected(final String newSelection) {
+        this.pageHandler.removePage(EnumPages.ARTIST);
+        this.pageHandler.removePage(EnumPages.HOST);
+
+        String ans = "";
+        if (!newSelection.isEmpty() && (this.player.getTypeSearched().equals("artist"))
+                || this.player.getTypeSearched().equals("host")) {
+            switch (this.player.getTypeSearched()) {
+                case "artist":
+                    this.pageHandler.addPage(EnumPages.ARTIST,
+                            () -> {
+                                System.out.println(newSelection);
+                                System.out.println(MyDatabase.getInstance().findArtistByUsername(newSelection));
+                                return MyDatabase.getInstance().findArtistByUsername(newSelection)
+                                        .getPageContent();
+                            });
+                    this.pageHandler.setCurrentPage(EnumPages.ARTIST);
+                    break;
+                case "host":
+                    this.pageHandler.addPage(EnumPages.HOST,
+                            () -> MyDatabase.getInstance().findHostByUsername(newSelection)
+                                    .getPageContent());
+                    this.pageHandler.setCurrentPage(EnumPages.HOST);
+                    break;
+                default:
+            }
+            ans = "Successfully selected " + newSelection + "'s page.";
+        }
+        this.player.setLastSelected(newSelection);
+        return ans;
     }
 
     public String getHomePage() {

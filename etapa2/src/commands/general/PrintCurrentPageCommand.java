@@ -6,6 +6,7 @@ import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.audioCollections.Album;
 import entities.audioFiles.AudioFile;
+import entities.requirements.RequireOnline;
 import entities.users.Artist;
 import entities.users.User;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class PrintCurrentPageCommand extends AbstractCommand {
+public final class PrintCurrentPageCommand extends AbstractCommand implements RequireOnline {
     public PrintCurrentPageCommand(final PrintCurrentPageInput printCurrentPageInput) {
         super(printCurrentPageInput);
         this.commandOutput = new PrintCurrentPageOutput(printCurrentPageInput);
@@ -25,7 +26,14 @@ public final class PrintCurrentPageCommand extends AbstractCommand {
         PrintCurrentPageInput input = (PrintCurrentPageInput) this.commandInput;
         PrintCurrentPageOutput output = (PrintCurrentPageOutput) this.commandOutput;
 
+        String verifyOnline = isUserOnline(input.getUsername());
+        if (!verifyOnline.isEmpty()) {
+            output.setMessage(verifyOnline);
+            return;
+        }
+
         User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
+        assert user != null;
         output.setMessage(user.getPageHandler().getCurrentPage());
     }
 

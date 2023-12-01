@@ -39,24 +39,30 @@ public class Artist extends AbstractUser implements Pageable {
 
     @Override
     public String getPageContent() {
-        StringBuilder stringBuilder = new StringBuilder("Albums:\\n\\t[");
+        StringBuilder stringBuilder = new StringBuilder("Albums:\n\t[");
 
-        for (Album album: albums) {
-            stringBuilder.append(album.toString()).append(", ");
+        if (!albums.isEmpty()){
+            for (Album album : albums) {
+                stringBuilder.append(album.toString()).append(", ");
+            }
+            stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
         }
-        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-        stringBuilder.append("]\\n\\nMerch:\\n\\t[");
+        stringBuilder.append("]\n\nMerch:\n\t[");
 
-        for (Merch merch: merches) {
-            stringBuilder.append(merch).append(", ");
+       if (!merches.isEmpty()) {
+            for (Merch merch : merches) {
+                stringBuilder.append(merch).append(", ");
+            }
+            stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
         }
-        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-        stringBuilder.append("]\\n\\nEvent:\\n\\t[");
+        stringBuilder.append("]\n\nEvents:\n\t[");
 
-        for (Event event: events) {
-            stringBuilder.append(event).append(", ");
+        if (!events.isEmpty()){
+            for (Event event : events) {
+                stringBuilder.append(event).append(", ");
+            }
+            stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
         }
-        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
         stringBuilder.append("]");
 
         return stringBuilder.toString();

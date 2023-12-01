@@ -16,7 +16,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-public final class AddAlbumCommand extends AbstractCommand implements RequireOnline {
+public final class AddAlbumCommand extends AbstractCommand {
     public AddAlbumCommand(final AddAlbumInput addAlbumInput) {
         super(addAlbumInput);
         this.commandOutput = new AddAlbumOutput(addAlbumInput);
@@ -50,9 +50,11 @@ public final class AddAlbumCommand extends AbstractCommand implements RequireOnl
             return;
         }
 
-        artist.addAlbum(new Album(input.getName(), input.getUsername(), input.releaseYear,
-                input.getDescription(), input.getSongs()));
+        Album newAlbum = new Album(input.getName(), input.getUsername(), input.releaseYear,
+                input.getDescription(), input.getSongs());
+        artist.addAlbum(newAlbum);
 
+        MyDatabase.getInstance().getAlbums().add(newAlbum);
         MyDatabase.getInstance().getSongs().addAll(input.getSongs());
 
         output.setMessage(input.getUsername() + " has added new album successfully.");

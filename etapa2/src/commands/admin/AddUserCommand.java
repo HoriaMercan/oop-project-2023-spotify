@@ -10,7 +10,7 @@ import entities.users.User;
 import lombok.Getter;
 import lombok.Setter;
 
-public final class AddUserCommand extends AbstractCommand implements RequireOnline {
+public final class AddUserCommand extends AbstractCommand {
     public AddUserCommand(final AddUserInput addUserInput) {
         super(addUserInput);
         this.commandOutput = new AddUserOutput(addUserInput);

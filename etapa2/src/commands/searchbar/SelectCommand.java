@@ -22,6 +22,7 @@ public final class SelectCommand extends AbstractCommand implements RequireOnlin
             output.setMessage(verifyOnline);
             return;
         }
+
         output.setMessage(SearchBarAPI.getSelectionMessage(input.getUsername(),
                 input.getItemNumber()));
     }

@@ -17,6 +17,7 @@ public final class PageHandler {
     private EnumPages currentPage = EnumPages.HOME;
 
     public String getCurrentPage() {
+        System.out.println(pages.get(currentPage));
         return pages.get(currentPage).get();
     }
 
@@ -26,6 +27,7 @@ public final class PageHandler {
 
     public boolean removePage(EnumPages page) {
         boolean b = pages.containsKey(page);
+        currentPage = EnumPages.HOME;
         if (b) {
             pages.remove(page);
         }

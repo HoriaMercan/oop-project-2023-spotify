@@ -1,6 +1,8 @@
 package entities.helpers;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,9 @@ public final class Filter {
     private String releaseYear = "";
     private String album = "";
 
+    @Getter
+    @Setter
+    private String description = "";
 
     Filter() {
     }

@@ -1,5 +1,6 @@
 package databases;
 
+import entities.audioCollections.Album;
 import entities.users.AbstractUser;
 import entities.users.AbstractUser.UserType;
 import entities.users.Artist;
@@ -11,6 +12,7 @@ import entities.audioFiles.Song;
 import fileio.input.PodcastInput;
 import fileio.input.SongInput;
 import fileio.input.UserInput;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +27,15 @@ import java.util.stream.Collectors;
 public final class MyDatabase {
     private static final MyDatabase INSTANCE = new MyDatabase();
 
+    @Getter
+    private final ArrayList<Artist> artists = new ArrayList<>();
+
+    @Getter
+    private final ArrayList<Host> hosts = new ArrayList<>();
+    private final ArrayList<Album> albums = new ArrayList<>();
     private ArrayList<Song> songs;
     private ArrayList<Podcast> podcasts;
     private ArrayList<User> users;
-
-    private final ArrayList<Artist> artists = new ArrayList<>();
-    private final ArrayList<Host> hosts = new ArrayList<>();
     private ArrayList<Playlist> playlists = new ArrayList<>();
 
     private MyDatabase() {
@@ -72,7 +77,7 @@ public final class MyDatabase {
     /**
      * This function is used to transform input data (PodcastInput) to Podcast object
      *
-     * @param podcasts0  Podcast Input List
+     * @param podcasts0 Podcast Input List
      */
     public void setPodcastsConvert(final ArrayList<PodcastInput> podcasts0) {
         ArrayList<Podcast> newPodcasts = new ArrayList<Podcast>();
@@ -90,8 +95,10 @@ public final class MyDatabase {
         this.users = users;
     }
 
+    public List<Album> getAlbums() {
+        return albums;
+    }
     /**
-     *
      * @param inputs user input array
      */
     public void setUsersConvert(final ArrayList<UserInput> inputs) {
@@ -125,6 +132,32 @@ public final class MyDatabase {
         for (AbstractUser user : this.users) {
             if (user.getUsername().equals(username)) {
                 return user.getUserType().equals(UserType.NORMAL) ? (User) user : null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param username String username
+     * @return Artist associated \w given username
+     */
+    public Artist findArtistByUsername(final String username) {
+        for (Artist user : this.artists) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param username String username
+     * @return Host associated \w given username
+     */
+    public Host findHostByUsername(final String username) {
+        for (Host user : this.hosts) {
+            if (user.getUsername().equals(username)) {
+                return user;
             }
         }
         return null;
@@ -182,14 +215,14 @@ public final class MyDatabase {
 
     public AbstractUser findAbstractUserByUsername(String username) {
         List<AbstractUser> allUsers = new ArrayList<>();
-        allUsers.addAll(users.stream().map(user -> (AbstractUser)user).toList());
-        allUsers.addAll(artists.stream().map(user -> (AbstractUser)user).toList());
-        allUsers.addAll(hosts.stream().map(user -> (AbstractUser)user).toList());
+        allUsers.addAll(users.stream().map(user -> (AbstractUser) user).toList());
+        allUsers.addAll(artists.stream().map(user -> (AbstractUser) user).toList());
+        allUsers.addAll(hosts.stream().map(user -> (AbstractUser) user).toList());
 
         List<AbstractUser> ans = allUsers.stream()
                 .filter(abstractUser -> abstractUser.getUsername().equals(username))
                 .toList();
 
-       return ans.isEmpty() ? null : ans.get(0);
+        return ans.isEmpty() ? null : ans.get(0);
     }
 }

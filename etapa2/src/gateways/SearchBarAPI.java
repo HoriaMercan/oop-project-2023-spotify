@@ -1,5 +1,11 @@
 package gateways;
 
+import entities.audioCollections.Album;
+import entities.audioCollections.AudioCollection;
+import entities.users.AbstractUser;
+import entities.users.AbstractUser.UserType;
+import entities.users.Artist;
+import entities.users.Host;
 import entities.users.functionalities.UserPlayer;
 import entities.audioCollections.Podcast;
 import entities.audioFiles.AudioFile;
@@ -19,6 +25,7 @@ import java.util.function.Predicate;
 public final class SearchBarAPI {
     private static final MyDatabase MY_DATABASE = MyDatabase.getInstance();
     private static final int LIMIT = 5;
+
     private SearchBarAPI() {
     }
 
@@ -42,9 +49,9 @@ public final class SearchBarAPI {
     /**
      * This function execute a search for songs by considering a filter
      *
-     * @param username username of command initiator
+     * @param username  username of command initiator
      * @param timestamp timestamp of command
-     * @param filter the filter used in search
+     * @param filter    the filter used in search
      * @return a list of songs name
      */
     public static List<String> getSongsByFilter(final String username, final Integer timestamp,
@@ -77,7 +84,7 @@ public final class SearchBarAPI {
         if (user != null) {
             user.getPlayer().setLastSearched(resultSongs);
             user.getPlayer().setTypeSearched("song");
-            user.getPlayer().setLastSelected("");
+            user.changeLastSelected("");
             user.getPlayer().unsetContext(timestamp);
         }
         return resultSongs;
@@ -117,7 +124,7 @@ public final class SearchBarAPI {
 
         user.getPlayer().setLastSearched(resultPlaylists);
         user.getPlayer().setTypeSearched("playlist");
-        user.getPlayer().setLastSelected("");
+        user.changeLastSelected("");
         user.getPlayer().unsetContext(timestamp);
         return resultPlaylists;
     }
@@ -149,12 +156,109 @@ public final class SearchBarAPI {
         if (user != null) {
             user.getPlayer().setLastSearched(resultPodcasts);
             user.getPlayer().setTypeSearched("podcast");
-            user.getPlayer().setLastSelected("");
+            user.changeLastSelected("");
             user.getPlayer().unsetContext(timestamp);
         }
         return resultPodcasts;
     }
 
+    /**
+     * This function filters some albums and returns the name of
+     * the first 5 matches
+     *
+     * @param username  the username of command initiator
+     * @param timestamp the timestamp of command
+     * @param filter    the Filter object used to filter objects
+     * @return a list of string which matches the desired objects name
+     */
+    public static List<String> getAlbumsByFilter(final String username, final Integer timestamp,
+                                                 final Filter filter) {
+        List<String> resultAlbums;
+        List<Album> albums = MyDatabase.getInstance().getAlbums();
+
+        Predicate<Album> byName = album -> album.getName().startsWith(filter.getName());
+        Predicate<Album> byOwner = album -> album.getOwner().startsWith(filter.getOwner());
+        Predicate<Album> byDescription =
+                album -> album.getDescription().startsWith(filter.getDescription());
+
+        resultAlbums = albums.stream().filter(byName).filter(byOwner).filter(byDescription)
+                .map(AudioCollection::getName).limit(LIMIT).toList();
+
+        User user = MyDatabase.getInstance().findUserByUsername(username);
+
+        if (user != null) {
+            user.getPlayer().setLastSearched(resultAlbums);
+            user.getPlayer().setTypeSearched("album");
+            user.changeLastSelected("");
+            user.getPlayer().unsetContext(timestamp);
+        }
+        return resultAlbums;
+    }
+
+    /**
+     * This function filters some artists and returns the name of
+     * the first 5 matches
+     *
+     * @param username  the username of command initiator
+     * @param timestamp the timestamp of command
+     * @param filter    the Filter object used to filter objects
+     * @return a list of string which matches the desired objects name
+     */
+    public static List<String> getArtistsByFilter(final String username, final Integer timestamp,
+                                                  final Filter filter) {
+        List<String> resultArtists;
+
+        List<Artist> artists = MyDatabase.getInstance().getArtists();
+
+        Predicate<Artist> byName = artist -> artist.getUsername().startsWith(filter.getName());
+
+
+        resultArtists = artists.stream().filter(byName)
+                .map(AbstractUser::getUsername).limit(LIMIT).toList();
+
+        User user = MyDatabase.getInstance().findUserByUsername(username);
+
+        if (user != null) {
+            user.getPlayer().setLastSearched(resultArtists);
+            user.getPlayer().setTypeSearched("artist");
+            user.changeLastSelected("");
+            user.getPlayer().unsetContext(timestamp);
+        }
+        return resultArtists;
+    }
+
+    /**
+     * This function filters some hosts and returns the name of
+     * the first 5 matches
+     *
+     * @param username  the username of command initiator
+     * @param timestamp the timestamp of command
+     * @param filter    the Filter object used to filter objects
+     * @return a list of string which matches the desired objects name
+     */
+    public static List<String> getHostsByFilter(final String username, final Integer timestamp,
+                                                final Filter filter) {
+        List<String> resultArtists;
+
+        List<Host> artists = MyDatabase.getInstance().getHosts();
+
+        Predicate<Host> byName = artist -> artist.getUsername().startsWith(filter.getName());
+
+
+        resultArtists = artists.stream().filter(byName)
+                .map(AbstractUser::getUsername).limit(LIMIT).toList();
+
+        User user = MyDatabase.getInstance().findUserByUsername(username);
+
+        if (user != null) {
+            user.getPlayer().setLastSearched(resultArtists);
+            user.getPlayer().setTypeSearched("host");
+
+            user.changeLastSelected("");
+            user.getPlayer().unsetContext(timestamp);
+        }
+        return resultArtists;
+    }
 
     /**
      * This function execute a selection on desired item and returns a message
@@ -164,7 +268,8 @@ public final class SearchBarAPI {
      * @return a message which consists of error/success
      */
     public static String getSelectionMessage(final String username, final Integer itemNumber) {
-        UserPlayer player = MY_DATABASE.findUserByUsername(username).getPlayer();
+        User user = MY_DATABASE.findUserByUsername(username);
+        UserPlayer player = user.getPlayer();
         List<String> lastSearched = player.getLastSearched();
         if (lastSearched == null) {
             return "Please conduct a search before making a selection.";
@@ -173,8 +278,8 @@ public final class SearchBarAPI {
             return "The selected ID is too high.";
         }
 
+        String ans = user.changeLastSelected(lastSearched.get(itemNumber - 1));
 
-        player.setLastSelected(lastSearched.get(itemNumber - 1));
-        return "Successfully selected " + player.getLastSelected() + ".";
+        return ans.isEmpty() ? "Successfully selected " + player.getLastSelected() + "." : ans;
     }
 }

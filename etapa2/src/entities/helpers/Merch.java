@@ -17,6 +17,6 @@ public final class Merch {
 
     @Override
     public String toString() {
-        return name + "\t-\t" + price + ":\\n\\t" + description;
+        return name + " - " + price + ":\n\t" + description;
     }
 }

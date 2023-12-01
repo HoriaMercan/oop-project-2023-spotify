@@ -16,6 +16,6 @@ public final class Event {
 
     @Override
     public String toString() {
-        return name + " - " + date + ":\\n\\t" + description;
+        return name + " - " + date + ":\n\t" + description;
     }
 }
