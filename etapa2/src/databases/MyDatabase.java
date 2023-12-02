@@ -82,7 +82,7 @@ public final class MyDatabase {
     public void setPodcastsConvert(final ArrayList<PodcastInput> podcasts0) {
         ArrayList<Podcast> newPodcasts = new ArrayList<Podcast>();
         for (PodcastInput podcast : podcasts0) {
-            newPodcasts.add(new Podcast(podcast));
+            newPodcasts.add(new Podcast(podcast, podcast.getOwner()));
         }
         this.podcasts = newPodcasts;
     }
@@ -203,6 +203,17 @@ public final class MyDatabase {
         return p.get(0);
     }
 
+    /**
+     * @param name album name
+     * @return an album associated \w the name
+     */
+    public Album findAlbumByName(final String name) {
+        List<Album> ans = albums.stream().filter(album -> album.getName().equals(name))
+                .toList();
+
+        return ans.isEmpty() ? null : ans.get(0);
+    }
+
     public void addUser(final AbstractUser user) {
         if (user == null)
             return;
@@ -224,5 +235,24 @@ public final class MyDatabase {
                 .toList();
 
         return ans.isEmpty() ? null : ans.get(0);
+    }
+
+    public List<String> getAllAbstractUserNames() {
+        List<String> answer = new ArrayList<>();
+        answer.addAll(users.stream().map(AbstractUser::getUsername).toList());
+        answer.addAll(artists.stream().map(AbstractUser::getUsername).toList());
+        answer.addAll(hosts.stream().map(AbstractUser::getUsername).toList());
+
+        return answer;
+    }
+
+    /**
+     * This function updates all players to a given time moment
+     * @param timestamp a time moment
+     */
+    public void updateAllUserPlayers(Integer timestamp) {
+        for (User user: users) {
+            user.getPlayer().updatePlayer(timestamp);
+        }
     }
 }

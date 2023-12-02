@@ -397,6 +397,9 @@ public final class UserPlayer {
      * @param currentTime time to which a player is updated
      */
     public void updatePlayer(final Integer currentTime) {
+        if (selector == null) {
+            return;
+        }
         if (typeLoaded.isEmpty()) {
             return;
         }

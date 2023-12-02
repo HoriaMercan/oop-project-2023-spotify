@@ -29,6 +29,16 @@ public final class Podcast extends AudioCollection {
         this.owner = input.getOwner();
     }
 
+    public Podcast(final PodcastInput input, final String creator) {
+        this.episodes = new ArrayList<>();
+
+        for (EpisodeInput every : input.getEpisodes()) {
+            this.episodes.add(new PodcastEpisode(every, creator));
+        }
+        this.name = input.getName();
+        this.owner = input.getOwner();
+    }
+
     public List<PodcastEpisode> getEpisodes() {
         return episodes;
     }

@@ -30,6 +30,7 @@ public final class Song extends AudioFile {
         this.genre = genre;
         this.releaseYear = releaseYear;
         this.artist = artist;
+        this.creator = this.artist;
     }
 
     public Song(final SongInput song) {
@@ -62,7 +63,6 @@ public final class Song extends AudioFile {
     public void songLikeByUser(final String username, final Integer timestamp) {
         usersLike.add(username);
         userLikedAtTime.put(username, timestamp);
-
     }
 
     /**
@@ -83,6 +83,10 @@ public final class Song extends AudioFile {
      */
     public Integer likesNo() {
         return usersLike.size();
+    }
+
+    public List<String> userLikedThisSong() {
+        return usersLike.stream().toList();
     }
 
     public List<String> getTags() {
@@ -131,6 +135,8 @@ public final class Song extends AudioFile {
 
     public void setArtist(final String artist) {
         this.artist = artist;
+        creator = artist;
     }
+
 
 }

@@ -3,6 +3,7 @@ package entities.audioFiles;
 public abstract class AudioFile {
     protected String name;
     protected Integer duration;
+    protected String creator;
 
     public AudioFile(final String name, final Integer duration) {
         this.name = name;
@@ -19,5 +20,9 @@ public abstract class AudioFile {
 
     public final Integer getDuration() {
         return this.duration;
+    }
+
+    public final String getCreator() {
+        return creator;
     }
 }

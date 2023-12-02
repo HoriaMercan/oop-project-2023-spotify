@@ -20,6 +20,7 @@ public final class AddUserCommand extends AbstractCommand {
     public void executeCommand() {
         AddUserInput input = (AddUserInput) this.commandInput;
         AddUserOutput output = (AddUserOutput) this.commandOutput;
+
         AbstractUser newUser =
                 MyDatabase.getInstance().findAbstractUserByUsername(input.getUsername());
         if (newUser != null) {

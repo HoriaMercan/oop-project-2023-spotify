@@ -2,6 +2,7 @@ package gateways;
 
 import commands.player.StatusCommand.StatusOutput.Stats;
 import databases.MyDatabase;
+import entities.audioCollections.Album;
 import entities.users.User;
 import entities.users.functionalities.UserPlayer;
 import entities.audioCollections.Playlist;
@@ -57,6 +58,13 @@ public final class PlayerAPI {
                 }
                 player.setContext(getEpisodesFromPodcast(podcast), timestamp);
                 player.setPlayedPodcastName(podcast.getName());
+                return "";
+            case "album":
+                Album album = DATABASE.findAlbumByName(player.getLastSelected());
+                if (album == null || album.getSongs() == null || album.getSongs().isEmpty()) {
+                    return "You can't load an empty audio collection!";
+                }
+                player.setContext(new ArrayList<>(album.getSongs()), timestamp);
                 return "";
             default:
                 break;

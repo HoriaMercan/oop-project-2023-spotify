@@ -7,10 +7,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import commands.admin.AddAlbumCommand;
-import commands.admin.AddEventCommand;
-import commands.admin.AddMerchCommand;
-import commands.admin.AddUserCommand;
+import commands.admin.*;
+import commands.general.GetAllUsersCommand;
 import commands.general.PrintCurrentPageCommand;
 import commands.general.ShowAlbumsCommand;
 import commands.player.AddRemoveInPlaylistCommand;
@@ -107,6 +105,8 @@ public abstract class AbstractCommand {
                     name = "printCurrentPage"),
             @Type(value = AddEventCommand.AddEventInput.class, name = "addEvent"),
             @Type(value = AddMerchCommand.AddMerchInput.class, name = "addMerch"),
+            @Type(value = GetAllUsersCommand.GetAllUsersInput.class, name = "getAllUsers"),
+            @Type(value = DeleteUserCommand.DeleteUserInput.class, name = "deleteUser"),
     })
     public static class CommandInput {
         private String username;
@@ -198,6 +198,8 @@ public abstract class AbstractCommand {
                     name = "printCurrentPage"),
             @Type(value = AddEventCommand.AddEventOutput.class, name = "addEvent"),
             @Type(value = AddMerchCommand.AddMerchOutput.class, name = "addMerch"),
+            @Type(value = GetAllUsersCommand.GetAllUsersOutput.class, name = "getAllUsers"),
+            @Type(value = DeleteUserCommand.DeleteUserOutput.class, name = "deleteUser"),
     })
     public static class CommandOutput {
         protected String user;

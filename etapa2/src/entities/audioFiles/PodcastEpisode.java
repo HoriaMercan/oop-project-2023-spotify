@@ -15,6 +15,11 @@ public final class PodcastEpisode extends AudioFile {
         this(input.getName(), input.getDuration(), input.getDescription());
     }
 
+    public PodcastEpisode(final EpisodeInput input, final String creator) {
+        this(input.getName(), input.getDuration(), input.getDescription());
+        this.creator = creator;
+    }
+
     public String getDescription() {
         return description;
     }

@@ -1,19 +1,10 @@
 package commands.general;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import commands.AbstractCommand;
 import databases.MyDatabase;
-import entities.audioCollections.Album;
-import entities.audioFiles.AudioFile;
 import entities.requirements.RequireOnline;
-import entities.users.Artist;
 import entities.users.User;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public final class PrintCurrentPageCommand extends AbstractCommand implements RequireOnline {
     public PrintCurrentPageCommand(final PrintCurrentPageInput printCurrentPageInput) {

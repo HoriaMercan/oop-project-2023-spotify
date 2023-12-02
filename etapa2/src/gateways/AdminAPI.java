@@ -17,4 +17,6 @@ public final class AdminAPI {
 
         return nameSet.size() != audioFiles.size();
     }
+
+    public static void removeAlbum() {}
 }
