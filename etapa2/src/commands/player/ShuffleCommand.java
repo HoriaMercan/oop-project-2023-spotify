@@ -1,5 +1,6 @@
 package commands.player;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.users.User;
@@ -29,7 +30,8 @@ public final class ShuffleCommand extends AbstractCommand implements RequireOnli
             return;
         }
 
-        if (!user.getPlayer().getTypeLoaded().equals("playlist")) {
+        if (!user.getPlayer().getTypeLoaded().equals("playlist") &&
+        !user.getPlayer().getTypeLoaded().equals("album")) {
             output.setMessage("The loaded source is not a playlist.");
             return;
         }
@@ -50,7 +52,8 @@ public final class ShuffleCommand extends AbstractCommand implements RequireOnli
     }
 
     public static final class ShuffleInput extends AbstractCommand.CommandInput {
-        private Integer seed;
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        private Integer seed = 0;
 
         public Integer getSeed() {
             return seed;

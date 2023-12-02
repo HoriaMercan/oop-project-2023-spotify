@@ -8,9 +8,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import commands.admin.*;
-import commands.general.GetAllUsersCommand;
-import commands.general.PrintCurrentPageCommand;
-import commands.general.ShowAlbumsCommand;
+import commands.admin.RemoveMerchCommand.RemoveMerchOutput;
+import commands.general.*;
 import commands.player.AddRemoveInPlaylistCommand;
 import commands.player.BackwardCommand;
 import commands.player.ForwardCommand;
@@ -32,7 +31,6 @@ import commands.statistics.GetOnlineUsersCommand;
 import commands.statistics.GetTop5PlaylistsCommand;
 import commands.statistics.GetTop5SongsCommand;
 import commands.statistics.ShowPreferredSongsCommand;
-import commands.general.SwitchConnectionStatusCommand;
 
 /**
  * Base class of all commands
@@ -107,6 +105,16 @@ public abstract class AbstractCommand {
             @Type(value = AddMerchCommand.AddMerchInput.class, name = "addMerch"),
             @Type(value = GetAllUsersCommand.GetAllUsersInput.class, name = "getAllUsers"),
             @Type(value = DeleteUserCommand.DeleteUserInput.class, name = "deleteUser"),
+            @Type(value = AddPodcastCommand.AddPodcastInput.class, name = "addPodcast"),
+            @Type(value = ShowPodcastsCommand.ShowPodcastsInput.class, name = "showPodcasts"),
+            @Type(value = RemoveAnnouncementCommand.RemoveAnnouncementInput.class,
+                    name = "removeAnnouncement"),
+            @Type(value = AddAnnouncementCommand.AddAnnouncementInput.class,
+                    name = "addAnnouncement"),
+            @Type(value = RemoveEventCommand.RemoveEventInput.class, name = "removeEvent"),
+            @Type(value = RemoveMerchCommand.RemoveMerchInput.class, name = "removeMerch"),
+            @Type(value = RemovePodcastCommand.RemovePodcastInput.class, name = "removePodcast"),
+            @Type(value = RemoveAlbumCommand.RemoveAlbumInput.class, name = "removeAlbum"),
     })
     public static class CommandInput {
         private String username;
@@ -200,6 +208,17 @@ public abstract class AbstractCommand {
             @Type(value = AddMerchCommand.AddMerchOutput.class, name = "addMerch"),
             @Type(value = GetAllUsersCommand.GetAllUsersOutput.class, name = "getAllUsers"),
             @Type(value = DeleteUserCommand.DeleteUserOutput.class, name = "deleteUser"),
+            @Type(value = AddPodcastCommand.AddPodcastOutput.class, name = "addPodcast"),
+            @Type(value = ShowPodcastsCommand.ShowPodcastsOutput.class, name = "showPodcasts"),
+            @Type(value = RemoveAnnouncementCommand.RemoveAnnouncementOutput.class,
+                    name = "removeAnnouncement"),
+            @Type(value = AddAnnouncementCommand.AddAnnouncementOutput.class,
+                    name = "addAnnouncement"),
+            @Type(value = RemoveEventCommand.RemoveEventOutput.class, name = "removeEvent"),
+            @Type(value = RemoveMerchCommand.RemoveMerchOutput.class, name = "removeMerch"),
+            @Type(value = RemovePodcastCommand.RemovePodcastOutput.class, name = "removePodcast"),
+            @Type(value = RemoveAlbumCommand.RemoveAlbumOutput.class, name = "removeAlbum"),
+
     })
     public static class CommandOutput {
         protected String user;

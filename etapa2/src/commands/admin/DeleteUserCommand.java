@@ -5,12 +5,10 @@ import databases.MyDatabase;
 import entities.audioCollections.Album;
 import entities.audioFiles.AudioFile;
 import entities.audioFiles.Song;
-import entities.users.AbstractUser;
+import entities.users.*;
 import entities.users.AbstractUser.UserType;
-import entities.users.Artist;
-import entities.users.Host;
-import entities.users.User;
 import entities.users.functionalities.UserPlayer;
+import gateways.AdminAPI;
 import gateways.PlayerAPI;
 
 import java.util.ArrayList;
@@ -42,24 +40,11 @@ public final class DeleteUserCommand extends AbstractCommand {
             return;
         }
 
-        List<User> onlineUsers = MyDatabase.getInstance().getUsers()
-                .stream().filter(User::isOnline)
-                .filter(user -> user.getPlayer() != null
-                        && !user.getPlayer().getTypeLoaded().isEmpty()).toList();
-        System.out.println(onlineUsers.stream().map(AbstractUser::getUsername).toList());
-        for (User user : onlineUsers) {
-            UserPlayer player = user.getPlayer();
-            if (player != null && !player.getTypeLoaded().isEmpty()) {
-                player.updatePlayer(input.getTimestamp());
-            }
-        }
+        List<User> onlineUsers = AdminAPI.getOnlineUsers();
+        AdminAPI.updateAllOnlineUserPlayers(input.getTimestamp());
 
-        List<String> listeningTo = onlineUsers.stream().map(User::getPlayer).filter(Objects::nonNull)
-                .map(UserPlayer::getTypeLoaded)
-                .filter(typeLoaded -> !typeLoaded.isEmpty()).toList();
+        List<User> listeningTo = AdminAPI.getUsersListeningToCreator((ContentCreator) newUser);
 
-//                .map(UserPlayer::getCurrentPlayed).filter(Objects::nonNull).map(AudioFile::getCreator)
-//                .filter(string -> string.equals(input.getUsername())).toList();
         System.out.println(listeningTo);
         if (!listeningTo.isEmpty()) {
             output.setMessage(input.getUsername() + " can't be deleted.");

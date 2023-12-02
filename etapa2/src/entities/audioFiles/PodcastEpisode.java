@@ -1,11 +1,14 @@
 package entities.audioFiles;
 
 import fileio.input.EpisodeInput;
+import lombok.Getter;
 
+@Getter
 public final class PodcastEpisode extends AudioFile {
 
     private String description;
 
+    public PodcastEpisode(){}
     public PodcastEpisode(final String name, final Integer duration, final String description) {
         super(name, duration);
         this.description = description;
@@ -18,10 +21,6 @@ public final class PodcastEpisode extends AudioFile {
     public PodcastEpisode(final EpisodeInput input, final String creator) {
         this(input.getName(), input.getDuration(), input.getDescription());
         this.creator = creator;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public void setDescription(final String description) {

@@ -271,6 +271,7 @@ public final class UserPlayer {
                 () -> UserPlayer.this.index >= UserPlayer.this.context.size(), outOfBound);
 
         UserPlayer.this.repeatStatus = 0;
+        isShuffle = false;
     }
 
     /**

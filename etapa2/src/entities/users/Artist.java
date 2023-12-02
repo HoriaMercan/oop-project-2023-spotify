@@ -1,6 +1,8 @@
 package entities.users;
 
 import entities.audioCollections.Album;
+import entities.audioCollections.AudioCollection;
+import entities.audioFiles.AudioFile;
 import entities.helpers.Event;
 import entities.helpers.Merch;
 import lombok.Getter;
@@ -12,7 +14,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class Artist extends AbstractUser implements Pageable {
+public class Artist extends AbstractUser implements Pageable, ContentCreator {
     private final List<Album> albums = new ArrayList<>();
     private final List<Merch> merches = new ArrayList<>();
     private final List<Event> events = new ArrayList<>();
@@ -66,5 +68,10 @@ public class Artist extends AbstractUser implements Pageable {
         stringBuilder.append("]");
 
         return stringBuilder.toString();
+    }
+
+    @Override
+    public List<? extends AudioCollection> getContent() {
+        return this.albums;
     }
 }

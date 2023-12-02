@@ -103,8 +103,8 @@ public final class PlayerAPI {
      * This function is used for generating the desired output
      * of status command by setting up all the parameters
      *
-     * @param stats the status object to be set
-     * @param username the username of the command initiator
+     * @param stats     the status object to be set
+     * @param username  the username of the command initiator
      * @param timestamp the timestamp of the command
      */
     public static void setStatus(final Stats stats, final String username,
@@ -136,7 +136,7 @@ public final class PlayerAPI {
      * This function execute a play/pause command and returns a desired message
      * or throws an error message regarding the action performed
      *
-     * @param username the username of the command initiator
+     * @param username  the username of the command initiator
      * @param timestamp the timestamp of the command
      * @return A specific message correlated with the actions performed
      */
@@ -153,7 +153,7 @@ public final class PlayerAPI {
      * This function execute the specific actions in the database and returns
      * a message or returns the error got performing this action
      *
-     * @param username username of the command initiator
+     * @param username     username of the command initiator
      * @param playlistName playlist name chosen by an user
      * @return a String specifying the message of command
      */
@@ -177,7 +177,7 @@ public final class PlayerAPI {
      * This function returns the audio file name which is played by an user at a certain
      * time
      *
-     * @param username username of the command initiator
+     * @param username  username of the command initiator
      * @param timestamp the timestamp of the command
      * @return a String specifying the message of command
      */
@@ -191,8 +191,8 @@ public final class PlayerAPI {
      * This function adds the current played song to a playlist specified by
      * a user
      *
-     * @param username username of the command initiator
-     * @param timestamp the timestamp of the command
+     * @param username   username of the command initiator
+     * @param timestamp  the timestamp of the command
      * @param playlistID the id associated with an user's playlist
      * @return a String specifying the message of command
      */
@@ -203,7 +203,8 @@ public final class PlayerAPI {
         if (user.getPlayer().getTypeLoaded().isEmpty()) {
             return "Please load a source before adding to or removing from the playlist.";
         }
-        if (!user.getPlayer().getTypeLoaded().equals("song")) {
+        if (!user.getPlayer().getTypeLoaded().equals("song") &&
+                !user.getPlayer().getTypeLoaded().equals("album")) {
             return "The loaded source is not a song.";
         }
         if (!user.isPlaylistIDInUserList(playlistID)) {
@@ -222,7 +223,7 @@ public final class PlayerAPI {
     /**
      * This function execute a like command and returns a message
      *
-     * @param username username of the command initiator
+     * @param username  username of the command initiator
      * @param timestamp the timestamp of the command
      * @return a String specifying the message of command
      */

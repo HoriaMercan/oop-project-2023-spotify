@@ -1,12 +1,15 @@
 package entities.audioCollections;
 
+import entities.audioFiles.AudioFile;
 import entities.audioFiles.PodcastEpisode;
 import fileio.input.EpisodeInput;
 import fileio.input.PodcastInput;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public final class Podcast extends AudioCollection {
     private List<PodcastEpisode> episodes;
 
@@ -39,10 +42,6 @@ public final class Podcast extends AudioCollection {
         this.owner = input.getOwner();
     }
 
-    public List<PodcastEpisode> getEpisodes() {
-        return episodes;
-    }
-
     public void setEpisodes(final List<PodcastEpisode> episodes) {
         this.episodes = episodes;
     }
@@ -59,4 +58,8 @@ public final class Podcast extends AudioCollection {
         return sb.toString();
     }
 
+    @Override
+    public List<PodcastEpisode> getAudioFiles() {
+        return episodes;
+    }
 }

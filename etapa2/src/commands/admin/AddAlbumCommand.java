@@ -31,7 +31,7 @@ public final class AddAlbumCommand extends AbstractCommand {
                 .findAbstractUserByUsername(input.getUsername());
 
         if (user == null) {
-            output.setMessage("The username " + input.getUsername() + " does not exists.");
+            output.setMessage("The username " + input.getUsername() + " doesn't exist.");
             return;
         }
         if (!user.getUserType().equals(UserType.ARTIST)) {

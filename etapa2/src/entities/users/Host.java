@@ -1,5 +1,7 @@
 package entities.users;
 
+import entities.audioCollections.Album;
+import entities.audioCollections.AudioCollection;
 import entities.audioCollections.Podcast;
 import entities.helpers.Announcement;
 import lombok.Getter;
@@ -11,7 +13,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class Host extends AbstractUser implements Pageable {
+public class Host extends AbstractUser implements Pageable, ContentCreator {
     private final List<Podcast> podcasts = new ArrayList<>();
     private final List<Announcement>announcements = new ArrayList<>();
 
@@ -20,6 +22,12 @@ public class Host extends AbstractUser implements Pageable {
         this.userType = UserType.HOST;
     }
 
+    public boolean hasPodcast(String podcastName) {
+        List<Podcast> ans = podcasts.stream()
+                .filter(p -> p.getName().equals(podcastName)).toList();
+
+        return !ans.isEmpty();
+    }
     @Override
     public String getPageContent() {
         StringBuilder sb = new StringBuilder("Podcasts:\n\t[");
@@ -41,5 +49,10 @@ public class Host extends AbstractUser implements Pageable {
         sb.append("]");
 
         return sb.toString();
+    }
+
+    @Override
+    public List<? extends AudioCollection> getContent() {
+        return this.podcasts;
     }
 }

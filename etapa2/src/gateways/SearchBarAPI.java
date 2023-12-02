@@ -144,10 +144,15 @@ public final class SearchBarAPI {
 
         List<Podcast> podcasts = MY_DATABASE.getPodcasts();
 
-        Predicate<Podcast> byName = podcast -> podcast.getName().startsWith(filter.getName());
-        Predicate<Podcast> byOwner = podcast -> podcast.getOwner().startsWith(filter.getOwner());
+        Predicate<Podcast> byName =
+                podcast -> podcast.getName() == null
+                        || podcast.getName().startsWith(filter.getName());
+        Predicate<Podcast> byOwner =
+                podcast -> podcast.getOwner() == null
+                        || podcast.getOwner().startsWith(filter.getOwner());
 
         Function<Podcast, String> podcastToName = Podcast::getName;
+
         resultPodcasts = podcasts.stream().filter(byName).filter(byOwner)
                 .map(podcastToName).toList()
                 .stream().limit(LIMIT).toList();

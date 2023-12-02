@@ -1,5 +1,6 @@
 package entities.audioCollections;
 
+import entities.audioFiles.AudioFile;
 import entities.audioFiles.Song;
 
 import java.util.ArrayList;
@@ -100,6 +101,11 @@ public final class Playlist extends AudioCollection {
      */
     public boolean removeSongFromPlaylist(final Song song) {
         return songs.remove(song);
+    }
+
+    @Override
+    public List<Song> getAudioFiles() {
+        return songs;
     }
 
 }

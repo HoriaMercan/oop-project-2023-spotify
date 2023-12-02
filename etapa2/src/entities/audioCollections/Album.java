@@ -1,5 +1,6 @@
 package entities.audioCollections;
 
+import entities.audioFiles.AudioFile;
 import entities.audioFiles.Song;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,5 +36,10 @@ public final class Album extends AudioCollection {
     @Override
     public String toString() {
         return this.getName();
+    }
+
+    @Override
+    public List<Song> getAudioFiles() {
+        return songs;
     }
 }
