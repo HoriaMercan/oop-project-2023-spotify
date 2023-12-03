@@ -3,6 +3,8 @@ package commands.admin;
 import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.audioCollections.Album;
+import entities.audioCollections.AudioCollection;
+import entities.audioCollections.Playlist;
 import entities.audioFiles.AudioFile;
 import entities.audioFiles.Song;
 import entities.users.*;
@@ -14,6 +16,7 @@ import gateways.PlayerAPI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public final class DeleteUserCommand extends AbstractCommand {
@@ -36,6 +39,21 @@ public final class DeleteUserCommand extends AbstractCommand {
 
         if (newUser.getUserType().equals(UserType.NORMAL)) {
             MyDatabase.getInstance().getUsers().remove((User) newUser);
+            List <Playlist> usersPlaylists = MyDatabase.getInstance().getPublicPlaylists().stream()
+                    .filter(playlist -> playlist.getOwner().equals(newUser.getUsername())).toList();
+
+            MyDatabase.getInstance().getUsers().forEach(new Consumer<User>() {
+                @Override
+                public void accept(User user) {
+                    user.getFollowedPlaylists().removeAll(
+                            usersPlaylists.stream()
+                                    .map(AudioCollection::getName).toList()
+                    );
+                }
+            });
+            MyDatabase.getInstance().getPublicPlaylists().removeAll(usersPlaylists);
+
+
             output.setMessage(input.getUsername() + " was successfully deleted.");
             return;
         }

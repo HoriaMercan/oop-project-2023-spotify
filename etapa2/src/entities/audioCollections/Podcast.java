@@ -48,13 +48,16 @@ public final class Podcast extends AudioCollection {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(name + ":\\n\\t[");
-        for (PodcastEpisode ep: episodes) {
-            sb.append(ep).append(", ");
-        }
+        StringBuilder sb = new StringBuilder(name + ":\n\t[");
 
-        sb.delete(sb.length() - 2, sb.length());
-        sb.append("]");
+        if (!episodes.isEmpty()) {
+            for (PodcastEpisode ep : episodes) {
+                sb.append(ep).append(", ");
+            }
+
+            sb.delete(sb.length() - 2, sb.length());
+        }
+        sb.append("]\n");
         return sb.toString();
     }
 

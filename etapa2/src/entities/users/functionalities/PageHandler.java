@@ -10,10 +10,16 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 
-@Getter
-@Setter
+
 public final class PageHandler {
+    @Getter
+    @Setter
     private Map<EnumPages, Supplier<String>> pages = new HashMap<>();
+
+    public void setCurrentPage(EnumPages currentPage) {
+        this.currentPage = currentPage;
+    }
+
     private EnumPages currentPage = EnumPages.HOME;
 
     public String getCurrentPage() {

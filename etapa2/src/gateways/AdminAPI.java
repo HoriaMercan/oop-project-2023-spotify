@@ -1,8 +1,10 @@
 package gateways;
 
 import databases.MyDatabase;
+import entities.audioCollections.Album;
 import entities.audioCollections.AudioCollection;
 import entities.audioFiles.AudioFile;
+import entities.users.Artist;
 import entities.users.ContentCreator;
 import entities.users.User;
 import entities.users.functionalities.UserPlayer;
@@ -12,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public final class AdminAPI {
     private static final MyDatabase DATABASE = MyDatabase.getInstance();
@@ -49,6 +50,16 @@ public final class AdminAPI {
         ).toList();
     }
 
+    public static List<User> getUsersListeningToAudioCollection(AudioCollection coll) {
+        Set<User> userListeningTo = new HashSet<>();
+
+        coll.getAudioFiles().forEach(
+                (Consumer<AudioFile>) audioFile
+                        -> userListeningTo.addAll(getUsersListeningToAudioFile(audioFile)));
+
+        return userListeningTo.stream().toList();
+    }
+
     public static List<User> getUsersListeningToCreator(ContentCreator creator) {
         List<AudioFile> files = new ArrayList<>();
         creator.getContent().forEach(
@@ -66,6 +77,15 @@ public final class AdminAPI {
         return usersListeningToCreator.stream().toList();
     }
 
-    public static void removeAlbum() {
+    public static AudioCollection getAudioCollectionWithNameFromCreator(ContentCreator creator,
+                                                              String name) {
+        List<AudioCollection> ans = creator.getContent().stream()
+                .filter(a -> a.getName().equals(name)).map(a -> (AudioCollection)a).toList();
+
+        return ans.isEmpty() ? null : ans.get(0);
+    }
+    public static void removeAudioCollectionFromCreator(ContentCreator creator,
+                                                        AudioCollection coll) {
+        creator.getContent().remove(coll);
     }
 }

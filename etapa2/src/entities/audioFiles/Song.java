@@ -138,5 +138,8 @@ public final class Song extends AudioFile {
         creator = artist;
     }
 
-
+    @Override
+    public String toString() {
+        return name + " - " + artist;
+    }
 }

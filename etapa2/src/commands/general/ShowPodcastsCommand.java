@@ -1,6 +1,7 @@
 package commands.general;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.audioCollections.Album;
@@ -55,6 +56,10 @@ public final class ShowPodcastsCommand extends AbstractCommand {
     }
 
     public static final class ShowPodcastsInput extends AbstractCommand.CommandInput {
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @Getter
+        @Setter
+        private Integer playlistId;
         @Override
         public AbstractCommand getCommandFromInput() {
             return new ShowPodcastsCommand(this);

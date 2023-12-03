@@ -28,6 +28,23 @@ public class Host extends AbstractUser implements Pageable, ContentCreator {
 
         return !ans.isEmpty();
     }
+
+    public boolean hasAnnouncement(String announcementName) {
+        List<Announcement> ans = announcements.stream()
+                .filter(a -> a.getName().equals(announcementName)).toList();
+
+        return !ans.isEmpty();
+    }
+
+
+    public void removeAnnouncement(String name) {
+        List<Announcement> ans = announcements.stream()
+                .filter(a -> a.getName().equals(name)).toList();
+
+        if (!ans.isEmpty()) {
+            announcements.remove(ans.get(0));
+        }
+    }
     @Override
     public String getPageContent() {
         StringBuilder sb = new StringBuilder("Podcasts:\n\t[");
@@ -38,7 +55,7 @@ public class Host extends AbstractUser implements Pageable, ContentCreator {
             }
             sb.delete(sb.length() - 2, sb.length());
         }
-        sb.append("]\n\nAnnouncements\n\t[");
+        sb.append("]\n\nAnnouncements:\n\t[");
 
         if (!announcements.isEmpty()) {
             for (Announcement a: announcements) {

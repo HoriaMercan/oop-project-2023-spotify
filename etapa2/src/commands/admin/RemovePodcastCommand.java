@@ -41,6 +41,8 @@ public final class RemovePodcastCommand extends AbstractCommand {
             output.setMessage(host.getUsername() + " doesn't have a podcast with the given name.");
             return;
         }
+
+
     }
 
     @Override

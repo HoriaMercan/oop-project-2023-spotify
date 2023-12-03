@@ -14,6 +14,6 @@ public final class Announcement {
 
     @Override
     public String toString() {
-        return name + "\t-\t" + description;
+        return name + ":\n\t" + description + "\n";
     }
 }

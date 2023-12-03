@@ -115,6 +115,7 @@ public abstract class AbstractCommand {
             @Type(value = RemoveMerchCommand.RemoveMerchInput.class, name = "removeMerch"),
             @Type(value = RemovePodcastCommand.RemovePodcastInput.class, name = "removePodcast"),
             @Type(value = RemoveAlbumCommand.RemoveAlbumInput.class, name = "removeAlbum"),
+            @Type(value = ChangePageCommand.ChangePageInput.class, name = "changePage"),
     })
     public static class CommandInput {
         private String username;
@@ -218,7 +219,7 @@ public abstract class AbstractCommand {
             @Type(value = RemoveMerchCommand.RemoveMerchOutput.class, name = "removeMerch"),
             @Type(value = RemovePodcastCommand.RemovePodcastOutput.class, name = "removePodcast"),
             @Type(value = RemoveAlbumCommand.RemoveAlbumOutput.class, name = "removeAlbum"),
-
+            @Type(value = ChangePageCommand.ChangePageOutput.class, name = "changePage"),
     })
     public static class CommandOutput {
         protected String user;

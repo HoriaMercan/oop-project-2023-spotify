@@ -1,10 +1,13 @@
 package entities.users;
 
 import databases.MyDatabase;
+import entities.audioCollections.Playlist;
 import entities.audioFiles.Song;
 import entities.users.functionalities.PageHandler;
 import entities.users.functionalities.UserPlayer;
 import fileio.input.UserInput;
+import gateways.PlayerAPI;
+import gateways.SearchBarAPI;
 import lombok.Getter;
 import lombok.Setter;
 import page_system.EnumPages;
@@ -29,7 +32,7 @@ public final class User extends AbstractUser {
 
     {
         pageHandler.addPage(EnumPages.HOME, User.this::getHomePage);
-        pageHandler.addPage(EnumPages.LIKED_CONTENT, User.this::getHomePage);
+        pageHandler.addPage(EnumPages.LIKED_CONTENT, User.this::getLikedPage);
     }
 
     public User(final UserInput input) {
@@ -97,14 +100,15 @@ public final class User extends AbstractUser {
      *
      */
     public String changeLastSelected(final String newSelection) {
-        this.pageHandler.removePage(EnumPages.ARTIST);
-        this.pageHandler.removePage(EnumPages.HOST);
 
         String ans = "";
         if (!newSelection.isEmpty() && (this.player.getTypeSearched().equals("artist"))
                 || this.player.getTypeSearched().equals("host")) {
+            this.pageHandler.removePage(EnumPages.ARTIST);
+            this.pageHandler.removePage(EnumPages.HOST);
             switch (this.player.getTypeSearched()) {
                 case "artist":
+
                     this.pageHandler.addPage(EnumPages.ARTIST,
                             () -> {
                                 System.out.println(newSelection);
@@ -115,6 +119,7 @@ public final class User extends AbstractUser {
                     this.pageHandler.setCurrentPage(EnumPages.ARTIST);
                     break;
                 case "host":
+
                     this.pageHandler.addPage(EnumPages.HOST,
                             () -> MyDatabase.getInstance().findHostByUsername(newSelection)
                                     .getPageContent());
@@ -141,6 +146,31 @@ public final class User extends AbstractUser {
 
         if (!followedPlaylists.isEmpty()) {
             for (String pl : followedPlaylists) {
+                sb.append(pl).append(", ");
+            }
+            sb.delete(sb.length() - 2, sb.length());
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    public String getLikedPage() {
+        StringBuilder sb = new StringBuilder("Liked songs:\n\t[");
+
+        if (!likedSongs.isEmpty()) {
+            List<Song> songs = likedSongs.stream()
+                            .map(ev -> MyDatabase.getInstance().findSongByName(ev)).toList();
+            for (Song song : songs) {
+                sb.append(song).append(", ");
+            }
+            sb.delete(sb.length() - 2, sb.length());
+        }
+        sb.append("]\n\nFollowed playlists:\n\t[");
+
+        if (!followedPlaylists.isEmpty()) {
+            List<Playlist> playlists = followedPlaylists.stream()
+                    .map(f -> MyDatabase.getInstance().findPlaylistByName(f)).toList();
+            for (Playlist pl : playlists) {
                 sb.append(pl).append(", ");
             }
             sb.delete(sb.length() - 2, sb.length());

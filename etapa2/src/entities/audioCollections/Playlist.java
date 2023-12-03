@@ -108,4 +108,9 @@ public final class Playlist extends AudioCollection {
         return songs;
     }
 
+    @Override
+    public String toString() {
+        return name + " - " + owner;
+    }
+
 }
