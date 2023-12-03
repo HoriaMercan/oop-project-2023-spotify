@@ -102,10 +102,11 @@ public final class User extends AbstractUser {
     public String changeLastSelected(final String newSelection) {
 
         String ans = "";
-        if (!newSelection.isEmpty() && (this.player.getTypeSearched().equals("artist"))
-                || this.player.getTypeSearched().equals("host")) {
+        if (!newSelection.isEmpty() && ((this.player.getTypeSearched().equals("artist"))
+                || this.player.getTypeSearched().equals("host"))) {
             this.pageHandler.removePage(EnumPages.ARTIST);
             this.pageHandler.removePage(EnumPages.HOST);
+            this.pageHandler.setContentCreatorPage(newSelection);
             switch (this.player.getTypeSearched()) {
                 case "artist":
 

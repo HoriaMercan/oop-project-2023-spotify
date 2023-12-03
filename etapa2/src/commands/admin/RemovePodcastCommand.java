@@ -42,7 +42,17 @@ public final class RemovePodcastCommand extends AbstractCommand {
             return;
         }
 
+        Podcast podcast = (Podcast) AdminAPI.getAudioCollectionWithNameFromCreator(host,
+                input.name);
+        assert podcast != null;
 
+        if (!AdminAPI.getUsersListeningToAudioCollection(podcast).isEmpty()) {
+            output.setMessage(host.getUsername() + " can't delete this podcast.");
+            return;
+        }
+
+        AdminAPI.removeAudioCollectionFromCreator(host, podcast);
+        output.setMessage(host.getUsername() + " deleted the podcast successfully.");
     }
 
     @Override

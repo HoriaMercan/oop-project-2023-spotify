@@ -56,6 +56,7 @@ public final class Playlist extends AudioCollection {
     public boolean getUnfollowed(final String username) {
         return usersFollow.remove(username);
     }
+    public boolean isFollowedBy(final String username) {return usersFollow.contains(username);}
 
     public String getVisibility() {
         return isPublic ? "public" : "private";

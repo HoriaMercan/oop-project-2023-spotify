@@ -3,10 +3,10 @@ package gateways;
 import databases.MyDatabase;
 import entities.audioCollections.Album;
 import entities.audioCollections.AudioCollection;
+import entities.audioCollections.Playlist;
 import entities.audioFiles.AudioFile;
-import entities.users.Artist;
-import entities.users.ContentCreator;
-import entities.users.User;
+import entities.audioFiles.Song;
+import entities.users.*;
 import entities.users.functionalities.UserPlayer;
 
 import java.util.ArrayList;
@@ -87,5 +87,55 @@ public final class AdminAPI {
     public static void removeAudioCollectionFromCreator(ContentCreator creator,
                                                         AudioCollection coll) {
         creator.getContent().remove(coll);
+    }
+
+    public static void removeNormalUser(AbstractUser newUser) {
+        MyDatabase.getInstance().getUsers().remove((User) newUser);
+
+        // Remove all playlists created by the user ? i don't get why it should function like
+        // that tho'
+        List <Playlist> usersPlaylists = MyDatabase.getInstance().getPublicPlaylists().stream()
+                .filter(playlist -> playlist.getOwner().equals(newUser.getUsername())).toList();
+
+        MyDatabase.getInstance().getUsers().forEach(user -> user.getFollowedPlaylists().removeAll(
+                usersPlaylists.stream()
+                        .map(AudioCollection::getName).toList()
+        ));
+        MyDatabase.getInstance().getPublicPlaylists().removeAll(usersPlaylists);
+
+        // Remove the user from followed playlists
+        List <Playlist> followedPlaylists = MyDatabase.getInstance().getPublicPlaylists()
+                .stream()
+                .filter(playlist -> playlist.isFollowedBy(newUser.getUsername())).toList();
+
+        followedPlaylists.forEach(playlist -> playlist.getUnfollowed(newUser.getUsername()));
+    }
+
+    public static void removeArtist(AbstractUser newUser) {
+        Artist artist = (Artist) newUser;
+        List<Song> allSongs = new ArrayList<>();
+        for (Album album : artist.getAlbums()) {
+            allSongs.addAll(album.getSongs());
+        }
+
+        for (Song everySong : allSongs) {
+            List<User> users =
+                    everySong.userLikedThisSong().stream()
+                            .map(string -> MyDatabase.getInstance()
+                                    .findUserByUsername(string))
+                            .toList();
+            for (User user : users) {
+                user.getLikedSongs().remove(everySong.getName());
+            }
+        }
+        MyDatabase.getInstance().getSongs().removeAll(allSongs);
+        MyDatabase.getInstance().getAlbums().removeAll(artist.getAlbums());
+        MyDatabase.getInstance().getArtists().remove(artist);
+    }
+
+    public static void removeHost(AbstractUser user) {
+        Host host = (Host) user;
+        MyDatabase.getInstance().getPodcasts().removeAll(host.getPodcasts());
+        MyDatabase.getInstance().getHosts().remove(host);
     }
 }

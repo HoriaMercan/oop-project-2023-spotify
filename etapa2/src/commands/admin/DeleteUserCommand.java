@@ -12,6 +12,7 @@ import entities.users.AbstractUser.UserType;
 import entities.users.functionalities.UserPlayer;
 import gateways.AdminAPI;
 import gateways.PlayerAPI;
+import page_system.EnumPages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,22 +39,7 @@ public final class DeleteUserCommand extends AbstractCommand {
         }
 
         if (newUser.getUserType().equals(UserType.NORMAL)) {
-            MyDatabase.getInstance().getUsers().remove((User) newUser);
-            List <Playlist> usersPlaylists = MyDatabase.getInstance().getPublicPlaylists().stream()
-                    .filter(playlist -> playlist.getOwner().equals(newUser.getUsername())).toList();
-
-            MyDatabase.getInstance().getUsers().forEach(new Consumer<User>() {
-                @Override
-                public void accept(User user) {
-                    user.getFollowedPlaylists().removeAll(
-                            usersPlaylists.stream()
-                                    .map(AudioCollection::getName).toList()
-                    );
-                }
-            });
-            MyDatabase.getInstance().getPublicPlaylists().removeAll(usersPlaylists);
-
-
+            AdminAPI.removeNormalUser(newUser);
             output.setMessage(input.getUsername() + " was successfully deleted.");
             return;
         }
@@ -63,38 +49,23 @@ public final class DeleteUserCommand extends AbstractCommand {
 
         List<User> listeningTo = AdminAPI.getUsersListeningToCreator((ContentCreator) newUser);
 
+        List<User> usersHavingPage =
+                AdminAPI.getOnlineUsers().stream().filter(user -> user.getPageHandler()
+                        .getContentCreatorPage().equals(newUser.getUsername())).toList();
         System.out.println(listeningTo);
-        if (!listeningTo.isEmpty()) {
+        if (!listeningTo.isEmpty() || !usersHavingPage.isEmpty()) {
             output.setMessage(input.getUsername() + " can't be deleted.");
             return;
         }
 
+        /* Delete all active pages with this Content Creator from users */
+
         switch (newUser.getUserType()) {
             case ARTIST -> {
-                Artist artist = (Artist) newUser;
-                List<Song> allSongs = new ArrayList<>();
-                for (Album album : artist.getAlbums()) {
-                    allSongs.addAll(album.getSongs());
-                }
-
-                for (Song everySong : allSongs) {
-                    List<User> users =
-                            everySong.userLikedThisSong().stream()
-                                    .map(string -> MyDatabase.getInstance()
-                                            .findUserByUsername(string))
-                                    .toList();
-                    for (User user : users) {
-                        user.getLikedSongs().remove(everySong.getName());
-                    }
-                }
-                MyDatabase.getInstance().getSongs().removeAll(allSongs);
-                MyDatabase.getInstance().getAlbums().removeAll(artist.getAlbums());
-                MyDatabase.getInstance().getArtists().remove(artist);
+                AdminAPI.removeArtist(newUser);
             }
             case HOST -> {
-                Host host = (Host) newUser;
-                MyDatabase.getInstance().getPodcasts().removeAll(host.getPodcasts());
-                MyDatabase.getInstance().getHosts().remove(host);
+                AdminAPI.removeHost(newUser);
             }
         }
         output.setMessage(input.getUsername() + " was successfully deleted.");

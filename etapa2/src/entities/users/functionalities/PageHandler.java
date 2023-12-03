@@ -10,14 +10,15 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 
-
+@Getter
+@Setter
 public final class PageHandler {
-    @Getter
-    @Setter
     private Map<EnumPages, Supplier<String>> pages = new HashMap<>();
+    private String contentCreatorPage = "";
 
     public void setCurrentPage(EnumPages currentPage) {
         this.currentPage = currentPage;
+        System.out.println("Setted to " + currentPage);
     }
 
     private EnumPages currentPage = EnumPages.HOME;
@@ -42,5 +43,10 @@ public final class PageHandler {
 
     public boolean hasPage(EnumPages page) {
         return pages.containsKey(page);
+    }
+
+    public void removeNonStandardPages() {
+        removePage(EnumPages.HOST);
+        removePage(EnumPages.ARTIST);
     }
 }
