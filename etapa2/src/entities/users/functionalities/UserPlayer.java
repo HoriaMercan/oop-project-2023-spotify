@@ -3,6 +3,8 @@ import entities.audioFileSelector.AudioFileSelector;
 import entities.audioFileSelector.AudioFileSelectorNext;
 import entities.audioFileSelector.AudioFileSelectorOutOfBound;
 import entities.audioFiles.AudioFile;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 
@@ -23,6 +25,9 @@ public final class UserPlayer {
     private String typeSearched;
     private String lastSelected = "";
     private String typeLoaded = "";
+
+    @Getter
+    @Setter
     private List<? extends AudioFile> context;
     private boolean isPaused;
     private boolean isShuffle;
@@ -252,6 +257,9 @@ public final class UserPlayer {
         return typeLoaded;
     }
 
+    @Getter
+    private String listeningToPlaylist = "";
+
     /**
      * This function set a new contextIn (selector type/ audio files) when something is loaded
      *
@@ -259,6 +267,7 @@ public final class UserPlayer {
      * @param timestamp time
      */
     public void setContext(final List<? extends AudioFile> contextIn, final Integer timestamp) {
+        listeningToPlaylist = "";
         unsetContext(timestamp);
         this.context = contextIn;
         indexArrays = new ArrayList<>();
@@ -274,6 +283,23 @@ public final class UserPlayer {
         isShuffle = false;
     }
 
+    public void setContext(final List<? extends AudioFile> contextIn, String playlistName,
+                           final Integer timestamp) {
+        listeningToPlaylist = playlistName;
+        unsetContext(timestamp);
+        this.context = contextIn;
+        indexArrays = new ArrayList<>();
+        for (int i = 0; i < this.context.size(); i++) {
+            indexArrays.add(i);
+        }
+        this.selector = new AudioFileSelector(() -> UserPlayer.this.context
+                .get(indexArrays.get(UserPlayer.this.index)),
+                () -> UserPlayer.this.index += 1,
+                () -> UserPlayer.this.index >= UserPlayer.this.context.size(), outOfBound);
+
+        UserPlayer.this.repeatStatus = 0;
+        isShuffle = false;
+    }
     /**
      * Shuffles the playlist \w given seed
      *

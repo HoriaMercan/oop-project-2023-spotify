@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public final class AdminAPI {
@@ -45,9 +46,11 @@ public final class AdminAPI {
     }
 
     public static List<User> getUsersListeningToAudioFile(AudioFile audioFile) {
-        return getPlayingUsers().stream().filter(user ->
-                user.getPlayer().getCurrentPlayed().getName().equals(audioFile.getName())
-        ).toList();
+//        return getPlayingUsers().stream().filter(user ->
+//                user.getPlayer().getCurrentPlayed().getName().equals(audioFile.getName())
+//        ).toList();
+        return getPlayingUsers().stream().filter(user
+                -> user.getPlayer().getContext().contains(audioFile)).toList();
     }
 
     public static List<User> getUsersListeningToAudioCollection(AudioCollection coll) {
@@ -60,6 +63,23 @@ public final class AdminAPI {
         return userListeningTo.stream().toList();
     }
 
+    public static List<User> getUsersListeningToPlaylist(String playlistName) {
+        return getPlayingUsers().stream().filter(user
+                -> user.getPlayer().getListeningToPlaylist().equals(playlistName)).toList();
+    }
+
+    public static List<User> getUListeningToUPlaylists(User user) {
+        List<User> users = new ArrayList<>();
+
+        List<Playlist> playlists = MyDatabase.getInstance().getPublicPlaylists()
+                .stream().filter(playlist -> playlist.getOwner().equals(user.getUsername()))
+                .toList();
+
+        playlists.forEach(playlist
+                -> users.addAll(getUsersListeningToPlaylist(playlist.getName())));
+
+        return users;
+    }
     public static List<User> getUsersListeningToCreator(ContentCreator creator) {
         List<AudioFile> files = new ArrayList<>();
         creator.getContent().forEach(
@@ -67,12 +87,8 @@ public final class AdminAPI {
                         files.addAll(audioCollection.getAudioFiles()));
 
         Set<User> usersListeningToCreator = new HashSet<>();
-        files.forEach(new Consumer<AudioFile>() {
-            @Override
-            public void accept(AudioFile audioFile) {
-                usersListeningToCreator.addAll(getUsersListeningToAudioFile(audioFile));
-            }
-        });
+        files.forEach(audioFile
+                -> usersListeningToCreator.addAll(getUsersListeningToAudioFile(audioFile)));
 
         return usersListeningToCreator.stream().toList();
     }
@@ -137,5 +153,19 @@ public final class AdminAPI {
         Host host = (Host) user;
         MyDatabase.getInstance().getPodcasts().removeAll(host.getPodcasts());
         MyDatabase.getInstance().getHosts().remove(host);
+    }
+
+    public static int getAlbumsLikes(Album album) {
+        AtomicInteger likes = new AtomicInteger(0);
+        album.getSongs().forEach(song -> likes.addAndGet(song.likesNo()));
+        return likes.get();
+    }
+
+    public static int getArtistLikes(Artist artist) {
+        AtomicInteger likes = new AtomicInteger(0);
+
+        artist.getAlbums().forEach(album -> likes.addAndGet(getAlbumsLikes(album)));
+
+        return likes.get();
     }
 }

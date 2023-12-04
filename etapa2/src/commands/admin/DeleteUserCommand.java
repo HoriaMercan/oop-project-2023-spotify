@@ -38,22 +38,30 @@ public final class DeleteUserCommand extends AbstractCommand {
             return;
         }
 
+        AdminAPI.updateAllOnlineUserPlayers(input.getTimestamp());
+
         if (newUser.getUserType().equals(UserType.NORMAL)) {
+            if (!AdminAPI.getUListeningToUPlaylists((User) newUser).isEmpty()) {
+                output.setMessage(input.getUsername() + " can't be deleted.");
+                return;
+            }
             AdminAPI.removeNormalUser(newUser);
             output.setMessage(input.getUsername() + " was successfully deleted.");
             return;
         }
-
-        List<User> onlineUsers = AdminAPI.getOnlineUsers();
-        AdminAPI.updateAllOnlineUserPlayers(input.getTimestamp());
 
         List<User> listeningTo = AdminAPI.getUsersListeningToCreator((ContentCreator) newUser);
 
         List<User> usersHavingPage =
                 AdminAPI.getOnlineUsers().stream().filter(user -> user.getPageHandler()
                         .getContentCreatorPage().equals(newUser.getUsername())).toList();
+
+        List<User> usersHavingPageActive = usersHavingPage.stream()
+                .filter(user -> user.getPageHandler().getCurrentPage().equals(EnumPages.HOST)
+                || user.getPageHandler().getCurrentPage().equals(EnumPages.ARTIST)).toList();
         System.out.println(listeningTo);
-        if (!listeningTo.isEmpty() || !usersHavingPage.isEmpty()) {
+        if (!listeningTo.isEmpty() || !usersHavingPageActive.isEmpty()) {
+            usersHavingPage.forEach(user -> user.getPageHandler().removeNonStandardPages());
             output.setMessage(input.getUsername() + " can't be deleted.");
             return;
         }

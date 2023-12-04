@@ -31,6 +31,13 @@ public class Artist extends AbstractUser implements Pageable, ContentCreator {
         return !ans.isEmpty();
     }
 
+    public Event hasEvent(String eventName) {
+        List<Event> event = events.stream()
+                .filter(e -> e.getName().equals(eventName)).toList();
+
+        return event.isEmpty() ? null : event.get(0);
+    }
+
     public void addAlbum(Album album) {
         albums.add(album);
     }

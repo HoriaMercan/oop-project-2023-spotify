@@ -27,10 +27,7 @@ import commands.playlist.ShowPlaylistsCommand;
 import commands.playlist.SwitchVisibilityCommand;
 import commands.searchbar.SearchCommand;
 import commands.searchbar.SelectCommand;
-import commands.statistics.GetOnlineUsersCommand;
-import commands.statistics.GetTop5PlaylistsCommand;
-import commands.statistics.GetTop5SongsCommand;
-import commands.statistics.ShowPreferredSongsCommand;
+import commands.statistics.*;
 
 /**
  * Base class of all commands
@@ -92,6 +89,10 @@ public abstract class AbstractCommand {
                     name = "getTop5Songs"),
             @Type(value = GetTop5PlaylistsCommand.GetTop5PlaylistsInput.class,
                     name = "getTop5Playlists"),
+            @Type(value = GetTop5AlbumsCommand.GetTop5AlbumsInput.class,
+                    name = "getTop5Albums"),
+            @Type(value = GetTop5ArtistsCommand.GetTop5ArtistsInput.class,
+                    name = "getTop5Artists"),
             @Type(value = SwitchConnectionStatusCommand.SwitchConnectionStatusInput.class,
                     name = "switchConnectionStatus"),
             @Type(value = GetOnlineUsersCommand.GetOnlineUsersInput.class,
@@ -196,6 +197,10 @@ public abstract class AbstractCommand {
                     name = "getTop5Songs"),
             @Type(value = GetTop5PlaylistsCommand.GetTop5PlaylistsOutput.class,
                     name = "getTop5Playlists"),
+            @Type(value = GetTop5AlbumsCommand.GetTop5AlbumsOutput.class,
+                    name = "getTop5Albums"),
+            @Type(value = GetTop5ArtistsCommand.GetTop5ArtistsOutput.class,
+                    name = "getTop5Artists"),
             @Type(value = SwitchConnectionStatusCommand.SwitchConnectionStatusOutput.class,
                     name = "switchConnectionStatus"),
             @Type(value = GetOnlineUsersCommand.GetOnlineUsersOutput.class,

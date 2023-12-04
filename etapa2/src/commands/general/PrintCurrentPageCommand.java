@@ -25,7 +25,7 @@ public final class PrintCurrentPageCommand extends AbstractCommand implements Re
 
         User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
         assert user != null;
-        output.setMessage(user.getPageHandler().getCurrentPage());
+        output.setMessage(user.getPageHandler().getCurrentPageContent());
     }
 
     @Override

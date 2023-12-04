@@ -48,7 +48,7 @@ public final class PlayerAPI {
                 if (playlist.getSongs().isEmpty()) {
                     return "You can't load an empty audio collection!";
                 }
-                player.setContext(getSongListFromPlaylist(playlist), timestamp);
+                player.setContext(getSongListFromPlaylist(playlist), playlist.getName(), timestamp);
                 return "";
 
             case "podcast":

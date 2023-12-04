@@ -41,6 +41,7 @@ public final class RemoveAlbumCommand extends AbstractCommand {
 
         Album album = (Album) AdminAPI.getAudioCollectionWithNameFromCreator(artist, input.name);
         assert album != null;
+        AdminAPI.updateAllOnlineUserPlayers(input.getTimestamp());
         if (!AdminAPI.getUsersListeningToAudioCollection(album).isEmpty()) {
             output.setMessage(artist.getUsername() + " can't delete this album.");
             return;

@@ -13,6 +13,7 @@ import fileio.input.PodcastInput;
 import fileio.input.SongInput;
 import fileio.input.UserInput;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +29,15 @@ public final class MyDatabase {
     private static final MyDatabase INSTANCE = new MyDatabase();
 
     @Getter
-    private final ArrayList<Artist> artists = new ArrayList<>();
+    @Setter
+    private ArrayList<Artist> artists = new ArrayList<>();
 
     @Getter
-    private final ArrayList<Host> hosts = new ArrayList<>();
-    private final ArrayList<Album> albums = new ArrayList<>();
+    @Setter
+    private ArrayList<Host> hosts = new ArrayList<>();
+
+    @Setter
+    private ArrayList<Album> albums = new ArrayList<>();
     private ArrayList<Song> songs;
     private ArrayList<Podcast> podcasts;
     private ArrayList<User> users;

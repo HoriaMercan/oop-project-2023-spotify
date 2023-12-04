@@ -32,7 +32,7 @@ public final class ShuffleCommand extends AbstractCommand implements RequireOnli
 
         if (!user.getPlayer().getTypeLoaded().equals("playlist") &&
         !user.getPlayer().getTypeLoaded().equals("album")) {
-            output.setMessage("The loaded source is not a playlist.");
+            output.setMessage("The loaded source is not a playlist or an album.");
             return;
         }
 

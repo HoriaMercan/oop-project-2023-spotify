@@ -84,6 +84,9 @@ public final class Main {
         MyDatabase.getInstance().setSongsConvert(library.getSongs());
         MyDatabase.getInstance().setPodcastsConvert(library.getPodcasts());
         MyDatabase.getInstance().setUsersConvert(library.getUsers());
+        MyDatabase.getInstance().setArtists(new ArrayList<>());
+        MyDatabase.getInstance().setHosts(new ArrayList<>());
+        MyDatabase.getInstance().setAlbums(new ArrayList<>());
         MyDatabase.getInstance().setPublicPlaylists(new ArrayList<>());
 
 
