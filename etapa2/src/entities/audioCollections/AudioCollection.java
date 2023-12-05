@@ -32,6 +32,9 @@ public abstract class AudioCollection {
         this.owner = owner;
     }
 
+    /**
+     * @return the components of the audio collection
+     */
     public List<? extends AudioFile> getAudioFiles() {
         return null;
     }

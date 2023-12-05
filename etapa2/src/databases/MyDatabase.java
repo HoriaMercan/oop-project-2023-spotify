@@ -17,7 +17,6 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This class stores the data about songs, podcast episodes
@@ -103,6 +102,7 @@ public final class MyDatabase {
     public List<Album> getAlbums() {
         return albums;
     }
+
     /**
      * @param inputs user input array
      */
@@ -219,17 +219,27 @@ public final class MyDatabase {
         return ans.isEmpty() ? null : ans.get(0);
     }
 
+    /**
+     * @param user AbstractUser object that has to be added to the database
+     */
     public void addUser(final AbstractUser user) {
-        if (user == null)
+        if (user == null) {
             return;
+        }
         switch (user.getUserType()) {
             case NORMAL -> users.add((User) user);
             case ARTIST -> artists.add((Artist) user);
             case HOST -> hosts.add((Host) user);
+            default -> {
+            }
         }
     }
 
-    public AbstractUser findAbstractUserByUsername(String username) {
+    /**
+     * @param username
+     * @return return an AbstractUser object \w given username
+     */
+    public AbstractUser findAbstractUserByUsername(final String username) {
         List<AbstractUser> allUsers = new ArrayList<>();
         allUsers.addAll(users.stream().map(user -> (AbstractUser) user).toList());
         allUsers.addAll(artists.stream().map(user -> (AbstractUser) user).toList());
@@ -242,6 +252,9 @@ public final class MyDatabase {
         return ans.isEmpty() ? null : ans.get(0);
     }
 
+    /**
+     * @return List of all usernames of all users from the database
+     */
     public List<String> getAllAbstractUserNames() {
         List<String> answer = new ArrayList<>();
         answer.addAll(users.stream().map(AbstractUser::getUsername).toList());
@@ -251,13 +264,4 @@ public final class MyDatabase {
         return answer;
     }
 
-    /**
-     * This function updates all players to a given time moment
-     * @param timestamp a time moment
-     */
-    public void updateAllUserPlayers(Integer timestamp) {
-        for (User user: users) {
-            user.getPlayer().updatePlayer(timestamp);
-        }
-    }
 }

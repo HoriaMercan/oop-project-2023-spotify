@@ -1,4 +1,4 @@
-package commands.general;
+package commands.usersAdministration;
 
 import commands.AbstractCommand;
 import databases.MyDatabase;
@@ -7,7 +7,7 @@ import entities.users.User;
 import entities.users.functionalities.PageHandler;
 import lombok.Getter;
 import lombok.Setter;
-import page_system.EnumPages;
+import pagesystem.EnumPages;
 
 public final class ChangePageCommand extends AbstractCommand implements RequireOnline {
     public ChangePageCommand(final ChangePageInput changePageInput) {
@@ -31,13 +31,21 @@ public final class ChangePageCommand extends AbstractCommand implements RequireO
                 || (next.equals("Host") && pH.hasPage(EnumPages.HOST))) {
             EnumPages page = EnumPages.HOME;
             switch (input.getNextPage()) {
-                case "LikedContent" -> page = EnumPages.LIKED_CONTENT;
-                case "Artist" -> page = EnumPages.ARTIST;
-                case "Host" -> page = EnumPages.HOST;
+                case "LikedContent":
+                    page = EnumPages.LIKED_CONTENT;
+                    break;
+                case "Artist":
+                    page = EnumPages.ARTIST;
+                    break;
+                case "Host":
+                    page = EnumPages.HOST;
+                    break;
+                default:
             }
 
             pH.setCurrentPage(page);
-            output.setMessage(input.getUsername() + " accessed " + input.nextPage + " successfully.");
+            output.setMessage(input.getUsername()
+                    + " accessed " + input.nextPage + " successfully.");
             return;
         }
 

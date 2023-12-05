@@ -1,11 +1,9 @@
-package commands.admin;
+package commands.usersInteractions;
 
 import commands.AbstractCommand;
 import databases.MyDatabase;
-import entities.audioCollections.Album;
 import entities.audioCollections.Podcast;
 import entities.audioFiles.PodcastEpisode;
-import entities.audioFiles.Song;
 import entities.users.AbstractUser;
 import entities.users.AbstractUser.UserType;
 import entities.users.Host;

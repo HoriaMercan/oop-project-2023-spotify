@@ -1,7 +1,6 @@
 package entities.helpers;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public final class Merch {

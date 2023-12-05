@@ -1,4 +1,4 @@
-package commands.admin;
+package commands.usersInteractions;
 
 import commands.AbstractCommand;
 import databases.MyDatabase;
@@ -52,7 +52,8 @@ public final class AddEventCommand extends AbstractCommand {
             date = dateFormat.parse(input.getDate());
 
             if (!dateFormat.format(date).equals(input.getDate())) {
-                output.setMessage("Event for " + input.getUsername() + " does not have a valid date.");
+                output.setMessage("Event for "
+                        + input.getUsername() + " does not have a valid date.");
                 return;
             }
         } catch (ParseException e) {

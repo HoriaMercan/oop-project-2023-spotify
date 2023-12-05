@@ -1,17 +1,14 @@
-package commands.admin;
+package commands.usersInteractions;
 
 import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.audioCollections.Podcast;
-import entities.audioFiles.PodcastEpisode;
 import entities.users.AbstractUser;
 import entities.users.AbstractUser.UserType;
 import entities.users.Host;
 import gateways.AdminAPI;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 public final class RemovePodcastCommand extends AbstractCommand {
     public RemovePodcastCommand(final RemovePodcastInput removePodcastInput) {

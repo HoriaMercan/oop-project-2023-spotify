@@ -1,4 +1,4 @@
-package commands.general;
+package commands.usersAdministration;
 
 import commands.AbstractCommand;
 import databases.MyDatabase;

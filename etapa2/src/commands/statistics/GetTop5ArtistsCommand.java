@@ -5,14 +5,12 @@ import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.users.AbstractUser;
 import entities.users.Artist;
-import entities.audioCollections.AudioCollection;
 import gateways.AdminAPI;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public final class GetTop5ArtistsCommand extends AbstractCommand {
     public GetTop5ArtistsCommand(final GetTop5ArtistsInput getTop5ArtistsInput) {
@@ -65,6 +63,7 @@ public final class GetTop5ArtistsCommand extends AbstractCommand {
         public GetTop5ArtistsOutput(final CommandInput commandInput) {
             super(commandInput);
         }
+
         public void setResult(final List<String> result) {
             this.result = result;
         }

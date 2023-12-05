@@ -1,10 +1,16 @@
 package entities.users;
 
 import entities.audioCollections.AudioCollection;
-import entities.audioFiles.AudioFile;
 
 import java.util.List;
 
+/**
+ * Content creator defines the basic functionality for any artist/host: those user types
+ * stores audio collection
+ */
 public interface ContentCreator {
-    public List<? extends AudioCollection> getContent();
+    /**
+     * @return list of audio collection subtypes owned by the content creator
+     */
+    List<? extends AudioCollection> getContent();
 }

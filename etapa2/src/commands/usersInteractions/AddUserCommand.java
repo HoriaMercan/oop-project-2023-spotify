@@ -1,8 +1,7 @@
-package commands.admin;
+package commands.usersInteractions;
 
 import commands.AbstractCommand;
 import databases.MyDatabase;
-import entities.requirements.RequireOnline;
 import entities.users.AbstractUser;
 import entities.users.Artist;
 import entities.users.Host;
@@ -36,8 +35,8 @@ public final class AddUserCommand extends AbstractCommand {
         };
 
         MyDatabase.getInstance().addUser(newUser);
-        output.setMessage("The username " + input.getUsername() + " has been added" +
-                " successfully.");
+        output.setMessage("The username " + input.getUsername() + " has been added"
+                + " successfully.");
 
     }
 

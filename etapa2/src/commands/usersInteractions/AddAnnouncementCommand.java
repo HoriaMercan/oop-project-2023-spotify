@@ -1,4 +1,4 @@
-package commands.admin;
+package commands.usersInteractions;
 
 import commands.AbstractCommand;
 import databases.MyDatabase;
@@ -44,7 +44,7 @@ public final class AddAnnouncementCommand extends AbstractCommand {
         Announcement newA = new Announcement(input.getName(), input.getDescription());
         host.getAnnouncements().add(newA);
 
-        output.setMessage(host.getUsername()+" has successfully added new announcement.");
+        output.setMessage(host.getUsername() + " has successfully added new announcement.");
     }
 
     @Override

@@ -3,7 +3,6 @@ package gateways;
 import entities.audioCollections.Album;
 import entities.audioCollections.AudioCollection;
 import entities.users.AbstractUser;
-import entities.users.AbstractUser.UserType;
 import entities.users.Artist;
 import entities.users.Host;
 import entities.users.functionalities.UserPlayer;

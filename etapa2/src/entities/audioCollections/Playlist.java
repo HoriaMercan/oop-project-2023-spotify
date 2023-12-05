@@ -1,6 +1,5 @@
 package entities.audioCollections;
 
-import entities.audioFiles.AudioFile;
 import entities.audioFiles.Song;
 
 import java.util.ArrayList;
@@ -56,11 +55,19 @@ public final class Playlist extends AudioCollection {
     public boolean getUnfollowed(final String username) {
         return usersFollow.remove(username);
     }
-    public boolean isFollowedBy(final String username) {return usersFollow.contains(username);}
+
+    /**
+     * @param username
+     * @return verify if a user follows this playlist
+     */
+    public boolean isFollowedBy(final String username) {
+        return usersFollow.contains(username);
+    }
 
     public String getVisibility() {
         return isPublic ? "public" : "private";
     }
+
     public boolean isPublic() {
         return isPublic;
     }

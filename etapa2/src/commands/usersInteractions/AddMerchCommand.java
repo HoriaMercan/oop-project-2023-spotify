@@ -1,19 +1,13 @@
-package commands.admin;
+package commands.usersInteractions;
 
 import commands.AbstractCommand;
 import databases.MyDatabase;
-import entities.helpers.Event;
 import entities.helpers.Merch;
 import entities.users.AbstractUser;
 import entities.users.AbstractUser.UserType;
 import entities.users.Artist;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public final class AddMerchCommand extends AbstractCommand {
     public AddMerchCommand(final AddMerchInput addMerchInput) {

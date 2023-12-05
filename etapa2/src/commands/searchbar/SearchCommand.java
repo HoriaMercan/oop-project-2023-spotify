@@ -1,7 +1,6 @@
 package commands.searchbar;
 
 import commands.AbstractCommand;
-import entities.helpers.EnumSearch;
 import entities.helpers.Filter;
 import entities.requirements.RequireOnline;
 import gateways.SearchBarAPI;
@@ -26,7 +25,6 @@ public final class SearchCommand extends AbstractCommand implements RequireOnlin
             return;
         }
         String type = input.getType();
-        EnumSearch enum_type = EnumSearch.valueOf(input.getType().toUpperCase());
         List<String> results = switch (type) {
             case "song" -> SearchBarAPI.getSongsByFilter(input.getUsername(),
                     input.getTimestamp(), input.getFilters());

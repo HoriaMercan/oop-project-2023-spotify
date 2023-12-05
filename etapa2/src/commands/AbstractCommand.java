@@ -1,15 +1,29 @@
 package commands;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import commands.admin.*;
-import commands.admin.RemoveMerchCommand.RemoveMerchOutput;
-import commands.general.*;
+import commands.usersInteractions.AddAlbumCommand;
+import commands.usersInteractions.AddAnnouncementCommand;
+import commands.usersInteractions.AddEventCommand;
+import commands.usersInteractions.AddMerchCommand;
+import commands.usersInteractions.AddPodcastCommand;
+import commands.usersInteractions.AddUserCommand;
+import commands.usersInteractions.DeleteUserCommand;
+import commands.usersInteractions.RemoveAlbumCommand;
+import commands.usersInteractions.RemoveAnnouncementCommand;
+import commands.usersInteractions.RemoveEventCommand;
+import commands.usersInteractions.RemoveMerchCommand;
+import commands.usersInteractions.RemovePodcastCommand;
+import commands.usersAdministration.ChangePageCommand;
+import commands.usersAdministration.GetAllUsersCommand;
+import commands.usersAdministration.PrintCurrentPageCommand;
+import commands.usersAdministration.ShowAlbumsCommand;
+import commands.usersAdministration.ShowPodcastsCommand;
+import commands.usersAdministration.SwitchConnectionStatusCommand;
 import commands.player.AddRemoveInPlaylistCommand;
 import commands.player.BackwardCommand;
 import commands.player.ForwardCommand;
@@ -27,7 +41,12 @@ import commands.playlist.ShowPlaylistsCommand;
 import commands.playlist.SwitchVisibilityCommand;
 import commands.searchbar.SearchCommand;
 import commands.searchbar.SelectCommand;
-import commands.statistics.*;
+import commands.statistics.GetOnlineUsersCommand;
+import commands.statistics.GetTop5AlbumsCommand;
+import commands.statistics.GetTop5ArtistsCommand;
+import commands.statistics.GetTop5PlaylistsCommand;
+import commands.statistics.GetTop5SongsCommand;
+import commands.statistics.ShowPreferredSongsCommand;
 
 /**
  * Base class of all commands

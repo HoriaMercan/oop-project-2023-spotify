@@ -1,6 +1,5 @@
 package entities.audioCollections;
 
-import entities.audioFiles.AudioFile;
 import entities.audioFiles.Song;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +18,9 @@ public final class Album extends AudioCollection {
 
     private Set<String> usersListening = new HashSet<>();
 
-    public Album(){}
+    public Album() {
+    }
+
     public Album(final String name, final String owner, final int releaseYear,
                  final String description) {
         super(name, owner);

@@ -203,8 +203,9 @@ public final class PlayerAPI {
         if (user.getPlayer().getTypeLoaded().isEmpty()) {
             return "Please load a source before adding to or removing from the playlist.";
         }
-        if (!user.getPlayer().getTypeLoaded().equals("song") &&
-                !user.getPlayer().getTypeLoaded().equals("album")) {
+        if (!user.getPlayer().getTypeLoaded().equals("song")
+                && !user.getPlayer().getTypeLoaded().equals("album")
+                && !user.getPlayer().getTypeLoaded().equals("playlist")) {
             return "The loaded source is not a song.";
         }
         if (!user.isPlaylistIDInUserList(playlistID)) {

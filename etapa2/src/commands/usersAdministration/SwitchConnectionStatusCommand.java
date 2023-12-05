@@ -1,7 +1,6 @@
-package commands.general;
+package commands.usersAdministration;
 
 import commands.AbstractCommand;
-
 import databases.MyDatabase;
 import entities.users.AbstractUser;
 import entities.users.AbstractUser.UserType;

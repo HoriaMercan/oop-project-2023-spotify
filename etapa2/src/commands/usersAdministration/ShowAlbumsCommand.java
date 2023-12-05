@@ -1,4 +1,4 @@
-package commands.general;
+package commands.usersAdministration;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import commands.AbstractCommand;
@@ -6,11 +6,8 @@ import databases.MyDatabase;
 import entities.audioCollections.Album;
 import entities.audioFiles.AudioFile;
 import entities.users.Artist;
-import entities.users.User;
 import lombok.Getter;
 import lombok.Setter;
-import main.Main;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +27,7 @@ public final class ShowAlbumsCommand extends AbstractCommand {
 
         List<Album> albums = artist.getAlbums();
 
-        for (Album album: albums) {
+        for (Album album : albums) {
             output.getResult().add(new ShowAlbumsOutputFormat(
                     album.getName(),
                     album.getSongs().stream().map(AudioFile::getName).toList()
@@ -38,17 +35,6 @@ public final class ShowAlbumsCommand extends AbstractCommand {
         }
     }
 
-    @Getter
-    @Setter
-    public final class ShowAlbumsOutputFormat {
-        private String name;
-        private List<String> songs;
-        public ShowAlbumsOutputFormat(){}
-        public ShowAlbumsOutputFormat(final String name, final List<String>songs) {
-            this.name = name;
-            this.songs = songs;
-        }
-    }
     @Override
     public ShowAlbumsOutput getCommandOutput() {
         return (ShowAlbumsOutput) this.commandOutput;
@@ -68,11 +54,27 @@ public final class ShowAlbumsCommand extends AbstractCommand {
         @Getter
         private List<ShowAlbumsOutputFormat> result = new ArrayList<>();
 
+        public ShowAlbumsOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
+
         public void setResults(final List<ShowAlbumsOutputFormat> results) {
             this.result = results;
         }
-        public ShowAlbumsOutput(final CommandInput commandInput) {
-            super(commandInput);
+    }
+
+    @Getter
+    @Setter
+    public final class ShowAlbumsOutputFormat {
+        private String name;
+        private List<String> songs;
+
+        public ShowAlbumsOutputFormat() {
+        }
+
+        public ShowAlbumsOutputFormat(final String name, final List<String> songs) {
+            this.name = name;
+            this.songs = songs;
         }
     }
 }

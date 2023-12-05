@@ -5,8 +5,6 @@ import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.audioFiles.AudioFile;
 import entities.audioFiles.Song;
-
-import java.util.Comparator;
 import java.util.List;
 
 public final class GetTop5SongsCommand extends AbstractCommand {

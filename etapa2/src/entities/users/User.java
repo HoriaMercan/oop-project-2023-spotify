@@ -2,22 +2,15 @@ package entities.users;
 
 import databases.MyDatabase;
 import entities.audioCollections.Playlist;
-import entities.audioFiles.AudioFile;
 import entities.audioFiles.Song;
 import entities.users.functionalities.PageHandler;
 import entities.users.functionalities.UserPlayer;
 import fileio.input.UserInput;
-import gateways.AdminAPI;
-import gateways.PlayerAPI;
-import gateways.SearchBarAPI;
 import lombok.Getter;
-import lombok.Setter;
-import page_system.EnumPages;
-
-import java.text.CollationElementIterator;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import pagesystem.EnumPages;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public final class User extends AbstractUser {
     private final UserPlayer player = new UserPlayer();
@@ -93,7 +86,7 @@ public final class User extends AbstractUser {
         return isOnline;
     }
 
-    public void setOnline(boolean online) {
+    public void setOnline(final boolean online) {
         isOnline = online;
     }
 
@@ -114,8 +107,10 @@ public final class User extends AbstractUser {
                     this.pageHandler.addPage(EnumPages.ARTIST,
                             () -> {
                                 System.out.println(newSelection);
-                                System.out.println(MyDatabase.getInstance().findArtistByUsername(newSelection));
-                                return MyDatabase.getInstance().findArtistByUsername(newSelection)
+                                System.out.println(MyDatabase.getInstance()
+                                        .findArtistByUsername(newSelection));
+                                return MyDatabase.getInstance()
+                                        .findArtistByUsername(newSelection)
                                         .getPageContent();
                             });
                     this.pageHandler.setCurrentPage(EnumPages.ARTIST);
@@ -135,19 +130,18 @@ public final class User extends AbstractUser {
         return ans;
     }
 
+    /**
+     * @return Home page content specific for every user
+     */
     public String getHomePage() {
         StringBuilder sb = new StringBuilder("Liked songs:\n\t[");
 
         List<Song> newSongs = new ArrayList<>(likedSongs);
         if (!newSongs.isEmpty()) {
-            newSongs.sort(new Comparator<Song>() {
-                @Override
-                public int compare(Song song, Song t1) {
-                    return Integer.compare(t1.likesNo(), song.likesNo());
-                }
-            });
+            newSongs.sort((song, t1) -> Integer.compare(t1.likesNo(), song.likesNo()));
 
-            newSongs = newSongs.stream().limit(5).toList();
+            final int limit = 5;
+            newSongs = newSongs.stream().limit(limit).toList();
             for (Song song : newSongs) {
                 sb.append(song.getName()).append(", ");
             }
@@ -165,6 +159,9 @@ public final class User extends AbstractUser {
         return sb.toString();
     }
 
+    /**
+     * @return Liked contents page content specific for every user
+     */
     public String getLikedPage() {
         StringBuilder sb = new StringBuilder("Liked songs:\n\t[");
 

@@ -1,15 +1,12 @@
-package commands.admin;
+package commands.usersInteractions;
 
 import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.audioCollections.Album;
 import entities.audioFiles.Song;
-import entities.requirements.RequireOnline;
 import entities.users.AbstractUser;
 import entities.users.AbstractUser.UserType;
 import entities.users.Artist;
-import entities.users.Host;
-import entities.users.User;
 import gateways.AdminAPI;
 import lombok.Getter;
 import lombok.Setter;

@@ -9,9 +9,7 @@ import gateways.AdminAPI;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public final class GetTop5AlbumsCommand extends AbstractCommand {
     public GetTop5AlbumsCommand(final GetTop5AlbumsInput getTop5AlbumsInput) {
@@ -25,17 +23,15 @@ public final class GetTop5AlbumsCommand extends AbstractCommand {
 
         List<Album> albums = MyDatabase.getInstance().getAlbums();
 
-        albums.sort(new Comparator<Album>() {
-            @Override
-            public int compare(final Album album, final Album t1) {
+        albums.sort((album, t1) -> {
 
-                int likes1 = AdminAPI.getAlbumsLikes(album);
-                int likes2 = AdminAPI.getAlbumsLikes(t1);
+            int likes1 = AdminAPI.getAlbumsLikes(album);
+            int likes2 = AdminAPI.getAlbumsLikes(t1);
 
-                if (likes1 == likes2)
-                    return album.getName().compareTo(t1.getName());
-                return Integer.compare(likes2, likes1);
+            if (likes1 == likes2) {
+                return album.getName().compareTo(t1.getName());
             }
+            return Integer.compare(likes2, likes1);
         });
         final int limit = 5;
         output.result = albums.stream().map(AudioCollection::getName).limit(limit)
@@ -67,6 +63,7 @@ public final class GetTop5AlbumsCommand extends AbstractCommand {
         public GetTop5AlbumsOutput(final CommandInput commandInput) {
             super(commandInput);
         }
+
         public void setResult(final List<String> result) {
             this.result = result;
         }

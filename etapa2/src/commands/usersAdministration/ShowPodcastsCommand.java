@@ -1,13 +1,11 @@
-package commands.general;
+package commands.usersAdministration;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import commands.AbstractCommand;
 import databases.MyDatabase;
-import entities.audioCollections.Album;
 import entities.audioCollections.Podcast;
 import entities.audioFiles.AudioFile;
-import entities.users.Artist;
 import entities.users.Host;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +29,7 @@ public final class ShowPodcastsCommand extends AbstractCommand {
 
         List<Podcast> podcasts = host.getPodcasts();
 
-        for (Podcast p: podcasts) {
+        for (Podcast p : podcasts) {
             output.getResult().add(new ShowPodcastsOutputFormat(
                     p.getName(),
                     p.getEpisodes().stream().map(AudioFile::getName).toList()
@@ -39,17 +37,6 @@ public final class ShowPodcastsCommand extends AbstractCommand {
         }
     }
 
-    @Getter
-    @Setter
-    public final class ShowPodcastsOutputFormat {
-        private String name;
-        private List<String> episodes;
-        public ShowPodcastsOutputFormat(){}
-        public ShowPodcastsOutputFormat(final String name, final List<String>episodes) {
-            this.name = name;
-            this.episodes = episodes;
-        }
-    }
     @Override
     public ShowPodcastsOutput getCommandOutput() {
         return (ShowPodcastsOutput) this.commandOutput;
@@ -60,6 +47,7 @@ public final class ShowPodcastsCommand extends AbstractCommand {
         @Getter
         @Setter
         private Integer playlistId;
+
         @Override
         public AbstractCommand getCommandFromInput() {
             return new ShowPodcastsCommand(this);
@@ -73,11 +61,27 @@ public final class ShowPodcastsCommand extends AbstractCommand {
         @Getter
         private List<ShowPodcastsOutputFormat> result = new ArrayList<>();
 
+        public ShowPodcastsOutput(final CommandInput commandInput) {
+            super(commandInput);
+        }
+
         public void setResults(final List<ShowPodcastsOutputFormat> results) {
             this.result = results;
         }
-        public ShowPodcastsOutput(final CommandInput commandInput) {
-            super(commandInput);
+    }
+
+    @Getter
+    @Setter
+    public final class ShowPodcastsOutputFormat {
+        private String name;
+        private List<String> episodes;
+
+        public ShowPodcastsOutputFormat() {
+        }
+
+        public ShowPodcastsOutputFormat(final String name, final List<String> episodes) {
+            this.name = name;
+            this.episodes = episodes;
         }
     }
 }

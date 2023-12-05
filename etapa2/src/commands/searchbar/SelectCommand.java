@@ -4,8 +4,6 @@ import commands.AbstractCommand;
 import entities.requirements.RequireOnline;
 import gateways.SearchBarAPI;
 
-import java.util.ArrayList;
-
 public final class SelectCommand extends AbstractCommand implements RequireOnline {
     public SelectCommand(final SelectInput selectInput) {
         super(selectInput);

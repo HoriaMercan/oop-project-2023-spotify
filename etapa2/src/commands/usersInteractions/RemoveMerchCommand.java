@@ -1,4 +1,4 @@
-package commands.admin;
+package commands.usersInteractions;
 
 import commands.AbstractCommand;
 import lombok.Getter;

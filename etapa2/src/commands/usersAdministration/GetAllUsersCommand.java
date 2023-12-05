@@ -1,10 +1,9 @@
-package commands.general;
+package commands.usersAdministration;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.requirements.RequireOnline;
-import entities.users.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -50,9 +49,9 @@ public final class GetAllUsersCommand extends AbstractCommand implements Require
         @Setter
         @Getter
         private List<String> result;
+
         public GetAllUsersOutput(final CommandInput commandInput) {
             super(commandInput);
         }
     }
 }
-

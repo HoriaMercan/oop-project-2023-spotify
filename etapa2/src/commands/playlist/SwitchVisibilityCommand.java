@@ -2,7 +2,6 @@ package commands.playlist;
 
 import commands.AbstractCommand;
 import databases.MyDatabase;
-import entities.users.AbstractUser;
 import entities.users.User;
 import entities.audioCollections.Playlist;
 import entities.requirements.RequireOnline;

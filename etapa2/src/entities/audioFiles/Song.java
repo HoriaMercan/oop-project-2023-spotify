@@ -85,6 +85,9 @@ public final class Song extends AudioFile {
         return usersLike.size();
     }
 
+    /**
+     * @return list of usernames that liked this song
+     */
     public List<String> userLikedThisSong() {
         return usersLike.stream().toList();
     }
@@ -133,6 +136,9 @@ public final class Song extends AudioFile {
         return artist;
     }
 
+    /**
+     * @param artist artist to be set for given song, here we define the creator
+     */
     public void setArtist(final String artist) {
         this.artist = artist;
         creator = artist;

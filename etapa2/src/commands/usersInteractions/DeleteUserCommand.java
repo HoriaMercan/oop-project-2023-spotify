@@ -1,24 +1,15 @@
-package commands.admin;
+package commands.usersInteractions;
 
 import commands.AbstractCommand;
 import databases.MyDatabase;
-import entities.audioCollections.Album;
-import entities.audioCollections.AudioCollection;
-import entities.audioCollections.Playlist;
-import entities.audioFiles.AudioFile;
-import entities.audioFiles.Song;
-import entities.users.*;
+import entities.users.AbstractUser;
 import entities.users.AbstractUser.UserType;
-import entities.users.functionalities.UserPlayer;
+import entities.users.ContentCreator;
+import entities.users.User;
 import gateways.AdminAPI;
-import gateways.PlayerAPI;
-import page_system.EnumPages;
+import pagesystem.EnumPages;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public final class DeleteUserCommand extends AbstractCommand {
     public DeleteUserCommand(final DeleteUserInput deleteUserInput) {
@@ -67,13 +58,15 @@ public final class DeleteUserCommand extends AbstractCommand {
         }
 
         /* Delete all active pages with this Content Creator from users */
-
         switch (newUser.getUserType()) {
             case ARTIST -> {
                 AdminAPI.removeArtist(newUser);
             }
             case HOST -> {
                 AdminAPI.removeHost(newUser);
+            }
+            default -> {
+
             }
         }
         output.setMessage(input.getUsername() + " was successfully deleted.");

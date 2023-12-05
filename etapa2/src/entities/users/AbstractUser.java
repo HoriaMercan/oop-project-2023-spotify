@@ -1,6 +1,5 @@
 package entities.users;
 
-import commands.AbstractCommand;
 import lombok.Getter;
 
 @Getter
@@ -10,7 +9,8 @@ public class AbstractUser {
     protected Integer age;
     protected UserType userType;
 
-    public AbstractUser() {}
+    public AbstractUser() {
+    }
 
     public AbstractUser(final String username, final String city, final Integer age) {
         this.username = username;

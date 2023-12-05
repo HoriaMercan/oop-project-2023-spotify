@@ -8,7 +8,9 @@ public final class PodcastEpisode extends AudioFile {
 
     private String description;
 
-    public PodcastEpisode(){}
+    public PodcastEpisode() {
+    }
+
     public PodcastEpisode(final String name, final Integer duration, final String description) {
         super(name, duration);
         this.description = description;

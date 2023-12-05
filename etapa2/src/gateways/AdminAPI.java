@@ -6,7 +6,11 @@ import entities.audioCollections.AudioCollection;
 import entities.audioCollections.Playlist;
 import entities.audioFiles.AudioFile;
 import entities.audioFiles.Song;
-import entities.users.*;
+import entities.users.AbstractUser;
+import entities.users.Artist;
+import entities.users.ContentCreator;
+import entities.users.Host;
+import entities.users.User;
 import entities.users.functionalities.UserPlayer;
 
 import java.util.ArrayList;
@@ -17,13 +21,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public final class AdminAPI {
+
     private static final MyDatabase DATABASE = MyDatabase.getInstance();
+
+    private AdminAPI() {
+    }
 
     /**
      * @param audioFiles List of audio files
      * @return Either there are audio files with the same name in the list
      */
-    public static boolean audioFilesRepeated(List<? extends AudioFile> audioFiles) {
+    public static boolean audioFilesRepeated(final List<? extends AudioFile> audioFiles) {
         Set<String> nameSet = new HashSet<>(audioFiles.stream().map(AudioFile::getName).toList());
 
         return nameSet.size() != audioFiles.size();
@@ -38,22 +46,34 @@ public final class AdminAPI {
                 && !user.getPlayer().getTypeLoaded().isEmpty()).toList();
     }
 
-    public static void updateAllOnlineUserPlayers(Integer timestamp) {
+    /**
+     * Method that updates all user players to a given timestamp
+     *
+     * @param timestamp Timestamp
+     */
+    public static void updateAllOnlineUserPlayers(final Integer timestamp) {
         getPlayingUsers().forEach(user -> {
             UserPlayer player = user.getPlayer();
             player.updatePlayer(timestamp);
         });
     }
 
-    public static List<User> getUsersListeningToAudioFile(AudioFile audioFile) {
-//        return getPlayingUsers().stream().filter(user ->
-//                user.getPlayer().getCurrentPlayed().getName().equals(audioFile.getName())
-//        ).toList();
+    /**
+     * This methods returns a list of users that have a given audio file loaded in their player
+     *
+     * @param audioFile AudioFile object
+     * @return list of user objects
+     */
+    public static List<User> getUsersListeningToAudioFile(final AudioFile audioFile) {
         return getPlayingUsers().stream().filter(user
                 -> user.getPlayer().getContext().contains(audioFile)).toList();
     }
 
-    public static List<User> getUsersListeningToAudioCollection(AudioCollection coll) {
+    /**
+     * @param coll AudioCollection object
+     * @return list of users listening to a file that is a component of given collection
+     */
+    public static List<User> getUsersListeningToAudioCollection(final AudioCollection coll) {
         Set<User> userListeningTo = new HashSet<>();
 
         coll.getAudioFiles().forEach(
@@ -63,12 +83,20 @@ public final class AdminAPI {
         return userListeningTo.stream().toList();
     }
 
-    public static List<User> getUsersListeningToPlaylist(String playlistName) {
+    /**
+     * @param playlistName name of playlist
+     * @return list of users that have the given playlist loaded in player
+     */
+    public static List<User> getUsersListeningToPlaylist(final String playlistName) {
         return getPlayingUsers().stream().filter(user
                 -> user.getPlayer().getListeningToPlaylist().equals(playlistName)).toList();
     }
 
-    public static List<User> getUListeningToUPlaylists(User user) {
+    /**
+     * @param user Owner of playlists
+     * @return list of users that listens to any of the playlists' of the parameter user
+     */
+    public static List<User> getUListeningToUPlaylists(final User user) {
         List<User> users = new ArrayList<>();
 
         List<Playlist> playlists = MyDatabase.getInstance().getPublicPlaylists()
@@ -80,7 +108,12 @@ public final class AdminAPI {
 
         return users;
     }
-    public static List<User> getUsersListeningToCreator(ContentCreator creator) {
+
+    /**
+     * @param creator Creator object (Host/Artist)
+     * @return list of users that listen to a creator's file
+     */
+    public static List<User> getUsersListeningToCreator(final ContentCreator creator) {
         List<AudioFile> files = new ArrayList<>();
         creator.getContent().forEach(
                 (Consumer<AudioCollection>) audioCollection ->
@@ -93,25 +126,40 @@ public final class AdminAPI {
         return usersListeningToCreator.stream().toList();
     }
 
-    public static AudioCollection getAudioCollectionWithNameFromCreator(ContentCreator creator,
-                                                              String name) {
+    /**
+     * @param creator Creator object
+     * @param name
+     * @return Audio collection that matches both creator and name
+     */
+    public static AudioCollection getAudioCollectionWithNameFromCreator(final ContentCreator
+                                                                                creator,
+                                                                        final String name) {
         List<AudioCollection> ans = creator.getContent().stream()
-                .filter(a -> a.getName().equals(name)).map(a -> (AudioCollection)a).toList();
+                .filter(a -> a.getName().equals(name)).map(a -> (AudioCollection) a).toList();
 
         return ans.isEmpty() ? null : ans.get(0);
     }
-    public static void removeAudioCollectionFromCreator(ContentCreator creator,
-                                                        AudioCollection coll) {
+
+    /**
+     * @param creator
+     * @param coll
+     */
+    public static void removeAudioCollectionFromCreator(final ContentCreator creator,
+                                                        final AudioCollection coll) {
         creator.getContent().remove(coll);
     }
 
-    public static void removeNormalUser(AbstractUser newUser) {
-        MyDatabase.getInstance().getUsers().remove((User) newUser);
+    /**
+     * @param abstractUser
+     */
+    public static void removeNormalUser(final AbstractUser abstractUser) {
+        MyDatabase.getInstance().getUsers().remove((User) abstractUser);
 
         // Remove all playlists created by the user ? i don't get why it should function like
         // that tho'
-        List <Playlist> usersPlaylists = MyDatabase.getInstance().getPublicPlaylists().stream()
-                .filter(playlist -> playlist.getOwner().equals(newUser.getUsername())).toList();
+        List<Playlist> usersPlaylists = MyDatabase.getInstance().getPublicPlaylists().stream()
+                .filter(playlist -> playlist.getOwner()
+                        .equals(abstractUser.getUsername())).toList();
 
         MyDatabase.getInstance().getUsers().forEach(user -> user.getFollowedPlaylists().removeAll(
                 usersPlaylists.stream()
@@ -120,15 +168,18 @@ public final class AdminAPI {
         MyDatabase.getInstance().getPublicPlaylists().removeAll(usersPlaylists);
 
         // Remove the user from followed playlists
-        List <Playlist> followedPlaylists = MyDatabase.getInstance().getPublicPlaylists()
+        List<Playlist> followedPlaylists = MyDatabase.getInstance().getPublicPlaylists()
                 .stream()
-                .filter(playlist -> playlist.isFollowedBy(newUser.getUsername())).toList();
+                .filter(playlist -> playlist.isFollowedBy(abstractUser.getUsername())).toList();
 
-        followedPlaylists.forEach(playlist -> playlist.getUnfollowed(newUser.getUsername()));
+        followedPlaylists.forEach(playlist -> playlist.getUnfollowed(abstractUser.getUsername()));
     }
 
-    public static void removeArtist(AbstractUser newUser) {
-        Artist artist = (Artist) newUser;
+    /**
+     * @param abstractUser
+     */
+    public static void removeArtist(final AbstractUser abstractUser) {
+        Artist artist = (Artist) abstractUser;
         List<Song> allSongs = new ArrayList<>();
         for (Album album : artist.getAlbums()) {
             allSongs.addAll(album.getSongs());
@@ -149,19 +200,30 @@ public final class AdminAPI {
         MyDatabase.getInstance().getArtists().remove(artist);
     }
 
-    public static void removeHost(AbstractUser user) {
-        Host host = (Host) user;
+    /**
+     * @param abstractUser
+     */
+    public static void removeHost(final AbstractUser abstractUser) {
+        Host host = (Host) abstractUser;
         MyDatabase.getInstance().getPodcasts().removeAll(host.getPodcasts());
         MyDatabase.getInstance().getHosts().remove(host);
     }
 
-    public static int getAlbumsLikes(Album album) {
+    /**
+     * @param album
+     * @return likes no
+     */
+    public static int getAlbumsLikes(final Album album) {
         AtomicInteger likes = new AtomicInteger(0);
         album.getSongs().forEach(song -> likes.addAndGet(song.likesNo()));
         return likes.get();
     }
 
-    public static int getArtistLikes(Artist artist) {
+    /**
+     * @param artist
+     * @return
+     */
+    public static int getArtistLikes(final Artist artist) {
         AtomicInteger likes = new AtomicInteger(0);
 
         artist.getAlbums().forEach(album -> likes.addAndGet(getAlbumsLikes(album)));
