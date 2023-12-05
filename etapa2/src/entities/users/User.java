@@ -2,19 +2,20 @@ package entities.users;
 
 import databases.MyDatabase;
 import entities.audioCollections.Playlist;
+import entities.audioFiles.AudioFile;
 import entities.audioFiles.Song;
 import entities.users.functionalities.PageHandler;
 import entities.users.functionalities.UserPlayer;
 import fileio.input.UserInput;
+import gateways.AdminAPI;
 import gateways.PlayerAPI;
 import gateways.SearchBarAPI;
 import lombok.Getter;
 import lombok.Setter;
 import page_system.EnumPages;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.text.CollationElementIterator;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -24,7 +25,7 @@ public final class User extends AbstractUser {
     @Getter
     private final PageHandler pageHandler = new PageHandler();
     @Getter
-    private final List<String> likedSongs = new ArrayList<>();
+    private final List<Song> likedSongs = new ArrayList<>();
     @Getter
     private final List<String> followedPlaylists = new ArrayList<>();
     private final HashMap<Integer, String> userPlaylists = new HashMap<>();
@@ -137,9 +138,18 @@ public final class User extends AbstractUser {
     public String getHomePage() {
         StringBuilder sb = new StringBuilder("Liked songs:\n\t[");
 
-        if (!likedSongs.isEmpty()) {
-            for (String song : likedSongs) {
-                sb.append(song).append(", ");
+        List<Song> newSongs = new ArrayList<>(likedSongs);
+        if (!newSongs.isEmpty()) {
+            newSongs.sort(new Comparator<Song>() {
+                @Override
+                public int compare(Song song, Song t1) {
+                    return Integer.compare(t1.likesNo(), song.likesNo());
+                }
+            });
+
+            newSongs = newSongs.stream().limit(5).toList();
+            for (Song song : newSongs) {
+                sb.append(song.getName()).append(", ");
             }
             sb.delete(sb.length() - 2, sb.length());
         }
@@ -159,8 +169,8 @@ public final class User extends AbstractUser {
         StringBuilder sb = new StringBuilder("Liked songs:\n\t[");
 
         if (!likedSongs.isEmpty()) {
-            List<Song> songs = likedSongs.stream()
-                            .map(ev -> MyDatabase.getInstance().findSongByName(ev)).toList();
+            List<Song> songs = likedSongs;
+
             for (Song song : songs) {
                 sb.append(song).append(", ");
             }

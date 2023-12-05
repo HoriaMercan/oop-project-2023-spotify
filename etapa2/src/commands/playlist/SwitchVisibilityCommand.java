@@ -37,6 +37,7 @@ public final class SwitchVisibilityCommand extends AbstractCommand implements Re
             } else {
                 visibilityType = "private";
             }
+
             output.setMessage("Visibility status updated successfully to "
                     + visibilityType + ".");
             return;

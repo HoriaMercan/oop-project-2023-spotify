@@ -31,6 +31,9 @@ public final class GetTop5AlbumsCommand extends AbstractCommand {
 
                 int likes1 = AdminAPI.getAlbumsLikes(album);
                 int likes2 = AdminAPI.getAlbumsLikes(t1);
+
+                if (likes1 == likes2)
+                    return album.getName().compareTo(t1.getName());
                 return Integer.compare(likes2, likes1);
             }
         });

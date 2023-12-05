@@ -230,15 +230,16 @@ public final class PlayerAPI {
     public static String getLikeMessage(final String username, final Integer timestamp) {
         User user = DATABASE.findUserByUsername(username);
         String currentType = getCurrentPlayedType(username, timestamp);
-        if (currentType.equals("song") || currentType.equals("playlist")) {
+        if (currentType.equals("song") || currentType.equals("playlist")
+                || currentType.equals("album")) {
             Song song = (Song) user.getPlayer().getCurrentPlayed();
             if (song.songUnlikeByUser(username)) {
-                user.getLikedSongs().remove(song.getName());
+                user.getLikedSongs().remove(song);
                 return "Unlike registered successfully.";
 
             }
             song.songLikeByUser(username, timestamp);
-            user.getLikedSongs().add(song.getName());
+            user.getLikedSongs().add(song);
             return "Like registered successfully.";
         } else if (currentType.isEmpty()) {
             return "Please load a source before liking or unliking.";

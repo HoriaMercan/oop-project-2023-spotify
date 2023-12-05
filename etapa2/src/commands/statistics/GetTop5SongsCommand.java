@@ -22,17 +22,14 @@ public final class GetTop5SongsCommand extends AbstractCommand {
         List<Song> songs = new java.util.ArrayList<>(MyDatabase.getInstance()
                 .getSongs());
 
-        songs.sort(new Comparator<Song>() {
-            @Override
-            public int compare(final Song song, final Song t1) {
-                if (song.likesNo() > t1.likesNo()) {
-                    return -1;
-                }
-                if (song.likesNo().equals(t1.likesNo())) {
-                    return 0;
-                }
-                return 1;
+        songs.sort((song, t1) -> {
+            if (song.likesNo() > t1.likesNo()) {
+                return -1;
             }
+            if (song.likesNo().equals(t1.likesNo())) {
+                return 0;
+            }
+            return 1;
         });
 
         final int limit = 5;

@@ -141,7 +141,7 @@ public final class AdminAPI {
                                     .findUserByUsername(string))
                             .toList();
             for (User user : users) {
-                user.getLikedSongs().remove(everySong.getName());
+                user.getLikedSongs().remove(everySong);
             }
         }
         MyDatabase.getInstance().getSongs().removeAll(allSongs);

@@ -18,6 +18,8 @@ public final class UserPlayer {
     private int index;
     private boolean repeatOnce = false;
     private AudioFileSelector selector;
+
+    @Setter
     private Integer lastUpdatedTime;
     private Integer currentAudioFileTime = 0;
     private String playedPodcastName = "";

@@ -24,6 +24,11 @@ public final class RepeatCommand extends AbstractCommand implements RequireOnlin
         }
 
         User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
+
+        if (input.getTimestamp().equals(10019)) {
+            System.out.println("something");
+        }
+        user.getPlayer().updatePlayer(input.getTimestamp());
         if (user.getPlayer().getTypeLoaded().isEmpty()) {
             output.setMessage("Please load a source before setting the repeat status.");
             return;
