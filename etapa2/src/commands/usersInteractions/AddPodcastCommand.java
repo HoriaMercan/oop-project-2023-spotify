@@ -36,7 +36,6 @@ public final class AddPodcastCommand extends AbstractCommand {
             return;
         }
         Host host = (Host) user;
-
         if (host.hasPodcast(input.name)) {
             output.setMessage(input.getUsername() + " has another podcast with the same name.");
             return;
@@ -48,11 +47,8 @@ public final class AddPodcastCommand extends AbstractCommand {
         }
 
         Podcast podcast = new Podcast(input.getName(), input.getDescription(), input.getEpisodes());
-
         host.getPodcasts().add(podcast);
-
         MyDatabase.getInstance().getPodcasts().add(podcast);
-
         output.setMessage(input.getUsername() + " has added new podcast successfully.");
     }
 

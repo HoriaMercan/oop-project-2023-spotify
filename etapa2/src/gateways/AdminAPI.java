@@ -12,6 +12,7 @@ import entities.users.ContentCreator;
 import entities.users.Host;
 import entities.users.User;
 import entities.users.functionalities.UserPlayer;
+import pagesystem.EnumPages;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -229,5 +230,23 @@ public final class AdminAPI {
         artist.getAlbums().forEach(album -> likes.addAndGet(getAlbumsLikes(album)));
 
         return likes.get();
+    }
+
+    public static boolean userInteractWithOther(final AbstractUser absUser) {
+        List<User> listeningTo = AdminAPI.getUsersListeningToCreator((ContentCreator) absUser);
+
+        List<User> usersHavingPage =
+                AdminAPI.getOnlineUsers().stream().filter(user -> user.getPageHandler()
+                        .getContentCreatorPage().equals(absUser.getUsername())).toList();
+
+        List<User> usersHavingPageActive = usersHavingPage.stream()
+                .filter(user -> user.getPageHandler().getCurrentPage().equals(EnumPages.HOST)
+                        || user.getPageHandler().getCurrentPage().equals(EnumPages.ARTIST)).toList();
+        if (!listeningTo.isEmpty() || !usersHavingPageActive.isEmpty()) {
+            usersHavingPage.forEach(user -> user.getPageHandler().removeNonStandardPages());
+
+            return true;
+        }
+        return false;
     }
 }

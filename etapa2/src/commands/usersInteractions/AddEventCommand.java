@@ -50,7 +50,6 @@ public final class AddEventCommand extends AbstractCommand {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         try {
             date = dateFormat.parse(input.getDate());
-
             if (!dateFormat.format(date).equals(input.getDate())) {
                 output.setMessage("Event for "
                         + input.getUsername() + " does not have a valid date.");

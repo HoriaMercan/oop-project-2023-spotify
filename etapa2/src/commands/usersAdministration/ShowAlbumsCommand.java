@@ -24,8 +24,9 @@ public final class ShowAlbumsCommand extends AbstractCommand {
 
         Artist artist = (Artist) MyDatabase.getInstance()
                 .findAbstractUserByUsername(input.getUsername());
-
+        assert artist != null;
         List<Album> albums = artist.getAlbums();
+        assert albums != null;
 
         for (Album album : albums) {
             output.getResult().add(new ShowAlbumsOutputFormat(

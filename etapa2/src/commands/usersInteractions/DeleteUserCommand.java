@@ -22,51 +22,34 @@ public final class DeleteUserCommand extends AbstractCommand {
         DeleteUserInput input = (DeleteUserInput) this.commandInput;
         DeleteUserOutput output = (DeleteUserOutput) this.commandOutput;
 
-        AbstractUser newUser =
+        AbstractUser absUser =
                 MyDatabase.getInstance().findAbstractUserByUsername(input.getUsername());
-        if (newUser == null) {
+        if (absUser == null) {
             output.setMessage("The username " + input.getUsername() + " doesn't exist.");
             return;
         }
-
         AdminAPI.updateAllOnlineUserPlayers(input.getTimestamp());
 
-        if (newUser.getUserType().equals(UserType.NORMAL)) {
-            if (!AdminAPI.getUListeningToUPlaylists((User) newUser).isEmpty()) {
+        if (absUser.getUserType().equals(UserType.NORMAL)) {
+            if (!AdminAPI.getUListeningToUPlaylists((User) absUser).isEmpty()) {
                 output.setMessage(input.getUsername() + " can't be deleted.");
                 return;
             }
-            AdminAPI.removeNormalUser(newUser);
+            AdminAPI.removeNormalUser(absUser);
             output.setMessage(input.getUsername() + " was successfully deleted.");
             return;
         }
 
-        List<User> listeningTo = AdminAPI.getUsersListeningToCreator((ContentCreator) newUser);
-
-        List<User> usersHavingPage =
-                AdminAPI.getOnlineUsers().stream().filter(user -> user.getPageHandler()
-                        .getContentCreatorPage().equals(newUser.getUsername())).toList();
-
-        List<User> usersHavingPageActive = usersHavingPage.stream()
-                .filter(user -> user.getPageHandler().getCurrentPage().equals(EnumPages.HOST)
-                || user.getPageHandler().getCurrentPage().equals(EnumPages.ARTIST)).toList();
-        System.out.println(listeningTo);
-        if (!listeningTo.isEmpty() || !usersHavingPageActive.isEmpty()) {
-            usersHavingPage.forEach(user -> user.getPageHandler().removeNonStandardPages());
+        if (AdminAPI.userInteractWithOther(absUser)) {
             output.setMessage(input.getUsername() + " can't be deleted.");
             return;
         }
 
         /* Delete all active pages with this Content Creator from users */
-        switch (newUser.getUserType()) {
-            case ARTIST -> {
-                AdminAPI.removeArtist(newUser);
-            }
-            case HOST -> {
-                AdminAPI.removeHost(newUser);
-            }
+        switch (absUser.getUserType()) {
+            case ARTIST -> AdminAPI.removeArtist(absUser);
+            case HOST -> AdminAPI.removeHost(absUser);
             default -> {
-
             }
         }
         output.setMessage(input.getUsername() + " was successfully deleted.");
