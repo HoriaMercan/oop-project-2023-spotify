@@ -59,6 +59,13 @@ de functii lambda pentru a returna metodele atribuite fiecarui tip de pagina (as
 genera o pagina vom implementa interfata [pagesystem/Pageable]). Am adaugat metode noi in clasele
 abstracte [entities/audioCollections/AudioCollection] si [entities/audioFiles/AudioFile] pentru a opera mai bine
 colectiile de melodii/episoade de podcast si pentru reducerea codului.
-Am incercat sa fragmenetez cat mai mult si mai util functiile de stergere a fiecarui tip de user 
-(verificand pentru fiecare tip particular de user daca fisierele lui sunt ascultate). Toate functiile acestea sunt implementate
+Am incercat sa fragmenetez cat mai mult si mai util functiile de stergere a fiecarui tip de user
+(verificand pentru fiecare tip particular de user daca fisierele lui sunt ascultate). Toate functiile acestea sunt
+implementate
 in [gateways/AdminAPI].
+
+## Observatie
+
+Vreau sa fac observatia ca pentru realizarea tipurilor de comenzi am fost inspirat de Factory Pattern,
+chiar daca Input-ul/Output-ul comenzilor se afla in fiecare clasa a comenzii ca subtype.
+Pentru etapa urmatoare vreau sa ma gandesc unde ar fi mai interesant sa folosesc Visitor Pattern sau Decorator Pattern.
