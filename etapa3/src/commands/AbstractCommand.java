@@ -47,6 +47,7 @@ import commands.statistics.GetTop5ArtistsCommand;
 import commands.statistics.GetTop5PlaylistsCommand;
 import commands.statistics.GetTop5SongsCommand;
 import commands.statistics.ShowPreferredSongsCommand;
+import commands.wrapped.WrappedCommand;
 
 /**
  * Base class of all commands
@@ -71,7 +72,7 @@ public abstract class AbstractCommand {
      * @return generic commandOutput
      */
     public CommandOutput getCommandOutput() {
-        return new CommandOutput();
+        return this.commandOutput;
     }
 
     @JsonTypeInfo(
@@ -136,6 +137,7 @@ public abstract class AbstractCommand {
             @Type(value = RemovePodcastCommand.RemovePodcastInput.class, name = "removePodcast"),
             @Type(value = RemoveAlbumCommand.RemoveAlbumInput.class, name = "removeAlbum"),
             @Type(value = ChangePageCommand.ChangePageInput.class, name = "changePage"),
+            @Type(value = WrappedCommand.WrappedInput.class, name = "wrapped"),
     })
     public static class CommandInput {
         private String username;
@@ -244,6 +246,7 @@ public abstract class AbstractCommand {
             @Type(value = RemovePodcastCommand.RemovePodcastOutput.class, name = "removePodcast"),
             @Type(value = RemoveAlbumCommand.RemoveAlbumOutput.class, name = "removeAlbum"),
             @Type(value = ChangePageCommand.ChangePageOutput.class, name = "changePage"),
+            @Type(value = WrappedCommand.WrappedOutput.class, name = "wrapped"),
     })
     public static class CommandOutput {
         protected String user;

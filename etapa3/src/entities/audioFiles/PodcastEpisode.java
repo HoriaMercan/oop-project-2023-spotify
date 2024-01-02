@@ -1,10 +1,12 @@
 package entities.audioFiles;
 
+import entities.wrapper.Listenable;
+import entities.wrapper.VisitorWrapper;
 import fileio.input.EpisodeInput;
 import lombok.Getter;
 
 @Getter
-public final class PodcastEpisode extends AudioFile {
+public final class PodcastEpisode extends AudioFile implements Listenable {
 
     private String description;
 
@@ -32,5 +34,10 @@ public final class PodcastEpisode extends AudioFile {
     @Override
     public String toString() {
         return name + " - " + description;
+    }
+
+    @Override
+    public void acceptListen(VisitorWrapper visitor) {
+        visitor.visitListen(this);
     }
 }

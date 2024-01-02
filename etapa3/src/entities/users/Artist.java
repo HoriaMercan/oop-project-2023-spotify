@@ -4,6 +4,7 @@ import entities.audioCollections.Album;
 import entities.audioCollections.AudioCollection;
 import entities.helpers.Event;
 import entities.helpers.Merch;
+import entities.wrapper.statistics.ArtistWrapperStatistics;
 import lombok.Getter;
 import lombok.Setter;
 import pagesystem.Pageable;
@@ -21,6 +22,7 @@ public final class Artist extends AbstractUser implements Pageable, ContentCreat
     public Artist(final String username, final String city, final Integer age) {
         super(username, city, age);
         this.userType = UserType.ARTIST;
+        wrapperStatistics = new ArtistWrapperStatistics();
     }
 
     /**

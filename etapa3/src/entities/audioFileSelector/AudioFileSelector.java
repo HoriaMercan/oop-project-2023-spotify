@@ -1,6 +1,10 @@
 package entities.audioFileSelector;
 
 import entities.audioFiles.AudioFile;
+import entities.wrapper.OneListen;
+import entities.wrapper.statistics.WrapperStatistics;
+
+import java.util.function.Consumer;
 
 /**
  * Class AudioFileSelector offers the methods necessary to operate through
@@ -13,6 +17,10 @@ public class AudioFileSelector {
     protected AudioFileSelectorEnd end;
     protected AudioFileSelectorNext next;
     protected AudioFileSelectorOutOfBound outOfBound;
+
+    protected AudioFileSender send;//ToDo: Complete here to
+    // send one listen to the wrapper
+
 
     AudioFileSelector(final AudioFileSelectorCurrent basic,
                       final AudioFileSelectorNext next,
@@ -28,8 +36,17 @@ public class AudioFileSelector {
                              final AudioFileSelectorOutOfBound outOfBound) {
         this(basic, next, end);
         this.outOfBound = outOfBound;
+        send = null;
     }
 
+    public AudioFileSelector(final AudioFileSelectorCurrent basic,
+                             final AudioFileSelectorNext next,
+                             final AudioFileSelectorEnd end,
+                             final AudioFileSelectorOutOfBound outOfBound,
+                             final AudioFileSender send) {
+        this(basic, next, end, outOfBound);
+        this.send = send;
+    }
     public AudioFileSelector(final AudioFileSelectorOutOfBound outOfBound) {
         this.outOfBound = outOfBound;
     }
@@ -59,6 +76,12 @@ public class AudioFileSelector {
         next.next();
         if (end.end()) {
             outOfBound.nextWhenEnded();
+            return;
+        }
+        if (send != null) {
+            send.send();
+        }
+        else {
         }
     }
 
@@ -73,4 +96,5 @@ public class AudioFileSelector {
     public final void setNext(final AudioFileSelectorNext next) {
         this.next = next;
     }
+
 }

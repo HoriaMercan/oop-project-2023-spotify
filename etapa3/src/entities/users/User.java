@@ -5,6 +5,7 @@ import entities.audioCollections.Playlist;
 import entities.audioFiles.Song;
 import entities.users.functionalities.PageHandler;
 import entities.users.functionalities.UserPlayer;
+import entities.wrapper.statistics.UserWrapperStatistics;
 import fileio.input.UserInput;
 import lombok.Getter;
 import pagesystem.EnumPages;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public final class User extends AbstractUser {
-    private final UserPlayer player = new UserPlayer();
+    private final UserPlayer player = new UserPlayer(this);
 
     @Getter
     private final PageHandler pageHandler = new PageHandler();
@@ -31,6 +32,8 @@ public final class User extends AbstractUser {
 
     public User(final UserInput input) {
         this(input.getUsername(), input.getCity(), input.getAge());
+        wrapperStatistics = new UserWrapperStatistics();
+        player.setWrapperStatistics(wrapperStatistics);
     }
 
     public User(final String username, final String city, final Integer age) {
@@ -38,6 +41,8 @@ public final class User extends AbstractUser {
         this.city = city;
         this.age = age;
         userType = UserType.NORMAL;
+        wrapperStatistics = new UserWrapperStatistics();
+        player.setWrapperStatistics(wrapperStatistics);
     }
 
     public User() {

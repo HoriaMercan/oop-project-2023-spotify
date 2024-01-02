@@ -3,6 +3,7 @@ package entities.users;
 import entities.audioCollections.AudioCollection;
 import entities.audioCollections.Podcast;
 import entities.helpers.Announcement;
+import entities.wrapper.statistics.HostWrapperStatistics;
 import lombok.Getter;
 import lombok.Setter;
 import pagesystem.Pageable;
@@ -19,6 +20,7 @@ public final class Host extends AbstractUser implements Pageable, ContentCreator
     public Host(final String username, final String city, final Integer age) {
         super(username, city, age);
         this.userType = UserType.HOST;
+        wrapperStatistics = new HostWrapperStatistics();
     }
 
     /**

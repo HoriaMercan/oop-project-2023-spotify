@@ -3,7 +3,12 @@ package entities.users.functionalities;
 import entities.audioFileSelector.AudioFileSelector;
 import entities.audioFileSelector.AudioFileSelectorNext;
 import entities.audioFileSelector.AudioFileSelectorOutOfBound;
+import entities.audioFileSelector.AudioFileSender;
 import entities.audioFiles.AudioFile;
+import entities.users.User;
+import entities.wrapper.Listenable;
+import entities.wrapper.OneListen;
+import entities.wrapper.statistics.WrapperStatistics;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +23,8 @@ public final class UserPlayer {
     // this retain the episode
     private final HashMap<String, Integer> podcastRemainderTime = new HashMap<>();
     private final HashMap<String, Integer> podcastRemainderEpisode = new HashMap<>();
+    @Setter
+    private WrapperStatistics wrapperStatistics = null;
     private final int repeatStatusNo = 3;
     private final int timeThreshold = 90;
     private int index;
@@ -55,11 +62,29 @@ public final class UserPlayer {
             UserPlayer.this.repeatStatus = 0;
         }
     };
+
+    private final AudioFileSender send = new AudioFileSender() {
+        @Override
+        public void send() {
+            if (isPaused) {
+                return;
+            }
+            OneListen listen = OneListen.builder.setUser(self)
+                    .setAudioFile((Listenable) getCurrentPlayed()).build();
+
+            self.getWrapperStatistics().addOneListen(listen);
+        }
+    };
     private ArrayList<Integer> indexArrays;
     @Getter
     private String listeningToPlaylist = "";
 
     public UserPlayer() {
+    }
+
+    User self;
+    public UserPlayer(User user) {
+        self = user;
     }
 
     public List<String> getLastSearched() {
@@ -112,6 +137,7 @@ public final class UserPlayer {
             index = 0;
         }
 
+        send.send();
     }
 
     public void setPlayedPodcastName(final String playedPodcastName) {
@@ -283,7 +309,8 @@ public final class UserPlayer {
         this.selector = new AudioFileSelector(() -> UserPlayer.this.context
                 .get(indexArrays.get(UserPlayer.this.index)),
                 () -> UserPlayer.this.index += 1,
-                () -> UserPlayer.this.index >= UserPlayer.this.context.size(), outOfBound);
+                () -> UserPlayer.this.index >= UserPlayer.this.context.size(), outOfBound,
+                send);
 
         UserPlayer.this.repeatStatus = 0;
         isShuffle = false;

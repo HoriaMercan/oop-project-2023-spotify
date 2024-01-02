@@ -1,12 +1,14 @@
 package entities.audioFiles;
 
+import entities.wrapper.Listenable;
+import entities.wrapper.VisitorWrapper;
 import fileio.input.SongInput;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public final class Song extends AudioFile {
+public final class Song extends AudioFile implements Listenable {
     private final HashSet<String> usersLike = new HashSet<>();
     private final HashMap<String, Integer> userLikedAtTime = new HashMap<>();
     private String album;
@@ -147,5 +149,10 @@ public final class Song extends AudioFile {
     @Override
     public String toString() {
         return name + " - " + artist;
+    }
+
+    @Override
+    public void acceptListen(VisitorWrapper visitor) {
+        visitor.visitListen(this);
     }
 }

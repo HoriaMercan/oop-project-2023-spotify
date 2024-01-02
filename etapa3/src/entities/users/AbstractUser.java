@@ -1,5 +1,6 @@
 package entities.users;
 
+import entities.wrapper.statistics.WrapperStatistics;
 import lombok.Getter;
 
 @Getter
@@ -9,6 +10,7 @@ public class AbstractUser {
     protected Integer age;
     protected UserType userType;
 
+    protected WrapperStatistics wrapperStatistics;
     public AbstractUser() {
     }
 
