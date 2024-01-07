@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public final class SearchBarAPI {
     private static final MyDatabase MY_DATABASE = MyDatabase.getInstance();
@@ -45,6 +46,11 @@ public final class SearchBarAPI {
         };
     }
 
+    private static List<Album> getAlbumsForSearch() {
+        return MyDatabase.getInstance().getArtists().stream()
+                .flatMap(artist -> artist.getAlbums().stream())
+                .collect(Collectors.toList());
+    }
     /**
      * This function execute a search for songs by considering a filter
      *
@@ -63,7 +69,8 @@ public final class SearchBarAPI {
                 || isIncluded(song.getTags(), filter.getTags());
         Predicate<Song> byGenre = song ->
                 song.getGenre().toLowerCase().startsWith(filter.getGenre().toLowerCase());
-        Predicate<Song> byName = song -> song.getName().startsWith(filter.getName());
+        Predicate<Song> byName = song -> song.getName().toLowerCase()
+                .startsWith(filter.getName().toLowerCase());
         Predicate<Song> byLyrics = song -> song.getLyrics().toLowerCase()
                 .contains(filter.getLyrics().toLowerCase());
         Predicate<Song> byAlbum = song -> song.getAlbum().startsWith(filter.getAlbum());
@@ -178,7 +185,7 @@ public final class SearchBarAPI {
     public static List<String> getAlbumsByFilter(final String username, final Integer timestamp,
                                                  final Filter filter) {
         List<String> resultAlbums;
-        List<Album> albums = MyDatabase.getInstance().getAlbums();
+        List<Album> albums = getAlbumsForSearch();
 
         Predicate<Album> byName = album -> album.getName().startsWith(filter.getName());
         Predicate<Album> byOwner = album -> album.getOwner().startsWith(filter.getOwner());

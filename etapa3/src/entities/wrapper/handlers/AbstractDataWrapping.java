@@ -3,6 +3,7 @@ package entities.wrapper.handlers;
 
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,7 +21,7 @@ public abstract class AbstractDataWrapping {
         protected Map<String, Integer> topSongs = null;
         protected Map<String, Integer> topAlbums = null;
         protected Map<String, Integer> topEpisodes = null;
-        protected Map<String, Integer> topFans = null;
+        protected List<String> topFans = null;
         protected Integer listeners = null;
 
         public AbstractBuilder setTopArtists(Map<String, Integer> topArtists) {
@@ -48,7 +49,7 @@ public abstract class AbstractDataWrapping {
             return this;
         }
 
-        public AbstractBuilder setTopFans(Map<String, Integer> topFans) {
+        public AbstractBuilder setTopFans(List<String> topFans) {
             this.topFans = topFans;
             return this;
         }

@@ -10,7 +10,7 @@ public final class UserDataWrapping extends AbstractDataWrapping {
     private final Map<String, Integer> topGenres;
     private final Map<String, Integer> topSongs;
     private final Map<String, Integer> topAlbums;
-    private final Map<String, Integer> topPodcasts;
+    private final Map<String, Integer> topEpisodes;
 
     private UserDataWrapping(Map<String, Integer> topArtists, Map<String, Integer> topGenres,
                              Map<String, Integer> topSongs, Map<String, Integer> topAlbums,
@@ -19,7 +19,7 @@ public final class UserDataWrapping extends AbstractDataWrapping {
         this.topGenres = topGenres;
         this.topSongs = topSongs;
         this.topAlbums = topAlbums;
-        this.topPodcasts = topEpisodes;
+        this.topEpisodes = topEpisodes;
     }
 
     private UserDataWrapping(UserDataWrapping.Builder builder) {

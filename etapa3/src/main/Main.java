@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import commands.AbstractCommand;
 import commands.AbstractCommand.CommandOutput;
+import commands.wrapped.EndProgramCommand;
 import databases.MyDatabase;
 import fileio.input.LibraryInput;
 
@@ -104,6 +105,10 @@ public final class Main {
             command.executeCommand();
             commandOutputs.add(command.getCommandOutput());
         }
+
+        EndProgramCommand endCommand = new EndProgramCommand();
+
+        commandOutputs.add(endCommand.executeCommand());
 
         objectMapper.writerWithDefaultPrettyPrinter().
                 forType(typeFactory.constructCollectionType(List.class, AbstractCommand

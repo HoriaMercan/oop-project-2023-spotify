@@ -1,12 +1,15 @@
 package entities.wrapper.statistics;
 
+import entities.audioFiles.AudioFile;
 import entities.audioFiles.PodcastEpisode;
 import entities.audioFiles.Song;
 import entities.users.User;
 import entities.wrapper.OneListen;
 import entities.wrapper.VisitorWrapper;
 import entities.wrapper.handlers.AbstractDataWrapping;
+import entities.wrapper.handlers.ArtistDataWrapping;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,15 +39,30 @@ public class ArtistWrapperStatistics extends WrapperStatistics {
     Map<String, Integer> albumsListened = new HashMap<>();
     Map<String, Integer> fans = new HashMap<>();
 
+//    ArrayList<>
+
     public AbstractDataWrapping getDataWrapping() {
-        return null;
+        if (listenedSongs.isEmpty() && albumsListened.isEmpty() && fans.isEmpty())
+            return null;
+        return ArtistDataWrapping.builder
+                .setTopSongs(transformToFormat(listenedSongs, AudioFile::getName))
+                .setTopAlbums(transformToFormat(albumsListened, s->s))
+                .setTopFans(transformToFormatList(fans, s->s))
+                .setListeners(fans.size())
+                .build();
     }
 
     public void addOneListen(OneListen listen) {
-        listen.getAudioFile().acceptListen(visitorAudioFile);
+        listen.getAudioFile().acceptListen(this.visitorAudioFile);
 
         String username = listen.getUser().getUsername();
         fans.compute(username, stringUpdater);
+
+        listen.getUser().getPayment().addSong((Song) listen.getAudioFile());
+    }
+
+    public boolean wasEverListened() {
+        return !listenedSongs.isEmpty();
     }
 
 }

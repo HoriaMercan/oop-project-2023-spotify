@@ -75,6 +75,10 @@ public final class UserPlayer {
             self.getWrapperStatistics().addOneListen(listen);
         }
     };
+
+    public void setNextAd() {
+        selector.setNextIsAd(true);
+    }
     private ArrayList<Integer> indexArrays;
     @Getter
     private String listeningToPlaylist = "";
@@ -123,6 +127,7 @@ public final class UserPlayer {
         this.typeLoaded = this.typeSearched;
         this.isPaused = false;
         this.lastUpdatedTime = timestamp;
+        this.selector.unsetAds();
 
         if (this.typeLoaded.equals("podcast")) {
             if (podcastRemainderTime.containsKey(playedPodcastName)) {
@@ -306,7 +311,7 @@ public final class UserPlayer {
         for (int i = 0; i < this.context.size(); i++) {
             indexArrays.add(i);
         }
-        this.selector = new AudioFileSelector(() -> UserPlayer.this.context
+        this.selector = new AudioFileSelector(self, () -> UserPlayer.this.context
                 .get(indexArrays.get(UserPlayer.this.index)),
                 () -> UserPlayer.this.index += 1,
                 () -> UserPlayer.this.index >= UserPlayer.this.context.size(), outOfBound,
@@ -331,7 +336,7 @@ public final class UserPlayer {
         for (int i = 0; i < this.context.size(); i++) {
             indexArrays.add(i);
         }
-        this.selector = new AudioFileSelector(() -> UserPlayer.this.context
+        this.selector = new AudioFileSelector(self, () -> UserPlayer.this.context
                 .get(indexArrays.get(UserPlayer.this.index)),
                 () -> UserPlayer.this.index += 1,
                 () -> UserPlayer.this.index >= UserPlayer.this.context.size(), outOfBound);

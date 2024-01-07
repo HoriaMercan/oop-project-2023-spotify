@@ -92,6 +92,7 @@ public final class PlayerAPI {
             return res;
         }
 
+        AdminAPI.updateAllOnlineUserPlayers(timestamp);
         player.loadPlayer(timestamp);
         player.setLastSelected("");
         player.setLastSearched(null);

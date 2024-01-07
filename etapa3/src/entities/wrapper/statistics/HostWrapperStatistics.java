@@ -1,11 +1,13 @@
 package entities.wrapper.statistics;
 
+import entities.audioFiles.AudioFile;
 import entities.audioFiles.PodcastEpisode;
 import entities.audioFiles.Song;
 import entities.users.User;
 import entities.wrapper.OneListen;
 import entities.wrapper.VisitorWrapper;
 import entities.wrapper.handlers.AbstractDataWrapping;
+import entities.wrapper.handlers.HostDataWrapping;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +34,14 @@ public class HostWrapperStatistics extends WrapperStatistics {
     Map<String, Integer> fans = new HashMap<>();
 
     public AbstractDataWrapping getDataWrapping() {
-        return null;
+        if (listenedEpisodes.isEmpty() && fans.isEmpty())
+            return null;
+        return HostDataWrapping.builder
+                .setTopEpisodes(transformToFormat(listenedEpisodes, AudioFile::getName))
+                .setTopFans(transformToFormatList(fans, s->s))
+                .setListeners(fans.size())
+                .build();
+
     }
 
     public void addOneListen(OneListen listen) {

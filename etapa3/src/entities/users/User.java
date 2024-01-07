@@ -3,6 +3,7 @@ package entities.users;
 import databases.MyDatabase;
 import entities.audioCollections.Playlist;
 import entities.audioFiles.Song;
+import entities.monetization.UserPayment;
 import entities.users.functionalities.PageHandler;
 import entities.users.functionalities.UserPlayer;
 import entities.wrapper.statistics.UserWrapperStatistics;
@@ -15,7 +16,8 @@ import java.util.List;
 
 public final class User extends AbstractUser {
     private final UserPlayer player = new UserPlayer(this);
-
+    @Getter
+    private final UserPayment payment = new UserPayment();
     @Getter
     private final PageHandler pageHandler = new PageHandler();
     @Getter

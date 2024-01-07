@@ -1,8 +1,12 @@
 package entities.audioFileSelector;
 
+import databases.MyDatabase;
 import entities.audioFiles.AudioFile;
+import entities.users.User;
 import entities.wrapper.OneListen;
 import entities.wrapper.statistics.WrapperStatistics;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.function.Consumer;
 
@@ -21,32 +25,44 @@ public class AudioFileSelector {
     protected AudioFileSender send;//ToDo: Complete here to
     // send one listen to the wrapper
 
+    protected User self;
 
-    AudioFileSelector(final AudioFileSelectorCurrent basic,
+    @Getter
+    protected boolean adActive = false;
+
+    @Setter
+    protected boolean nextIsAd = false;
+
+    AudioFileSelector(final User user,
+                      final AudioFileSelectorCurrent basic,
                       final AudioFileSelectorNext next,
                       final AudioFileSelectorEnd end) {
+        this.self = user;
         this.basic = basic;
         this.next = next;
         this.end = end;
     }
 
-    public AudioFileSelector(final AudioFileSelectorCurrent basic,
+    public AudioFileSelector(final User user,
+                             final AudioFileSelectorCurrent basic,
                              final AudioFileSelectorNext next,
                              final AudioFileSelectorEnd end,
                              final AudioFileSelectorOutOfBound outOfBound) {
-        this(basic, next, end);
+        this(user, basic, next, end);
         this.outOfBound = outOfBound;
         send = null;
     }
 
-    public AudioFileSelector(final AudioFileSelectorCurrent basic,
+    public AudioFileSelector(final User user,
+                             final AudioFileSelectorCurrent basic,
                              final AudioFileSelectorNext next,
                              final AudioFileSelectorEnd end,
                              final AudioFileSelectorOutOfBound outOfBound,
                              final AudioFileSender send) {
-        this(basic, next, end, outOfBound);
+        this(user, basic, next, end, outOfBound);
         this.send = send;
     }
+
     public AudioFileSelector(final AudioFileSelectorOutOfBound outOfBound) {
         this.outOfBound = outOfBound;
     }
@@ -55,6 +71,8 @@ public class AudioFileSelector {
      * @return the current AudioFile object that is shown by player
      */
     public AudioFile current() {
+        if (adActive)
+            return MyDatabase.getInstance().getAdBreak();
         if (end()) {
             return outOfBound.outOfBound();
         }
@@ -73,6 +91,17 @@ public class AudioFileSelector {
      * the player
      */
     public void next() {
+        if (nextIsAd) {
+            nextIsAd = false;
+            adActive = true;
+
+            self.getPayment().payToArtists();
+            return;
+        }
+        if (current().equals(MyDatabase.getInstance().getAdBreak())) {
+            adActive = false;
+        }
+
         next.next();
         if (end.end()) {
             outOfBound.nextWhenEnded();
@@ -80,8 +109,6 @@ public class AudioFileSelector {
         }
         if (send != null) {
             send.send();
-        }
-        else {
         }
     }
 
@@ -95,6 +122,12 @@ public class AudioFileSelector {
 
     public final void setNext(final AudioFileSelectorNext next) {
         this.next = next;
+    }
+
+    public final void unsetAds() {
+        this.adActive = false;
+        this.nextIsAd = false;
+        this.self.getPayment().setTotalMoney(0.0);
     }
 
 }

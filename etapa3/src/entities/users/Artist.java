@@ -4,6 +4,7 @@ import entities.audioCollections.Album;
 import entities.audioCollections.AudioCollection;
 import entities.helpers.Event;
 import entities.helpers.Merch;
+import entities.monetization.ArtistRevenue;
 import entities.wrapper.statistics.ArtistWrapperStatistics;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ public final class Artist extends AbstractUser implements Pageable, ContentCreat
     private final List<Album> albums = new ArrayList<>();
     private final List<Merch> merches = new ArrayList<>();
     private final List<Event> events = new ArrayList<>();
+    private final ArtistRevenue revenue = new ArtistRevenue();
 
     public Artist(final String username, final String city, final Integer age) {
         super(username, city, age);

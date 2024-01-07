@@ -6,6 +6,11 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import commands.monetization.AdBreakCommand.AdBreakInput;
+import commands.monetization.AdBreakCommand.AdBreakOutput;
+import commands.monetization.BuyPremiumCommand.BuyPremiumInput;
+import commands.monetization.BuyPremiumCommand.BuyPremiumOutput;
+import commands.monetization.CancelPremiumCommand;
 import commands.usersInteractions.AddAlbumCommand;
 import commands.usersInteractions.AddAnnouncementCommand;
 import commands.usersInteractions.AddEventCommand;
@@ -47,6 +52,7 @@ import commands.statistics.GetTop5ArtistsCommand;
 import commands.statistics.GetTop5PlaylistsCommand;
 import commands.statistics.GetTop5SongsCommand;
 import commands.statistics.ShowPreferredSongsCommand;
+import commands.wrapped.EndProgramCommand.EndProgramOutput;
 import commands.wrapped.WrappedCommand;
 
 /**
@@ -138,6 +144,9 @@ public abstract class AbstractCommand {
             @Type(value = RemoveAlbumCommand.RemoveAlbumInput.class, name = "removeAlbum"),
             @Type(value = ChangePageCommand.ChangePageInput.class, name = "changePage"),
             @Type(value = WrappedCommand.WrappedInput.class, name = "wrapped"),
+            @Type(value = AdBreakInput.class, name = "adBreak"),
+            @Type(value = BuyPremiumInput.class, name = "buyPremium"),
+            @Type(value = CancelPremiumCommand.CancelPremiumInput.class, name = "cancelPremium"),
     })
     public static class CommandInput {
         private String username;
@@ -247,6 +256,10 @@ public abstract class AbstractCommand {
             @Type(value = RemoveAlbumCommand.RemoveAlbumOutput.class, name = "removeAlbum"),
             @Type(value = ChangePageCommand.ChangePageOutput.class, name = "changePage"),
             @Type(value = WrappedCommand.WrappedOutput.class, name = "wrapped"),
+            @Type(value = EndProgramOutput.class, name = "endProgram"),
+            @Type(value = AdBreakOutput.class, name = "adBreak"),
+            @Type(value = BuyPremiumOutput.class, name = "buyPremium"),
+            @Type(value = CancelPremiumCommand.CancelPremiumOutput.class, name = "cancelPremium"),
     })
     public static class CommandOutput {
         protected String user;

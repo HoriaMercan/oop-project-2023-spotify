@@ -42,6 +42,9 @@ public final class MyDatabase {
     private ArrayList<User> users;
     private ArrayList<Playlist> playlists = new ArrayList<>();
 
+    @Getter
+    private Song adBreak = null;
+
     private MyDatabase() {
     }
 
@@ -68,6 +71,9 @@ public final class MyDatabase {
             newSongs.add(new Song(song));
         }
         setSongs(newSongs);
+
+        adBreak = this.songs.stream().filter(song -> song.getName().equals("Ad Break"))
+                .toList().get(0);
     }
 
     public ArrayList<Podcast> getPodcasts() {

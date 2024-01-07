@@ -80,7 +80,10 @@ public class UserWrapperStatistics extends WrapperStatistics {
 
 
     public AbstractDataWrapping getDataWrapping() {
-
+        if (listenedSongs.isEmpty() && artistsListened.isEmpty() &&
+                genresListened.isEmpty() && albumsListened.isEmpty() &&
+                listenedEpisodes.isEmpty())
+            return null;
         return UserDataWrapping.builder
                 .setTopSongs(transformToFormat(listenedSongs, AudioFile::getName))
                 .setTopArtists(transformToFormat(artistsListened, s->s))
@@ -91,6 +94,7 @@ public class UserWrapperStatistics extends WrapperStatistics {
                 .build();
     }
 
+    @Override
     public void addOneListen(OneListen listen) {
         lastListen = listen;
         listen.getAudioFile().acceptListen(visitorAudioFile);
