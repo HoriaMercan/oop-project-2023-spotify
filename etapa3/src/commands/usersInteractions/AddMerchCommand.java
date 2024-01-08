@@ -3,6 +3,7 @@ package commands.usersInteractions;
 import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.helpers.Merch;
+import entities.helpers.Notification;
 import entities.users.AbstractUser;
 import entities.users.AbstractUser.UserType;
 import entities.users.Artist;
@@ -44,6 +45,10 @@ public final class AddMerchCommand extends AbstractCommand {
             output.setMessage("Price for merchandise can not be negative.");
             return;
         }
+
+        artist.sendNotificationToSubscribers(
+                new Notification("New Merchandise", "New Merchandise from %s."
+                        .formatted(artist.getUsername())));
 
         artist.getMerches().add(new Merch(input.name, input.description, input.price));
         output.setMessage(input.getUsername() + " has added new merchandise successfully.");

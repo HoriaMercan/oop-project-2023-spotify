@@ -3,9 +3,11 @@ package entities.users;
 import entities.audioCollections.AudioCollection;
 import entities.audioCollections.Podcast;
 import entities.helpers.Announcement;
+import entities.helpers.Notification;
 import entities.wrapper.statistics.HostWrapperStatistics;
 import lombok.Getter;
 import lombok.Setter;
+import org.checkerframework.checker.units.qual.A;
 import pagesystem.Pageable;
 
 import java.util.ArrayList;
@@ -84,5 +86,23 @@ public final class Host extends AbstractUser implements Pageable, ContentCreator
     @Override
     public List<? extends AudioCollection> getContent() {
         return this.podcasts;
+    }
+
+    List<User> subscribers = new ArrayList<>();
+    @Override
+    public boolean addSubscriber(User user) {
+        if (subscribers.contains(user)) {
+            subscribers.remove(user);
+            return false;
+        }
+        subscribers.add(user);
+        return true;
+    }
+
+    @Override
+    public void sendNotificationToSubscribers(Notification notification) {
+        for (User user: subscribers) {
+            user.getNotificationsHandler().addNotification(notification);
+        }
     }
 }

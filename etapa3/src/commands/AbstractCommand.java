@@ -1,6 +1,8 @@
 package commands;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -8,9 +10,18 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import commands.monetization.AdBreakCommand.AdBreakInput;
 import commands.monetization.AdBreakCommand.AdBreakOutput;
+import commands.monetization.BuyMerchCommand;
+import commands.monetization.BuyMerchCommand.BuyMerchInput;
+import commands.monetization.BuyMerchCommand.BuyMerchOutput;
 import commands.monetization.BuyPremiumCommand.BuyPremiumInput;
 import commands.monetization.BuyPremiumCommand.BuyPremiumOutput;
 import commands.monetization.CancelPremiumCommand;
+import commands.monetization.SeeMerchCommand.SeeMerchInput;
+import commands.monetization.SeeMerchCommand.SeeMerchOutput;
+import commands.notifications.GetNotificationsCommand.GetNotificationsInput;
+import commands.notifications.GetNotificationsCommand.GetNotificationsOutput;
+import commands.notifications.SubscribeCommand.SubscribeInput;
+import commands.notifications.SubscribeCommand.SubscribeOutput;
 import commands.usersInteractions.AddAlbumCommand;
 import commands.usersInteractions.AddAnnouncementCommand;
 import commands.usersInteractions.AddEventCommand;
@@ -85,7 +96,7 @@ public abstract class AbstractCommand {
             use = JsonTypeInfo.Id.NAME,
             include = JsonTypeInfo.As.PROPERTY,
             property = "command")
-    @JsonSubTypes({
+    @JsonSubTypes(value = {
             @Type(value = SearchCommand.SearchInput.class, name = "search"),
             @Type(value = SelectCommand.SelectInput.class, name = "select"),
             @Type(value = LoadCommand.LoadInput.class, name = "load"),
@@ -147,6 +158,10 @@ public abstract class AbstractCommand {
             @Type(value = AdBreakInput.class, name = "adBreak"),
             @Type(value = BuyPremiumInput.class, name = "buyPremium"),
             @Type(value = CancelPremiumCommand.CancelPremiumInput.class, name = "cancelPremium"),
+            @Type(value = SubscribeInput.class, name = "subscribe"),
+            @Type(value = GetNotificationsInput.class, name = "getNotifications"),
+            @Type(value = BuyMerchInput.class, name = "buyMerch"),
+            @Type(value = SeeMerchInput.class, name = "seeMerch"),
     })
     public static class CommandInput {
         private String username;
@@ -260,10 +275,15 @@ public abstract class AbstractCommand {
             @Type(value = AdBreakOutput.class, name = "adBreak"),
             @Type(value = BuyPremiumOutput.class, name = "buyPremium"),
             @Type(value = CancelPremiumCommand.CancelPremiumOutput.class, name = "cancelPremium"),
+            @Type(value = SubscribeOutput.class, name = "subscribe"),
+            @Type(value = GetNotificationsOutput.class, name = "getNotifications"),
+            @Type(value = BuyMerchOutput.class, name = "buyMerch"),
+            @Type(value = SeeMerchOutput.class, name = "seeMerch"),
     })
     public static class CommandOutput {
         protected String user;
         protected Integer timestamp;
+        @JsonInclude(Include.NON_NULL)
         protected String message;
 
         public CommandOutput() {

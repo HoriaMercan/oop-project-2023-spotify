@@ -3,6 +3,7 @@ package commands.usersInteractions;
 import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.helpers.Event;
+import entities.helpers.Notification;
 import entities.users.AbstractUser;
 import entities.users.AbstractUser.UserType;
 import entities.users.Artist;
@@ -59,6 +60,10 @@ public final class AddEventCommand extends AbstractCommand {
             output.setMessage("Event for " + input.getUsername() + " does not have a valid date.");
             return;
         }
+
+        artist.sendNotificationToSubscribers(
+                new Notification("New Event", "New Event from %s."
+                        .formatted(artist.getUsername())));
 
         artist.getEvents().add(new Event(input.name, input.description, input.date));
         output.setMessage(input.getUsername() + " has added new event successfully.");

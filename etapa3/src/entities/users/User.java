@@ -17,7 +17,7 @@ import java.util.List;
 public final class User extends AbstractUser {
     private final UserPlayer player = new UserPlayer(this);
     @Getter
-    private final UserPayment payment = new UserPayment();
+    private final UserPayment payment = new UserPayment(this);
     @Getter
     private final PageHandler pageHandler = new PageHandler();
     @Getter

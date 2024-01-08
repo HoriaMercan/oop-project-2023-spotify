@@ -2,6 +2,7 @@ package commands.playlist;
 
 import commands.AbstractCommand;
 import databases.MyDatabase;
+import entities.helpers.Notification;
 import entities.users.User;
 import entities.audioCollections.Playlist;
 import entities.requirements.RequireOnline;
@@ -48,6 +49,12 @@ public final class FollowPlaylistCommand extends AbstractCommand implements Requ
             return;
         }
 
+        User creator = MyDatabase.getInstance().findUserByUsername(playlist.getOwner());
+        assert creator != null;
+
+        creator.getNotificationsHandler().addNotification(
+                new Notification("New follower", "%s followed your playlist"
+                        .formatted(user.getUsername())));
         playlist.getFollowedBy(user.getUsername());
         user.getFollowedPlaylists().add(playlist.getName());
         output.setMessage("Playlist followed successfully.");

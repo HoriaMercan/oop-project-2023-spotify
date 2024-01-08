@@ -4,6 +4,7 @@ import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.audioCollections.Album;
 import entities.audioFiles.Song;
+import entities.helpers.Notification;
 import entities.users.AbstractUser;
 import entities.users.AbstractUser.UserType;
 import entities.users.Artist;
@@ -53,6 +54,10 @@ public final class AddAlbumCommand extends AbstractCommand {
 
         MyDatabase.getInstance().getAlbums().add(newAlbum);
         MyDatabase.getInstance().getSongs().addAll(input.getSongs());
+
+        artist.sendNotificationToSubscribers(
+                new Notification("New Album", "New Album from %s."
+                        .formatted(artist.getUsername())));
 
         output.setMessage(input.getUsername() + " has added new album successfully.");
     }

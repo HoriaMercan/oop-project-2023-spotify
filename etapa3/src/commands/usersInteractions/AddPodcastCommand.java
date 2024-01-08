@@ -4,6 +4,7 @@ import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.audioCollections.Podcast;
 import entities.audioFiles.PodcastEpisode;
+import entities.helpers.Notification;
 import entities.users.AbstractUser;
 import entities.users.AbstractUser.UserType;
 import entities.users.Host;
@@ -45,6 +46,10 @@ public final class AddPodcastCommand extends AbstractCommand {
                     + " has the same episode in this podcast.");
             return;
         }
+
+        host.sendNotificationToSubscribers(
+                new Notification("New Podcast", "New Podcast from %s."
+                        .formatted(host.getUsername())));
 
         Podcast podcast = new Podcast(input.getName(), input.getDescription(), input.getEpisodes());
         host.getPodcasts().add(podcast);

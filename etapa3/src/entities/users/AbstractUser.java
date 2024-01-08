@@ -1,5 +1,6 @@
 package entities.users;
 
+import entities.users.functionalities.NotificationsHandler;
 import entities.wrapper.statistics.WrapperStatistics;
 import lombok.Getter;
 
@@ -11,6 +12,8 @@ public class AbstractUser {
     protected UserType userType;
 
     protected WrapperStatistics wrapperStatistics;
+
+    protected NotificationsHandler notificationsHandler = new NotificationsHandler();
     public AbstractUser() {
     }
 

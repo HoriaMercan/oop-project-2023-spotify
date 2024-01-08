@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -90,6 +91,7 @@ public final class Main {
         MyDatabase.getInstance().setHosts(new ArrayList<>());
         MyDatabase.getInstance().setAlbums(new ArrayList<>());
         MyDatabase.getInstance().setPublicPlaylists(new ArrayList<>());
+        MyDatabase.getInstance().setUnpayedSongs(new HashMap<>());
 
 
         File file1 = new File(CheckerConstants.TESTS_PATH + filePath1);

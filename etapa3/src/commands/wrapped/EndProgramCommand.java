@@ -13,6 +13,7 @@ import lombok.Getter;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Getter
@@ -26,10 +27,15 @@ public class EndProgramCommand {
         for (User user: MyDatabase.getInstance().getUsers()) {
             user.getPayment().payToArtists();
         }
+        Predicate<Artist> filterArtists = new Predicate<Artist>() {
+            @Override
+            public boolean test(Artist artist) {
+                return ((ArtistWrapperStatistics) artist.getWrapperStatistics())
+                        .wasEverListened() || (artist.getRevenue().getMerchRevenue() > 0.0);
+            }
+        };
         MyDatabase.getInstance().getArtists().stream()
-                .filter(artist ->
-                        ((ArtistWrapperStatistics) artist.getWrapperStatistics())
-                                .wasEverListened())
+                .filter(filterArtists)
                 .toList()
                 .forEach(artist -> map.put(artist.getUsername(), artist.getRevenue()));
 

@@ -5,15 +5,18 @@ import lombok.Getter;
 import java.util.List;
 import java.util.Map;
 
-@Getter
+
 public final class HostDataWrapping extends AbstractDataWrapping {
-    private final Map<String, Integer> topPodcasts;
+    @Getter
+    private final Map<String, Integer> topEpisodes;
     private final List<String> topFans;
+
+    @Getter
     private final Integer listeners;
 
     private HostDataWrapping(final Map<String, Integer> topEpisodes,
                              final List<String> topFans, final Integer listeners) {
-        this.topPodcasts = topEpisodes;
+        this.topEpisodes = topEpisodes;
         this.topFans = topFans;
         this.listeners = listeners;
     }

@@ -3,6 +3,7 @@ package commands.usersInteractions;
 import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.helpers.Announcement;
+import entities.helpers.Notification;
 import entities.users.AbstractUser;
 import entities.users.AbstractUser.UserType;
 import entities.users.Host;
@@ -40,6 +41,10 @@ public final class AddAnnouncementCommand extends AbstractCommand {
                     + " has already added an announcement with this name.");
             return;
         }
+
+        host.sendNotificationToSubscribers(
+                new Notification("New Announcement", "New Announcement from %s."
+                        .formatted(host.getUsername())));
 
         Announcement newA = new Announcement(input.getName(), input.getDescription());
         host.getAnnouncements().add(newA);

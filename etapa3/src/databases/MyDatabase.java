@@ -17,6 +17,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class stores the data about songs, podcast episodes
@@ -41,6 +42,11 @@ public final class MyDatabase {
     private ArrayList<Podcast> podcasts;
     private ArrayList<User> users;
     private ArrayList<Playlist> playlists = new ArrayList<>();
+
+    @Setter
+    @Getter
+    private Map<User, List<Song>> unpayedSongs;
+
 
     @Getter
     private Song adBreak = null;

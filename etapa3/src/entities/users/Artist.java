@@ -4,10 +4,12 @@ import entities.audioCollections.Album;
 import entities.audioCollections.AudioCollection;
 import entities.helpers.Event;
 import entities.helpers.Merch;
+import entities.helpers.Notification;
 import entities.monetization.ArtistRevenue;
 import entities.wrapper.statistics.ArtistWrapperStatistics;
 import lombok.Getter;
 import lombok.Setter;
+import org.checkerframework.checker.units.qual.A;
 import pagesystem.Pageable;
 
 import java.util.ArrayList;
@@ -98,5 +100,23 @@ public final class Artist extends AbstractUser implements Pageable, ContentCreat
     @Override
     public List<? extends AudioCollection> getContent() {
         return this.albums;
+    }
+
+    private List<User> subscribers = new ArrayList<>();
+    @Override
+    public boolean addSubscriber(User user) {
+        if (subscribers.contains(user)) {
+            subscribers.remove(user);
+            return false;
+        }
+        subscribers.add(user);
+        return true;
+    }
+
+    @Override
+    public void sendNotificationToSubscribers(Notification notification) {
+        for (User user: subscribers) {
+            user.getNotificationsHandler().addNotification(notification);
+        }
     }
 }

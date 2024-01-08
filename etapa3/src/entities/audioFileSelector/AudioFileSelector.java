@@ -2,6 +2,7 @@ package entities.audioFileSelector;
 
 import databases.MyDatabase;
 import entities.audioFiles.AudioFile;
+import entities.monetization.UserPayment.AccountType;
 import entities.users.User;
 import entities.wrapper.OneListen;
 import entities.wrapper.statistics.WrapperStatistics;
@@ -127,7 +128,9 @@ public class AudioFileSelector {
     public final void unsetAds() {
         this.adActive = false;
         this.nextIsAd = false;
-        this.self.getPayment().setTotalMoney(0.0);
+        if (this.self.getPayment().getAccountType().equals(AccountType.ADS_ENJOYED)) {
+            this.self.getPayment().setTotalMoney(0.0);
+        }
     }
 
 }
