@@ -47,6 +47,7 @@ public final class RemoveAlbumCommand extends AbstractCommand {
             return;
         }
 
+        MyDatabase.getInstance().getSongs().removeAll(album.getSongs());
         AdminAPI.removeAudioCollectionFromCreator(artist, album);
         output.setMessage(artist.getUsername() + " deleted the album successfully.");
     }

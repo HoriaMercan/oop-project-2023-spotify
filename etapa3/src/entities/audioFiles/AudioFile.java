@@ -1,8 +1,12 @@
 package entities.audioFiles;
 
+import lombok.Setter;
+
 public abstract class AudioFile {
     protected String name;
     protected Integer duration;
+
+    @Setter
     protected String creator;
 
     public AudioFile(final String name, final Integer duration) {

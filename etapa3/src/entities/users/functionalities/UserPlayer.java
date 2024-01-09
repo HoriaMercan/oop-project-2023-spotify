@@ -32,7 +32,10 @@ public final class UserPlayer {
     private AudioFileSelector selector;
 
     @Setter
+    @Getter
     private Integer lastUpdatedTime;
+
+    @Getter
     private Integer currentAudioFileTime = 0;
     private String playedPodcastName = "";
     private List<String> lastSearched;
@@ -145,6 +148,29 @@ public final class UserPlayer {
         send.send();
     }
 
+    public void loadPlayer(final Integer timestamp, final String typeLoaded) {
+        lastSelected = "";
+        saveContext(timestamp);
+        this.typeLoaded = typeLoaded;
+        this.isPaused = false;
+        this.lastUpdatedTime = timestamp;
+        this.selector.unsetAds();
+
+        if (this.typeLoaded.equals("podcast")) {
+            if (podcastRemainderTime.containsKey(playedPodcastName)) {
+                currentAudioFileTime = podcastRemainderTime.get(playedPodcastName);
+                index = podcastRemainderEpisode.get(playedPodcastName);
+            } else {
+                currentAudioFileTime = 0;
+                index = 0;
+            }
+        } else {
+            currentAudioFileTime = 0;
+            index = 0;
+        }
+
+        send.send();
+    }
     public void setPlayedPodcastName(final String playedPodcastName) {
         this.playedPodcastName = playedPodcastName;
     }

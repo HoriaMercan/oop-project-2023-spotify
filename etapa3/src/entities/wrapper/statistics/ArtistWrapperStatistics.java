@@ -1,5 +1,6 @@
 package entities.wrapper.statistics;
 
+import databases.MyDatabase;
 import entities.audioFiles.AudioFile;
 import entities.audioFiles.PodcastEpisode;
 import entities.audioFiles.Song;
@@ -11,6 +12,7 @@ import entities.wrapper.handlers.ArtistDataWrapping;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ArtistWrapperStatistics extends WrapperStatistics {
@@ -63,6 +65,11 @@ public class ArtistWrapperStatistics extends WrapperStatistics {
 
     public boolean wasEverListened() {
         return !listenedSongs.isEmpty();
+    }
+
+    public List<User> getTopFans() {
+        return transformToFormatList(fans, s->s).stream()
+                .map(s -> MyDatabase.getInstance().findUserByUsername(s)).toList();
     }
 
 }

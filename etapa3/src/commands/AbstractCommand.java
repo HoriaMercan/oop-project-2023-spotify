@@ -22,6 +22,9 @@ import commands.notifications.GetNotificationsCommand.GetNotificationsInput;
 import commands.notifications.GetNotificationsCommand.GetNotificationsOutput;
 import commands.notifications.SubscribeCommand.SubscribeInput;
 import commands.notifications.SubscribeCommand.SubscribeOutput;
+import commands.recommendation.LoadRecommendationsCommand;
+import commands.recommendation.UpdateRecommendationsCommand;
+import commands.usersAdministration.*;
 import commands.usersInteractions.AddAlbumCommand;
 import commands.usersInteractions.AddAnnouncementCommand;
 import commands.usersInteractions.AddEventCommand;
@@ -34,12 +37,6 @@ import commands.usersInteractions.RemoveAnnouncementCommand;
 import commands.usersInteractions.RemoveEventCommand;
 import commands.usersInteractions.RemoveMerchCommand;
 import commands.usersInteractions.RemovePodcastCommand;
-import commands.usersAdministration.ChangePageCommand;
-import commands.usersAdministration.GetAllUsersCommand;
-import commands.usersAdministration.PrintCurrentPageCommand;
-import commands.usersAdministration.ShowAlbumsCommand;
-import commands.usersAdministration.ShowPodcastsCommand;
-import commands.usersAdministration.SwitchConnectionStatusCommand;
 import commands.player.AddRemoveInPlaylistCommand;
 import commands.player.BackwardCommand;
 import commands.player.ForwardCommand;
@@ -162,6 +159,12 @@ public abstract class AbstractCommand {
             @Type(value = GetNotificationsInput.class, name = "getNotifications"),
             @Type(value = BuyMerchInput.class, name = "buyMerch"),
             @Type(value = SeeMerchInput.class, name = "seeMerch"),
+            @Type(value = PreviousPageCommand.PreviousPageInput.class, name = "previousPage"),
+            @Type(value = NextPageCommand.NextPageInput.class, name = "nextPage"),
+            @Type(value = UpdateRecommendationsCommand.UpdateRecommendationsInput.class,
+                    name = "updateRecommendations"),
+            @Type(value = LoadRecommendationsCommand.LoadRecommendationsInput.class,
+                    name = "loadRecommendations"),
     })
     public static class CommandInput {
         private String username;
@@ -279,6 +282,12 @@ public abstract class AbstractCommand {
             @Type(value = GetNotificationsOutput.class, name = "getNotifications"),
             @Type(value = BuyMerchOutput.class, name = "buyMerch"),
             @Type(value = SeeMerchOutput.class, name = "seeMerch"),
+            @Type(value = PreviousPageCommand.PreviousPageOutput.class, name = "previousPage"),
+            @Type(value = NextPageCommand.NextPageOutput.class, name = "nextPage"),
+            @Type(value = UpdateRecommendationsCommand.UpdateRecommendationsOutput.class,
+                    name = "updateRecommendations"),
+            @Type(value = LoadRecommendationsCommand.LoadRecommendationsOutput.class,
+                    name = "loadRecommendations"),
     })
     public static class CommandOutput {
         protected String user;

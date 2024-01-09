@@ -51,7 +51,7 @@ public final class AddPodcastCommand extends AbstractCommand {
                 new Notification("New Podcast", "New Podcast from %s."
                         .formatted(host.getUsername())));
 
-        Podcast podcast = new Podcast(input.getName(), input.getDescription(), input.getEpisodes());
+        Podcast podcast = new Podcast(input.getName(), input.getUsername(), input.getEpisodes());
         host.getPodcasts().add(podcast);
         MyDatabase.getInstance().getPodcasts().add(podcast);
         output.setMessage(input.getUsername() + " has added new podcast successfully.");

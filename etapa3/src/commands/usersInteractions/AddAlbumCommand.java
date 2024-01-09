@@ -25,6 +25,10 @@ public final class AddAlbumCommand extends AbstractCommand {
         AddAlbumInput input = (AddAlbumInput) this.commandInput;
         AddAlbumOutput output = (AddAlbumOutput) this.commandOutput;
 
+        if (input.getTimestamp() == 2493) {
+            System.out.println("here");
+        }
+
         AbstractUser user = MyDatabase.getInstance()
                 .findAbstractUserByUsername(input.getUsername());
 
