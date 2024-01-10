@@ -7,16 +7,17 @@ import entities.users.User;
 import gateways.AdminAPI;
 
 
-public class LoadRecommendationsCommand extends AbstractCommand implements RequireOnline {
-    public LoadRecommendationsCommand(final LoadRecommendationsCommand.LoadRecommendationsInput LoadRecommendationsInput) {
-        super(LoadRecommendationsInput);
-        this.commandOutput = new LoadRecommendationsCommand.LoadRecommendationsOutput(LoadRecommendationsInput);
+public final class LoadRecommendationsCommand extends AbstractCommand implements RequireOnline {
+    public LoadRecommendationsCommand(final LoadRecommendationsInput loadRecommendationsInput) {
+        super(loadRecommendationsInput);
+        this.commandOutput =
+                new LoadRecommendationsOutput(loadRecommendationsInput);
     }
 
     @Override
     public void executeCommand() {
-        LoadRecommendationsCommand.LoadRecommendationsInput input = (LoadRecommendationsCommand.LoadRecommendationsInput) commandInput;
-        LoadRecommendationsCommand.LoadRecommendationsOutput output = (LoadRecommendationsCommand.LoadRecommendationsOutput) commandOutput;
+        LoadRecommendationsInput input = (LoadRecommendationsInput) commandInput;
+        LoadRecommendationsOutput output = (LoadRecommendationsOutput) commandOutput;
 
         String verifyOnline = isUserOnline(input.getUsername());
         if (!verifyOnline.isEmpty()) {

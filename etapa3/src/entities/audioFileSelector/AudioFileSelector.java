@@ -4,12 +4,8 @@ import databases.MyDatabase;
 import entities.audioFiles.AudioFile;
 import entities.monetization.UserPayment.AccountType;
 import entities.users.User;
-import entities.wrapper.OneListen;
-import entities.wrapper.statistics.WrapperStatistics;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.function.Consumer;
 
 /**
  * Class AudioFileSelector offers the methods necessary to operate through
@@ -23,8 +19,7 @@ public class AudioFileSelector {
     protected AudioFileSelectorNext next;
     protected AudioFileSelectorOutOfBound outOfBound;
 
-    protected AudioFileSender send;//ToDo: Complete here to
-    // send one listen to the wrapper
+    protected AudioFileSender send;
 
     protected User self;
 
@@ -72,8 +67,9 @@ public class AudioFileSelector {
      * @return the current AudioFile object that is shown by player
      */
     public AudioFile current() {
-        if (adActive)
+        if (adActive) {
             return MyDatabase.getInstance().getAdBreak();
+        }
         if (end()) {
             return outOfBound.outOfBound();
         }
@@ -125,6 +121,9 @@ public class AudioFileSelector {
         this.next = next;
     }
 
+    /**
+     * Function used to unset the afs when other player is loaded
+     */
     public final void unsetAds() {
         this.adActive = false;
         this.nextIsAd = false;

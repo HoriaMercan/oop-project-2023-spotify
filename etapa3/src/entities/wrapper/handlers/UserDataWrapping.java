@@ -6,15 +6,18 @@ import java.util.Map;
 
 @Getter
 public final class UserDataWrapping extends AbstractDataWrapping {
+    public static final Builder BUILDER = new Builder();
     private final Map<String, Integer> topArtists;
     private final Map<String, Integer> topGenres;
     private final Map<String, Integer> topSongs;
     private final Map<String, Integer> topAlbums;
     private final Map<String, Integer> topEpisodes;
 
-    private UserDataWrapping(Map<String, Integer> topArtists, Map<String, Integer> topGenres,
-                             Map<String, Integer> topSongs, Map<String, Integer> topAlbums,
-                             Map<String, Integer> topEpisodes) {
+    private UserDataWrapping(final Map<String, Integer> topArtists,
+                             final Map<String, Integer> topGenres,
+                             final Map<String, Integer> topSongs,
+                             final Map<String, Integer> topAlbums,
+                             final Map<String, Integer> topEpisodes) {
         this.topArtists = topArtists;
         this.topGenres = topGenres;
         this.topSongs = topSongs;
@@ -22,7 +25,7 @@ public final class UserDataWrapping extends AbstractDataWrapping {
         this.topEpisodes = topEpisodes;
     }
 
-    private UserDataWrapping(UserDataWrapping.Builder builder) {
+    private UserDataWrapping(final UserDataWrapping.Builder builder) {
         this(builder.getTopArtists(), builder.getTopGenres(), builder.getTopSongs(),
                 builder.getTopAlbums(), builder.getTopEpisodes());
     }
@@ -33,6 +36,4 @@ public final class UserDataWrapping extends AbstractDataWrapping {
             return new UserDataWrapping(this);
         }
     }
-
-    public static final Builder builder = new Builder();
 }

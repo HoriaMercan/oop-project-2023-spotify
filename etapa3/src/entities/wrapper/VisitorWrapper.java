@@ -3,8 +3,6 @@ package entities.wrapper;
 
 import entities.audioFiles.PodcastEpisode;
 import entities.audioFiles.Song;
-import entities.users.Artist;
-import entities.users.Host;
 import entities.users.User;
 
 /**
@@ -12,10 +10,17 @@ import entities.users.User;
  * the statistics
  */
 public interface VisitorWrapper {
+    /**
+     * @param user Visitor pattern implementation for User
+     */
     void visitListen(User user);
-//    void visitListen(Artist artist);
-//    void visitListen(Host host);
 
+    /**
+     * @param song Visitor pattern implementation for Song
+     */
     void visitListen(Song song);
+    /**
+     * @param podcastEpisode Visitor pattern implementation for PodcastEpisode
+     */
     void visitListen(PodcastEpisode podcastEpisode);
 }

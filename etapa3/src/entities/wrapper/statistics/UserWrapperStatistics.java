@@ -1,7 +1,6 @@
 package entities.wrapper.statistics;
 
 import databases.MyDatabase;
-import entities.audioCollections.Album;
 import entities.audioFiles.AudioFile;
 import entities.audioFiles.PodcastEpisode;
 import entities.audioFiles.Song;
@@ -12,15 +11,14 @@ import entities.wrapper.OneListen;
 import entities.wrapper.VisitorWrapper;
 import entities.wrapper.handlers.AbstractDataWrapping;
 import entities.wrapper.handlers.UserDataWrapping;
-import gateways.AdminAPI;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
-public class UserWrapperStatistics extends WrapperStatistics {
+/**
+ * User wrapper statistics object stores the interactions of an user \w the audiofiles
+ */
+public final class UserWrapperStatistics extends WrapperStatistics {
 
     private final Map<Song, Integer> listenedSongs = new HashMap<>();
     private final Map<PodcastEpisode, Integer> listenedEpisodes = new HashMap<>();
@@ -30,26 +28,26 @@ public class UserWrapperStatistics extends WrapperStatistics {
     private OneListen lastListen = null;
     private final VisitorWrapper visitorAudioFile = new VisitorWrapper() {
         @Override
-        public void visitListen(User user) {
+        public void visitListen(final User user) {
 
         }
 
         @Override
-        public void visitListen(Song song) {
-            listenedSongs.compute(song, updater);
+        public void visitListen(final Song song) {
+            listenedSongs.compute(song, UPDATER);
             String artistName = song.getArtist();
             String genre = song.getGenre();
             String albumName = song.getAlbum();
 
             if (artistName != null) {
-                artistsListened.compute(artistName, stringUpdater);
+                artistsListened.compute(artistName, STRING_UPDATER);
             }
             if (genre != null) {
-                genresListened.compute(genre, stringUpdater);
+                genresListened.compute(genre, STRING_UPDATER);
             }
 
             if (albumName != null) {
-                albumsListened.compute(albumName, stringUpdater);
+                albumsListened.compute(albumName, STRING_UPDATER);
             }
             // ToDo: add to artists statistics
 
@@ -63,8 +61,8 @@ public class UserWrapperStatistics extends WrapperStatistics {
         }
 
         @Override
-        public void visitListen(PodcastEpisode podcastEpisode) {
-            listenedEpisodes.compute(podcastEpisode, updater);
+        public void visitListen(final PodcastEpisode podcastEpisode) {
+            listenedEpisodes.compute(podcastEpisode, UPDATER);
 
             // ToDo: add to host statistics
             Host host = MyDatabase.getInstance()
@@ -79,23 +77,25 @@ public class UserWrapperStatistics extends WrapperStatistics {
     };
 
 
+    @Override
     public AbstractDataWrapping getDataWrapping() {
-        if (listenedSongs.isEmpty() && artistsListened.isEmpty() &&
-                genresListened.isEmpty() && albumsListened.isEmpty() &&
-                listenedEpisodes.isEmpty())
+        if (listenedSongs.isEmpty() && artistsListened.isEmpty()
+                && genresListened.isEmpty() && albumsListened.isEmpty()
+                && listenedEpisodes.isEmpty()) {
             return null;
-        return UserDataWrapping.builder
+        }
+        return UserDataWrapping.BUILDER
                 .setTopSongs(transformToFormat(listenedSongs, AudioFile::getName))
-                .setTopArtists(transformToFormat(artistsListened, s->s))
-                .setTopGenres(transformToFormat(genresListened, s->s))
-                .setTopAlbums(transformToFormat(albumsListened, s->s))
+                .setTopArtists(transformToFormat(artistsListened, s -> s))
+                .setTopGenres(transformToFormat(genresListened, s -> s))
+                .setTopAlbums(transformToFormat(albumsListened, s -> s))
                 .setTopEpisodes(transformToFormat(listenedEpisodes,
                         AudioFile::getName))
                 .build();
     }
 
     @Override
-    public void addOneListen(OneListen listen) {
+    public void addOneListen(final OneListen listen) {
         lastListen = listen;
         listen.getAudioFile().acceptListen(visitorAudioFile);
     }

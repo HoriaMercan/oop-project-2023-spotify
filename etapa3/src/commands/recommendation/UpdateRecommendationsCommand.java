@@ -10,19 +10,22 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-public class UpdateRecommendationsCommand extends AbstractCommand {
-    public UpdateRecommendationsCommand(final UpdateRecommendationsCommand.UpdateRecommendationsInput UpdateRecommendationsInput) {
-        super(UpdateRecommendationsInput);
-        this.commandOutput = new UpdateRecommendationsCommand.UpdateRecommendationsOutput(UpdateRecommendationsInput);
+public final class UpdateRecommendationsCommand extends AbstractCommand {
+    public UpdateRecommendationsCommand(final UpdateRecommendationsInput
+                                                updateRecommendationsInput) {
+        super(updateRecommendationsInput);
+        this.commandOutput =
+                new UpdateRecommendationsOutput(updateRecommendationsInput);
     }
 
     @Override
     public void executeCommand() {
-        UpdateRecommendationsCommand.UpdateRecommendationsInput input = (UpdateRecommendationsCommand.UpdateRecommendationsInput) commandInput;
-        UpdateRecommendationsCommand.UpdateRecommendationsOutput output = (UpdateRecommendationsCommand.UpdateRecommendationsOutput) commandOutput;
+        UpdateRecommendationsInput input = (UpdateRecommendationsInput) commandInput;
+        UpdateRecommendationsOutput output = (UpdateRecommendationsOutput) commandOutput;
 
         AdminAPI.updateAllOnlineUserPlayers(input.getTimestamp());
-        AbstractUser abstractUser = MyDatabase.getInstance().findAbstractUserByUsername(input.getUsername());
+        AbstractUser abstractUser = MyDatabase.getInstance()
+                .findAbstractUserByUsername(input.getUsername());
         if (abstractUser == null) {
             output.setMessage("The username %s doesn't exist.".formatted(input.getUsername()));
             return;
@@ -37,22 +40,15 @@ public class UpdateRecommendationsCommand extends AbstractCommand {
 
         boolean bool = false;
         switch (input.getRecommendationType()) {
-            case "random_song": {
-//                if(!user.updateSongRecommendations()) {
-//                    output.setMessage("No new recommendations were found");
-//                    return;
-//                }
+            case "random_song":
                 bool = user.updateSongRecommendations();
                 break;
-            }
-            case "random_playlist": {
+            case "random_playlist":
                 bool = user.updateRandomPlaylistRecommendations();
                 break;
-            }
-            case "fans_playlist": {
+            case "fans_playlist":
                 bool = user.updateFansPlaylistRecommendations();
                 break;
-            }
             default:
         }
 

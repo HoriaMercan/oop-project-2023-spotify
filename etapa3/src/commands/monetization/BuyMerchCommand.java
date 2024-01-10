@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pagesystem.EnumPages;
 
-public class BuyMerchCommand extends AbstractCommand {
+public final class BuyMerchCommand extends AbstractCommand {
     public BuyMerchCommand(final BuyMerchCommand.BuyMerchInput commandInput) {
         super(commandInput);
         commandOutput = new BuyMerchCommand.BuyMerchOutput(commandInput);

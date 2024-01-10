@@ -37,7 +37,7 @@ public final class PodcastEpisode extends AudioFile implements Listenable {
     }
 
     @Override
-    public void acceptListen(VisitorWrapper visitor) {
+    public void acceptListen(final VisitorWrapper visitor) {
         visitor.visitListen(this);
     }
 }

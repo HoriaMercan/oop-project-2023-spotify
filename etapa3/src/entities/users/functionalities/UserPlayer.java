@@ -18,9 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * User's player object that controls everything that happens while running audio files
+ */
 public final class UserPlayer {
-
-    // this retain the episode
     private final HashMap<String, Integer> podcastRemainderTime = new HashMap<>();
     private final HashMap<String, Integer> podcastRemainderEpisode = new HashMap<>();
     @Setter
@@ -72,13 +73,16 @@ public final class UserPlayer {
             if (isPaused) {
                 return;
             }
-            OneListen listen = OneListen.builder.setUser(self)
+            OneListen listen = OneListen.BUILDER.setUser(self)
                     .setAudioFile((Listenable) getCurrentPlayed()).build();
 
             self.getWrapperStatistics().addOneListen(listen);
         }
     };
 
+    /**
+     * Set ad break active and next audio file played will be the AdBreak object
+     */
     public void setNextAd() {
         selector.setNextIsAd(true);
     }
@@ -86,11 +90,8 @@ public final class UserPlayer {
     @Getter
     private String listeningToPlaylist = "";
 
-    public UserPlayer() {
-    }
-
-    User self;
-    public UserPlayer(User user) {
+    private final User self;
+    public UserPlayer(final User user) {
         self = user;
     }
 
@@ -148,10 +149,17 @@ public final class UserPlayer {
         send.send();
     }
 
-    public void loadPlayer(final Integer timestamp, final String typeLoaded) {
+    /**
+     * This function load in a player an audio collection or file which has been previously
+     * selected and saves the actual state if necessary
+     *
+     * @param timestamp a time at which the action is performed
+     * @param typeLoadedArg the type loaded in the player
+     */
+    public void loadPlayer(final Integer timestamp, final String typeLoadedArg) {
         lastSelected = "";
         saveContext(timestamp);
-        this.typeLoaded = typeLoaded;
+        this.typeLoaded = typeLoadedArg;
         this.isPaused = false;
         this.lastUpdatedTime = timestamp;
         this.selector.unsetAds();

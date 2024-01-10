@@ -7,8 +7,8 @@ import gateways.AdminAPI;
 import lombok.Getter;
 import lombok.Setter;
 
-public class AdBreakCommand extends AbstractCommand {
-    public AdBreakCommand(AdBreakInput commandInput) {
+public final class AdBreakCommand extends AbstractCommand {
+    public AdBreakCommand(final AdBreakInput commandInput) {
         super(commandInput);
         commandOutput = new AdBreakOutput(commandInput);
     }

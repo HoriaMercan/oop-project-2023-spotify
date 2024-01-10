@@ -21,7 +21,7 @@ public final class HostDataWrapping extends AbstractDataWrapping {
         this.listeners = listeners;
     }
 
-    private HostDataWrapping(HostDataWrapping.Builder builder) {
+    private HostDataWrapping(final HostDataWrapping.Builder builder) {
         this(builder.getTopEpisodes(), builder.getTopFans(), builder.getListeners());
     }
 
@@ -32,5 +32,5 @@ public final class HostDataWrapping extends AbstractDataWrapping {
         }
     }
 
-    public static final Builder builder = new Builder();
+    public static final Builder BUILDER = new Builder();
 }

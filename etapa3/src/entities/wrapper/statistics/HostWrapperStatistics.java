@@ -12,43 +12,50 @@ import entities.wrapper.handlers.HostDataWrapping;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HostWrapperStatistics extends WrapperStatistics {
+public final class HostWrapperStatistics extends WrapperStatistics {
 
     private final VisitorWrapper visitorAudioFile = new VisitorWrapper() {
         @Override
-        public void visitListen(User user) {
+        public void visitListen(final User user) {
         }
 
         @Override
-        public void visitListen(Song song) {
+        public void visitListen(final Song song) {
 
         }
 
         @Override
-        public void visitListen(PodcastEpisode podcastEpisode) {
-            listenedEpisodes.compute(podcastEpisode, updater);
+        public void visitListen(final PodcastEpisode podcastEpisode) {
+            listenedEpisodes.compute(podcastEpisode, UPDATER);
         }
     };
 
-    Map<PodcastEpisode, Integer> listenedEpisodes = new HashMap<>();
-    Map<String, Integer> fans = new HashMap<>();
+    private Map<PodcastEpisode, Integer> listenedEpisodes = new HashMap<>();
+    private Map<String, Integer> fans = new HashMap<>();
 
+    /**
+     * @return Host DataWrapping
+     */
     public AbstractDataWrapping getDataWrapping() {
-        if (listenedEpisodes.isEmpty() && fans.isEmpty())
+        if (listenedEpisodes.isEmpty() && fans.isEmpty()) {
             return null;
-        return HostDataWrapping.builder
+        }
+        return HostDataWrapping.BUILDER
                 .setTopEpisodes(transformToFormat(listenedEpisodes, AudioFile::getName))
-                .setTopFans(transformToFormatList(fans, s->s))
+                .setTopFans(transformToFormatList(fans, s -> s))
                 .setListeners(fans.size())
                 .build();
 
     }
 
-    public void addOneListen(OneListen listen) {
+    /**
+     * @param listen adds a listen to be counted
+     */
+    public void addOneListen(final OneListen listen) {
         listen.getAudioFile().acceptListen(visitorAudioFile);
 
         String username = listen.getUser().getUsername();
-        fans.compute(username, stringUpdater);
+        fans.compute(username, STRING_UPDATER);
     }
 
 }

@@ -5,13 +5,12 @@ import databases.MyDatabase;
 import entities.users.AbstractUser;
 import entities.users.ContentCreator;
 import entities.users.User;
-import gateways.AdminAPI;
 import pagesystem.EnumPages;
 
-public class SubscribeCommand extends AbstractCommand {
-    public SubscribeCommand(final SubscribeCommand.SubscribeInput SubscribeInput) {
-        super(SubscribeInput);
-        this.commandOutput = new SubscribeCommand.SubscribeOutput(SubscribeInput);
+public final class SubscribeCommand extends AbstractCommand {
+    public SubscribeCommand(final SubscribeInput subscribeInput) {
+        super(subscribeInput);
+        this.commandOutput = new SubscribeOutput(subscribeInput);
     }
 
     @Override

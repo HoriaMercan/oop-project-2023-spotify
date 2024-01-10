@@ -4,12 +4,8 @@ import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.users.AbstractUser;
 import entities.users.AbstractUser.UserType;
-import entities.users.ContentCreator;
 import entities.users.User;
 import gateways.AdminAPI;
-import pagesystem.EnumPages;
-
-import java.util.List;
 
 public final class DeleteUserCommand extends AbstractCommand {
     public DeleteUserCommand(final DeleteUserInput deleteUserInput) {

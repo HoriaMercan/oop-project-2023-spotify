@@ -6,7 +6,7 @@ import entities.monetization.UserPayment.AccountType;
 import entities.users.User;
 import gateways.AdminAPI;
 
-public class BuyPremiumCommand extends AbstractCommand {
+public final class BuyPremiumCommand extends AbstractCommand {
     public BuyPremiumCommand(final BuyPremiumInput commandInput) {
         super(commandInput);
         commandOutput = new BuyPremiumOutput(commandInput);

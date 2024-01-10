@@ -152,7 +152,7 @@ public final class Song extends AudioFile implements Listenable {
     }
 
     @Override
-    public void acceptListen(VisitorWrapper visitor) {
+    public void acceptListen(final VisitorWrapper visitor) {
         visitor.visitListen(this);
     }
 }

@@ -15,7 +15,7 @@ import java.util.Map;
 public abstract class AbstractDataWrapping {
 
     @Getter
-    public static abstract class AbstractBuilder {
+    public abstract static class AbstractBuilder {
         protected Map<String, Integer> topArtists = null;
         protected Map<String, Integer> topGenres = null;
         protected Map<String, Integer> topSongs = null;
@@ -24,41 +24,75 @@ public abstract class AbstractDataWrapping {
         protected List<String> topFans = null;
         protected Integer listeners = null;
 
-        public AbstractBuilder setTopArtists(Map<String, Integer> topArtists) {
-            this.topArtists = topArtists;
+        /**
+         * @param topArtistsBuilder
+         * @return
+         */
+        public final AbstractBuilder setTopArtists(final Map<String, Integer> topArtistsBuilder) {
+            this.topArtists = topArtistsBuilder;
             return this;
         }
 
-        public AbstractBuilder setTopGenres(Map<String, Integer> topGenres) {
-            this.topGenres = topGenres;
+        /**
+         * @param topGenresBuilder
+         * @return
+         */
+        public final AbstractBuilder setTopGenres(final Map<String, Integer> topGenresBuilder) {
+            this.topGenres = topGenresBuilder;
             return this;
         }
 
-        public AbstractBuilder setTopSongs(Map<String, Integer> topSongs) {
-            this.topSongs = topSongs;
+        /**
+         * @param topSongsBuilder
+         * @return
+         */
+        public final AbstractBuilder setTopSongs(final Map<String, Integer> topSongsBuilder) {
+            this.topSongs = topSongsBuilder;
             return this;
         }
 
-        public AbstractBuilder setTopAlbums(Map<String, Integer> topAlbums) {
-            this.topAlbums = topAlbums;
+        /**
+         * @param topAlbumsBuilder
+         * @return
+         */
+        public final AbstractBuilder setTopAlbums(final Map<String, Integer> topAlbumsBuilder) {
+            this.topAlbums = topAlbumsBuilder;
             return this;
         }
 
-        public AbstractBuilder setTopEpisodes(Map<String, Integer> topEpisodes) {
-            this.topEpisodes = topEpisodes;
+        /**
+         * @param topEpisodesBuilder
+         * @return
+         */
+        public final AbstractBuilder setTopEpisodes(final Map<String, Integer> topEpisodesBuilder) {
+            this.topEpisodes = topEpisodesBuilder;
             return this;
         }
 
-        public AbstractBuilder setTopFans(List<String> topFans) {
-            this.topFans = topFans;
+        /**
+         * @param topFansBuilder
+         * @return
+         */
+        public final AbstractBuilder setTopFans(final List<String> topFansBuilder) {
+            this.topFans = topFansBuilder;
             return this;
         }
 
-        public AbstractBuilder setListeners(Integer listeners) {
-            this.listeners = listeners;
+        /**
+         * @param listenersBuilder
+         * @return
+         */
+        public final AbstractBuilder setListeners(final Integer listenersBuilder) {
+            this.listeners = listenersBuilder;
             return this;
         }
 
-        public AbstractDataWrapping build() {return null;}
+        /**
+         * @return This method will be implemented in each Data Wrapping class for building
+         * the wrapped output command
+         */
+        public AbstractDataWrapping build() {
+            return null;
+        }
     }
 }

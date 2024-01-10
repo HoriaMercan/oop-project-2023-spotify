@@ -232,6 +232,11 @@ public final class AdminAPI {
         return likes.get();
     }
 
+    /**
+     * specify whether a user interacts with somebody
+     * @param absUser user
+     * @return boolean value
+     */
     public static boolean userInteractWithOther(final AbstractUser absUser) {
         List<User> listeningTo = AdminAPI.getUsersListeningToCreator((ContentCreator) absUser);
 
@@ -241,7 +246,8 @@ public final class AdminAPI {
 
         List<User> usersHavingPageActive = usersHavingPage.stream()
                 .filter(user -> user.getPageHandler().getCurrentPage().equals(EnumPages.HOST)
-                        || user.getPageHandler().getCurrentPage().equals(EnumPages.ARTIST)).toList();
+                        || user.getPageHandler().getCurrentPage()
+                        .equals(EnumPages.ARTIST)).toList();
         if (!listeningTo.isEmpty() || !usersHavingPageActive.isEmpty()) {
             usersHavingPage.forEach(user -> user.getPageHandler().removeNonStandardPages());
 

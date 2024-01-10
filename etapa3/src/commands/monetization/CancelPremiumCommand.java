@@ -6,8 +6,8 @@ import entities.monetization.UserPayment.AccountType;
 import entities.users.User;
 import gateways.AdminAPI;
 
-public class CancelPremiumCommand extends AbstractCommand {
-    public CancelPremiumCommand(CancelPremiumInput commandInput) {
+public final class CancelPremiumCommand extends AbstractCommand {
+    public CancelPremiumCommand(final CancelPremiumInput commandInput) {
         super(commandInput);
         commandOutput = new CancelPremiumOutput(commandInput);
     }

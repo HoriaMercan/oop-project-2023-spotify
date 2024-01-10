@@ -5,11 +5,17 @@ import entities.helpers.Merch;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.BiFunction;
 
 
+/**
+ * Class designed to maintain the evidence for an artist revenue
+ */
 public final class ArtistRevenue {
     @Getter
     @Setter
@@ -28,13 +34,20 @@ public final class ArtistRevenue {
 
     private Map<Song, Double> revenuePerSong = new HashMap<>();
 
+    private static final Double SUTA = 100.0;
+
+    /**
+     * Function called to update the data for output by getting out the most profitable
+     * song at the calling moment
+     */
     public void updateMostProfitableSong() {
-        if (revenuePerSong.isEmpty())
+        if (revenuePerSong.isEmpty()) {
             return;
+        }
 
         boolean notZero = true;
         Map<String, Double> mapSongNameRevenue = new HashMap<>();
-        for (Entry<Song, Double> entry: revenuePerSong.entrySet()) {
+        for (Entry<Song, Double> entry : revenuePerSong.entrySet()) {
             String songName = entry.getKey().getName();
             Double value = entry.getValue();
             if (value > 0.0) {
@@ -49,7 +62,7 @@ public final class ArtistRevenue {
         Collections.sort(arrayOfEntries,
                 (songDoubleEntry, t1) -> {
                     int comp = -Double.compare(songDoubleEntry.getValue(), t1.getValue());
-                    if (comp != 0){
+                    if (comp != 0) {
                         return comp;
                     }
 
@@ -64,39 +77,23 @@ public final class ArtistRevenue {
         } else {
             mostProfitableSong = greatestRevenueSong;
         }
-        /***
-        List<Entry<Song, Double>> arrayOfEntries =
-                new ArrayList<>(revenuePerSong.entrySet().stream().toList());
 
-        Collections.sort(arrayOfEntries,
-                (songDoubleEntry, t1) -> {
-                    int comp = -Double.compare(songDoubleEntry.getValue(), t1.getValue());
-                    if (comp != 0){
-                        return comp;
-                    }
-
-                    return songDoubleEntry.getKey().getName().compareTo(t1.getKey().getName());
-                }
-
-        );
-        Song greatestRevenueSong = arrayOfEntries.get(0).getKey();
-
-        if (revenuePerSong.get(greatestRevenueSong) == 0.0) {
-            mostProfitableSong = "N/A";
-        } else {
-            mostProfitableSong = greatestRevenueSong.getName();
-        }
-
-         ***/
-        songRevenue = Math.round(songRevenue * 100) / 100.0;
+        songRevenue = Math.round(songRevenue * SUTA) / SUTA;
     }
 
-    public void addRevenueFromSong(Song song, Double revenue) {
-        revenuePerSong.compute(song, (key, val) -> (val == null) ? revenue: val + revenue);
+    /**
+     * @param song    Song from which the artist get monetized
+     * @param revenue the value of monetization
+     */
+    public void addRevenueFromSong(final Song song, final Double revenue) {
+        revenuePerSong.compute(song, (key, val) -> (val == null) ? revenue : val + revenue);
         songRevenue += revenue;
     }
 
-    public void addMerchRevenue(Merch merch) {
+    /**
+     * @param merch Merch to be monetized because somebody bought it
+     */
+    public void addMerchRevenue(final Merch merch) {
         this.merchRevenue += 1.0 * merch.getPrice();
     }
 }

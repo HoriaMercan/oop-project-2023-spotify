@@ -7,7 +7,6 @@ import entities.helpers.Notification;
 import entities.wrapper.statistics.HostWrapperStatistics;
 import lombok.Getter;
 import lombok.Setter;
-import org.checkerframework.checker.units.qual.A;
 import pagesystem.Pageable;
 
 import java.util.ArrayList;
@@ -88,9 +87,9 @@ public final class Host extends AbstractUser implements Pageable, ContentCreator
         return this.podcasts;
     }
 
-    List<User> subscribers = new ArrayList<>();
+    private final List<User> subscribers = new ArrayList<>();
     @Override
-    public boolean addSubscriber(User user) {
+    public boolean addSubscriber(final User user) {
         if (subscribers.contains(user)) {
             subscribers.remove(user);
             return false;
@@ -100,7 +99,7 @@ public final class Host extends AbstractUser implements Pageable, ContentCreator
     }
 
     @Override
-    public void sendNotificationToSubscribers(Notification notification) {
+    public void sendNotificationToSubscribers(final Notification notification) {
         for (User user: subscribers) {
             user.getNotificationsHandler().addNotification(notification);
         }

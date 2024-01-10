@@ -4,21 +4,17 @@ import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.requirements.RequireOnline;
 import entities.users.User;
-import entities.users.functionalities.PageHandler;
-import lombok.Getter;
-import lombok.Setter;
-import pagesystem.EnumPages;
 
-public class PreviousPageCommand extends AbstractCommand implements RequireOnline {
-    public PreviousPageCommand(final PreviousPageCommand.PreviousPageInput PreviousPageInput) {
-        super(PreviousPageInput);
-        this.commandOutput = new PreviousPageCommand.PreviousPageOutput(PreviousPageInput);
+public final class PreviousPageCommand extends AbstractCommand implements RequireOnline {
+    public PreviousPageCommand(final PreviousPageInput previousPageInput) {
+        super(previousPageInput);
+        this.commandOutput = new PreviousPageOutput(previousPageInput);
     }
 
     @Override
     public void executeCommand() {
-        PreviousPageCommand.PreviousPageInput input = (PreviousPageCommand.PreviousPageInput) this.commandInput;
-        PreviousPageCommand.PreviousPageOutput output = (PreviousPageCommand.PreviousPageOutput) this.commandOutput;
+        PreviousPageInput input = (PreviousPageInput) this.commandInput;
+        PreviousPageOutput output = (PreviousPageOutput) this.commandOutput;
 
         User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
         assert user != null;

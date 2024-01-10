@@ -7,59 +7,67 @@ import entities.users.Artist;
 import entities.users.User;
 import lombok.Getter;
 import lombok.Setter;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserPayment {
+/**
+ * class used to have an evidence for user payments
+ */
+public final class UserPayment {
     private final User self;
-
-    public UserPayment(User user) {
-        this.self = user;
-    }
-
-    public enum AccountType {
-        PREMIUM,
-        ADS_ENJOYED
-    }
     private List<Song> songsToBePayed = new ArrayList<>();
-
     @Getter
     private List<Merch> boughtMerch = new ArrayList<>();
-
     @Getter
-    AccountType accountType = AccountType.ADS_ENJOYED;
-
+    private AccountType accountType = AccountType.ADS_ENJOYED;
     @Setter
     private Double totalMoney = 0.0;
 
+    private static final Double PREMIUMMONEY = 1000000.0;
+    public UserPayment(final User user) {
+        this.self = user;
+    }
+
+    /**
+     * function is used to send the monetization to the artists
+     */
     public void payToArtists() {
-        if (songsToBePayed.isEmpty())
+        if (songsToBePayed.isEmpty()) {
             return;
+        }
 
         Double eachPayment = totalMoney / songsToBePayed.size();
 
-        for (Song song : songsToBePayed)  {
+        for (Song song : songsToBePayed) {
             Artist artist = MyDatabase.getInstance()
                     .findArtistByUsername(song.getArtist());
 
-            if (artist == null)
+            if (artist == null) {
                 return;
+            }
 
             artist.getRevenue().addRevenueFromSong(song, eachPayment);
 
         }
 
         songsToBePayed = new ArrayList<>();
-//        totalMoney = 0.0;
+
     }
 
-    public void payToArtists(Double money) {
+    /**
+     * payToArtists but modify the money
+     *
+     * @param money value
+     */
+    public void payToArtists(final Double money) {
         totalMoney = money;
         payToArtists();
     }
 
+    /**
+     * Change the account type between Ads based and Premium
+     */
     public void changeAccountType() {
 
         if (accountType.equals(AccountType.PREMIUM)) {
@@ -71,7 +79,7 @@ public class UserPayment {
             songsToBePayed = new ArrayList<>();
         }
         if (accountType == AccountType.ADS_ENJOYED) {
-            totalMoney = 1000000.0;
+            totalMoney = PREMIUMMONEY;
             accountType = AccountType.PREMIUM;
         } else {
             totalMoney = 0.0;
@@ -79,14 +87,26 @@ public class UserPayment {
         }
     }
 
-    public void addSong(Song song) {
+    /**
+     * @param song Song added for being monetized later
+     */
+    public void addSong(final Song song) {
         songsToBePayed.add(song);
     }
 
-    public void buyMerch(Artist artist, Merch merch) {
+    /**
+     * @param artist Artist from which the user buy a merch
+     * @param merch  the merch bought
+     */
+    public void buyMerch(final Artist artist, final Merch merch) {
         this.boughtMerch.add(merch);
 
         artist.getRevenue().addMerchRevenue(merch);
+    }
+
+    public enum AccountType {
+        PREMIUM,
+        ADS_ENJOYED
     }
 
 }

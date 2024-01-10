@@ -15,6 +15,14 @@ public interface ContentCreator {
      */
     List<? extends AudioCollection> getContent();
 
+    /**
+     * @param user add/remove subscriber to a creator
+     * @return true if added, else false
+     */
     boolean addSubscriber(User user);
+
+    /**
+     * @param notification notification to be sent
+     */
     void sendNotificationToSubscribers(Notification notification);
 }

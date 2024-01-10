@@ -1,8 +1,9 @@
 package entities.wrapper;
 
-import entities.audioFiles.PodcastEpisode;
-import entities.audioFiles.Song;
 
 public interface Listenable {
+    /**
+     * @param visitor Visitor pattern implementation for accepting
+     */
     void acceptListen(VisitorWrapper visitor);
 }

@@ -9,21 +9,30 @@ import entities.users.functionalities.UserPlayer;
 import entities.wrapper.statistics.ArtistWrapperStatistics;
 import entities.wrapper.statistics.UserWrapperStatistics;
 import fileio.input.UserInput;
-import gateways.AdminAPI;
 import gateways.PlayerAPI;
 import lombok.Getter;
 import lombok.Setter;
-import org.checkerframework.checker.units.qual.A;
-import org.checkerframework.checker.units.qual.C;
 import pagesystem.EnumPages;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
+/**
+ * Normal user object type
+ */
 public final class User extends AbstractUser {
+    private static final Integer DELTA_TIME = 30;
+
+    private static final Integer TOPGENRESNUMBER = 3;
+    private static final Integer TOPFANSNUMBER = 5;
     private final UserPlayer player = new UserPlayer(this);
     @Getter
     private final UserPayment payment = new UserPayment(this);
@@ -35,6 +44,15 @@ public final class User extends AbstractUser {
     private final List<String> followedPlaylists = new ArrayList<>();
     private final HashMap<Integer, String> userPlaylists = new HashMap<>();
     private boolean isOnline = true;
+    @Getter
+    @Setter
+    private LinkedList<Song> songRecommendations = new LinkedList<>();
+    @Getter
+    @Setter
+    private LinkedList<String> playlistRecommendations = new LinkedList<>();
+    private String lastRecommendation = "";
+    private boolean randomSongUsed = false, randomPlaylistUsed = false,
+            fansPlaylistUsed = false;
 
     {
         pageHandler.addPage(EnumPages.HOME, User.this::getHomePage);
@@ -143,21 +161,13 @@ public final class User extends AbstractUser {
         return ans;
     }
 
-    @Getter
-    @Setter
-    private LinkedList<Song> songRecommendations = new LinkedList<>();
-
-    @Getter
-    @Setter
-    private LinkedList<String> playlistRecommendations = new LinkedList<>();
-
-    private String lastRecommendation = "";
-
-    private boolean randomSongUsed = false, randomPlaylistUsed = false,
-            fansPlaylistUsed = false;
-
+    /**
+     * Update song recommendation implementation
+     *
+     * @return true if updated
+     */
     public boolean updateSongRecommendations() {
-        if (this.player.getCurrentAudioFileTime() < 30) {
+        if (this.player.getCurrentAudioFileTime() < DELTA_TIME) {
             return false;
         }
 
@@ -171,6 +181,11 @@ public final class User extends AbstractUser {
         return true;
     }
 
+    /**
+     * Update playlist recommendation
+     *
+     * @return true if updated
+     */
     public boolean updateRandomPlaylistRecommendations() {
         if (randomPlaylistUsed) {
             return false;
@@ -196,7 +211,9 @@ public final class User extends AbstractUser {
                 .toList());
 
         myPlaylists.forEach(playlist -> playlist.getSongs().forEach(song -> {
-            if (uniqueSongs.contains(song)) {return;}
+            if (uniqueSongs.contains(song)) {
+                return;
+            }
 
             uniqueSongs.add(song);
             topGenres.compute(song.getGenre(), updateVal);
@@ -210,13 +227,14 @@ public final class User extends AbstractUser {
             return kIntegerEntry.getKey().compareTo(t1.getKey());
         });
 
-        List<String> topGenresList = array.stream().map(Entry::getKey).limit(3).toList();
+        List<String> topGenresList = array.stream().map(Entry::getKey)
+                .limit(TOPGENRESNUMBER).toList();
 
-        int initialValue = 5;
+        int initialValue = TOPFANSNUMBER;
 
         List<Song> result = new ArrayList<>();
 
-        for (String genre: topGenresList) {
+        for (String genre : topGenresList) {
             List<Song> auxSongs = new ArrayList<>(uniqueSongs.stream()
                     .filter(song -> song.getGenre().equals(genre))
                     .toList());
@@ -249,6 +267,11 @@ public final class User extends AbstractUser {
         return true;
     }
 
+    /**
+     * Update fans playlist
+     *
+     * @return true if changed
+     */
     public boolean updateFansPlaylistRecommendations() {
         if (fansPlaylistUsed) {
             return false;
@@ -256,13 +279,13 @@ public final class User extends AbstractUser {
 
         fansPlaylistUsed = true;
         String artistName = ((Song) this.player.getCurrentPlayed()).getArtist();
-        List<User> topFans = ((ArtistWrapperStatistics)MyDatabase.getInstance()
+        List<User> topFans = ((ArtistWrapperStatistics) MyDatabase.getInstance()
                 .findArtistByUsername(artistName)
                 .getWrapperStatistics()).getTopFans();
 
         List<Song> result = new ArrayList<>();
 
-        for (User fan: topFans) {
+        for (User fan : topFans) {
             List<Song> auxSongs = new ArrayList<>(fan.likedSongs);
 
             auxSongs.sort((song, t1) -> {
@@ -282,7 +305,7 @@ public final class User extends AbstractUser {
                     result.add(song);
                     songsAdded++;
                 }
-                if (songsAdded == 5) {
+                if (songsAdded == TOPFANSNUMBER) {
                     break;
                 }
             }
@@ -301,14 +324,16 @@ public final class User extends AbstractUser {
         return true;
     }
 
+    /**
+     * load recommendation command
+     */
     public void loadRecommendation() {
         List<Song> toUpload = new ArrayList<>();
         Integer timestamp = this.player.getLastUpdatedTime();
         switch (lastRecommendation) {
-            case "" : {
+            case "":
                 break;
-            }
-            case "random_song": {
+            case "random_song":
                 toUpload.add(songRecommendations.getLast());
                 this.player.setContext(toUpload, timestamp);
 
@@ -317,8 +342,7 @@ public final class User extends AbstractUser {
                 player.setLastSearched(null);
                 player.setTypeSearched("");
                 break;
-            }
-            default: {
+            default:
                 toUpload.addAll(MyDatabase.getInstance()
                         .findPlaylistByName(playlistRecommendations.getLast()).getSongs());
 
@@ -329,9 +353,10 @@ public final class User extends AbstractUser {
                 player.setLastSearched(null);
                 player.setTypeSearched("");
                 break;
-            }
+
         }
     }
+
     /**
      * @return Home page content specific for every user
      */
@@ -342,7 +367,7 @@ public final class User extends AbstractUser {
         if (!newSongs.isEmpty()) {
             newSongs.sort((song, t1) -> Integer.compare(t1.likesNo(), song.likesNo()));
 
-            final int limit = 5;
+            final int limit = TOPFANSNUMBER;
             newSongs = newSongs.stream().limit(limit).toList();
             for (Song song : newSongs) {
                 sb.append(song.getName()).append(", ");
@@ -361,10 +386,8 @@ public final class User extends AbstractUser {
 
         sb.append("]\n\nSong recommendations:\n\t[");
 
-        // TODO: add song recommendation
-
         if (!songRecommendations.isEmpty()) {
-            for(Song song: songRecommendations) {
+            for (Song song : songRecommendations) {
                 sb.append(song.getName()).append(", ");
             }
             sb.delete(sb.length() - 2, sb.length());
@@ -372,7 +395,6 @@ public final class User extends AbstractUser {
 
         sb.append("]\n\nPlaylists recommendations:\n\t[");
 
-        // TODO: add playlists recommendation
         if (!playlistRecommendations.isEmpty()) {
             for (String pl : playlistRecommendations) {
                 sb.append(pl).append(", ");

@@ -9,7 +9,6 @@ import entities.monetization.ArtistRevenue;
 import entities.wrapper.statistics.ArtistWrapperStatistics;
 import lombok.Getter;
 import lombok.Setter;
-import org.checkerframework.checker.units.qual.A;
 import pagesystem.Pageable;
 
 import java.util.ArrayList;
@@ -104,7 +103,7 @@ public final class Artist extends AbstractUser implements Pageable, ContentCreat
 
     private List<User> subscribers = new ArrayList<>();
     @Override
-    public boolean addSubscriber(User user) {
+    public boolean addSubscriber(final User user) {
         if (subscribers.contains(user)) {
             subscribers.remove(user);
             return false;
@@ -114,7 +113,7 @@ public final class Artist extends AbstractUser implements Pageable, ContentCreat
     }
 
     @Override
-    public void sendNotificationToSubscribers(Notification notification) {
+    public void sendNotificationToSubscribers(final Notification notification) {
         for (User user: subscribers) {
             user.getNotificationsHandler().addNotification(notification);
         }

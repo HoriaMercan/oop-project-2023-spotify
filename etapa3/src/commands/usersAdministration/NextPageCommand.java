@@ -4,16 +4,16 @@ import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.requirements.RequireOnline;
 import entities.users.User;
-public class NextPageCommand extends AbstractCommand implements RequireOnline {
-    public NextPageCommand(final NextPageCommand.NextPageInput NextPageInput) {
-        super(NextPageInput);
-        this.commandOutput = new NextPageCommand.NextPageOutput(NextPageInput);
+public final class NextPageCommand extends AbstractCommand implements RequireOnline {
+    public NextPageCommand(final NextPageInput nextPageInput) {
+        super(nextPageInput);
+        this.commandOutput = new NextPageOutput(nextPageInput);
     }
 
     @Override
     public void executeCommand() {
-        NextPageCommand.NextPageInput input = (NextPageCommand.NextPageInput) this.commandInput;
-        NextPageCommand.NextPageOutput output = (NextPageCommand.NextPageOutput) this.commandOutput;
+        NextPageInput input = (NextPageInput) this.commandInput;
+        NextPageOutput output = (NextPageOutput) this.commandOutput;
 
         User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
         assert user != null;

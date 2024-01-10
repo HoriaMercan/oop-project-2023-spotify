@@ -5,27 +5,40 @@ import entities.audioFiles.AudioFile;
 import entities.wrapper.OneListen;
 import entities.wrapper.handlers.AbstractDataWrapping;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * class used to wrap statistics of users to be sent to output
+ */
 public abstract class WrapperStatistics {
 
     protected static final Integer LIMIT = 5;
-    protected final static BiFunction<AudioFile, Integer, ? extends Integer> updater =
+    protected static final BiFunction<AudioFile, Integer, ? extends Integer> UPDATER =
             (key, val) -> (val == null) ? 1 : val + 1;
 
-    protected final static BiFunction<String, Integer, ? extends Integer> stringUpdater =
+    protected static final BiFunction<String, Integer, ? extends Integer> STRING_UPDATER =
             (key, val) -> (val == null) ? 1 : val + 1;
 
-    protected final static BiFunction<Album, Integer, ? extends Integer> albumUpdater =
+    protected static final BiFunction<Album, Integer, ? extends Integer> ALBUM_UPDATER =
             (key, val) -> (val == null) ? 1 : val + 1;
 
+    /**
+     * @param map  map
+     * @param func function
+     * @param <K>  type
+     * @return a List of strings that represent the highest values in the map
+     */
     protected static <K> List<String> transformToFormatList(
-            Map<K, Integer> map, Function<K, String> func) {
+            final Map<K, Integer> map, final Function<K, String> func) {
 
         List<Entry<K, Integer>> array = new ArrayList<>(map.entrySet());
         Collections.sort(array, (kIntegerEntry, t1) -> {
@@ -35,16 +48,23 @@ public abstract class WrapperStatistics {
             return func.apply(kIntegerEntry.getKey()).compareTo(func.apply(t1.getKey()));
         });
 
-        return array.stream().limit(LIMIT).map(k->func.apply(k.getKey())).collect(Collectors.toList());
+        return array.stream().limit(LIMIT).map(k -> func.apply(k.getKey()))
+                .collect(Collectors.toList());
 
     }
 
+    /**
+     * @param oldMap map
+     * @param func   function
+     * @param <K>    type
+     * @return a map of strings to ints that represent the highest values in the map
+     */
     protected static <K> Map<String, Integer> transformToFormat(
-            Map<K, Integer> oldMap, Function<K, String> func) {
+            final Map<K, Integer> oldMap, final Function<K, String> func) {
 
         Map<String, Integer> map = new HashMap<>();
 
-        for (Entry<K, Integer> entry: oldMap.entrySet()) {
+        for (Entry<K, Integer> entry : oldMap.entrySet()) {
             K key = entry.getKey();
             Integer value = entry.getValue();
 
@@ -70,10 +90,16 @@ public abstract class WrapperStatistics {
         return answer;
     }
 
+    /**
+     * @return DataWrapping
+     */
     public AbstractDataWrapping getDataWrapping() {
         return null;
     }
 
-    public void addOneListen(OneListen listen) {
+    /**
+     * @param listen adds a listen to be counted
+     */
+    public void addOneListen(final OneListen listen) {
     }
 }

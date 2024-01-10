@@ -10,36 +10,43 @@ import entities.users.User;
 import entities.wrapper.statistics.ArtistWrapperStatistics;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
+
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
+
+/**
+ * Class designed like a command to be called once at the end of a sequence of other commands
+ */
 @Getter
-public class EndProgramCommand {
+public final class EndProgramCommand {
 
+    /**
+     * @return output like format specific for commandOutputs
+     */
     public EndProgramOutput executeCommand() {
         EndProgramOutput output = new EndProgramOutput();
 
         Map<String, ArtistRevenue> map = new HashMap<>();
 
-        for (User user: MyDatabase.getInstance().getUsers()) {
+        for (User user : MyDatabase.getInstance().getUsers()) {
             user.getPayment().payToArtists();
         }
-        Predicate<Artist> filterArtists = new Predicate<Artist>() {
-            @Override
-            public boolean test(Artist artist) {
-                return ((ArtistWrapperStatistics) artist.getWrapperStatistics())
+        Predicate<Artist> filterArtists = artist ->
+                ((ArtistWrapperStatistics) artist.getWrapperStatistics())
                         .wasEverListened() || (artist.getRevenue().getMerchRevenue() > 0.0);
-            }
-        };
         MyDatabase.getInstance().getArtists().stream()
                 .filter(filterArtists)
                 .toList()
                 .forEach(artist -> map.put(artist.getUsername(), artist.getRevenue()));
 
-        List<Entry<String, ArtistRevenue>> array = new ArrayList<>(map.entrySet().stream().toList());
+        List<Entry<String, ArtistRevenue>> array =
+                new ArrayList<>(map.entrySet().stream().toList());
 
         array.sort((stringArtistRevenueEntry, t1) -> {
             ArtistRevenue a1 = stringArtistRevenueEntry.getValue();
@@ -78,7 +85,7 @@ public class EndProgramCommand {
 
         @Getter
         @JsonInclude(Include.NON_NULL)
-        Map<String, ArtistRevenue> result = null;
+        private Map<String, ArtistRevenue> result = null;
 
         public EndProgramOutput() {
         }

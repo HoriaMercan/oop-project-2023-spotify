@@ -3,15 +3,13 @@ package commands.monetization;
 import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.helpers.Merch;
-import entities.users.Artist;
 import entities.users.User;
 import lombok.Getter;
 import lombok.Setter;
-import pagesystem.EnumPages;
 
 import java.util.List;
 
-public class SeeMerchCommand extends AbstractCommand {
+public final class SeeMerchCommand extends AbstractCommand {
     public SeeMerchCommand(final SeeMerchCommand.SeeMerchInput commandInput) {
         super(commandInput);
         commandOutput = new SeeMerchCommand.SeeMerchOutput(commandInput);

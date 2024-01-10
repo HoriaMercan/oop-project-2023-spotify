@@ -3,7 +3,6 @@ package gateways;
 import commands.player.StatusCommand.StatusOutput.Stats;
 import databases.MyDatabase;
 import entities.audioCollections.Album;
-import entities.audioFiles.AudioFile;
 import entities.users.User;
 import entities.users.functionalities.UserPlayer;
 import entities.audioCollections.Playlist;
@@ -11,7 +10,9 @@ import entities.audioCollections.Podcast;
 import entities.audioFiles.PodcastEpisode;
 import entities.audioFiles.Song;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public final class PlayerAPI {
     private static final MyDatabase DATABASE;
@@ -249,18 +250,21 @@ public final class PlayerAPI {
         return "Loaded source is not a song.";
     }
 
+    /**
+     * Get a song as a recommendation based on current played
+     * @param genre genre of current played
+     * @param seed specified seed, particularly the time passed for the current song
+     * @param exceptSong song not to be added, particularly it's not used
+     * @return the Song recommended
+     */
     public static Song getSongRecommendation(final String genre, final Integer seed,
         final Song exceptSong) {
         List<Song> songList = new ArrayList<>(MyDatabase.getInstance().getSongs()
                 .stream().filter(song -> song.getGenre().equals(genre)).toList());
 
-//        songList.sort(Comparator.comparing(AudioFile::getName));
-//        songList.remove(exceptSong);
-//        Collections.shuffle(songList, new Random(seed));
 
         Random random = new Random(seed);
 
         return songList.get(random.nextInt(songList.size()));
-//        return songList.get(0);
     }
 }

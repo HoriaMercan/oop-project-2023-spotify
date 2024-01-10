@@ -12,15 +12,16 @@ public final class ArtistDataWrapping extends AbstractDataWrapping {
     private final List<String> topFans;
     private final Integer listeners;
 
-    private ArtistDataWrapping(Map<String, Integer> topSongs, Map<String, Integer> topAlbums,
-                             List<String> topFans, final Integer listeners) {
+    private ArtistDataWrapping(final Map<String, Integer> topSongs,
+                               final Map<String, Integer> topAlbums,
+                               final List<String> topFans, final Integer listeners) {
         this.topSongs = topSongs;
         this.topAlbums = topAlbums;
         this.topFans = topFans;
         this.listeners = listeners;
     }
 
-    private ArtistDataWrapping(ArtistDataWrapping.Builder builder) {
+    private ArtistDataWrapping(final ArtistDataWrapping.Builder builder) {
         this(builder.getTopSongs(),
                 builder.getTopAlbums(), builder.getTopFans(), builder.getListeners());
     }
@@ -32,5 +33,5 @@ public final class ArtistDataWrapping extends AbstractDataWrapping {
         }
     }
 
-    public static final Builder builder = new Builder();
+    public static final Builder BUILDER = new Builder();
 }

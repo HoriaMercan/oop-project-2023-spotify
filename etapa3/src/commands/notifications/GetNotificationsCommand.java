@@ -1,29 +1,24 @@
 package commands.notifications;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.helpers.Notification;
-import entities.users.AbstractUser;
-import entities.users.ContentCreator;
 import entities.users.User;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
-public class GetNotificationsCommand extends AbstractCommand {
-    public GetNotificationsCommand(final GetNotificationsCommand.GetNotificationsInput GetNotificationsInput) {
-        super(GetNotificationsInput);
-        this.commandOutput = new GetNotificationsCommand.GetNotificationsOutput(GetNotificationsInput);
+public final class GetNotificationsCommand extends AbstractCommand {
+    public GetNotificationsCommand(final GetNotificationsInput getNotificationsInput) {
+        super(getNotificationsInput);
+        this.commandOutput = new GetNotificationsOutput(getNotificationsInput);
     }
 
     @Override
     public void executeCommand() {
-        GetNotificationsCommand.GetNotificationsInput input = (GetNotificationsCommand.GetNotificationsInput) commandInput;
-        GetNotificationsCommand.GetNotificationsOutput output = (GetNotificationsCommand.GetNotificationsOutput) commandOutput;
+        GetNotificationsInput input = (GetNotificationsInput) commandInput;
+        GetNotificationsOutput output = (GetNotificationsOutput) commandOutput;
 
         User user = MyDatabase.getInstance().findUserByUsername(input.getUsername());
 
@@ -46,6 +41,7 @@ public class GetNotificationsCommand extends AbstractCommand {
         @Getter
         @Setter
         private List<Notification> notifications;
+
         public GetNotificationsOutput(final CommandInput commandInput) {
             super(commandInput);
         }

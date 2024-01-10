@@ -1,22 +1,19 @@
 package commands.wrapped;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import commands.AbstractCommand;
 import databases.MyDatabase;
 import entities.users.AbstractUser;
-import entities.users.User;
 import entities.wrapper.handlers.AbstractDataWrapping;
 import gateways.AdminAPI;
 import lombok.Getter;
 
 
-public final class WrappedCommand extends AbstractCommand{
-    public WrappedCommand(final WrappedInput WrappedInput) {
-        super(WrappedInput);
-        this.commandOutput = new WrappedOutput(WrappedInput);
+public final class WrappedCommand extends AbstractCommand {
+    public WrappedCommand(final WrappedInput wrappedInput) {
+        super(wrappedInput);
+        this.commandOutput = new WrappedOutput(wrappedInput);
     }
 
     @Override
@@ -53,12 +50,12 @@ public final class WrappedCommand extends AbstractCommand{
     }
 
     public static final class WrappedOutput extends AbstractCommand.CommandOutput {
+        @Getter
+        @JsonInclude(Include.NON_NULL)
+        private AbstractDataWrapping result = null;
         @JsonInclude(Include.NON_NULL)
         private String message = null;
 
-        @Getter
-        @JsonInclude(Include.NON_NULL)
-        AbstractDataWrapping result = null;
         public WrappedOutput(final CommandInput commandInput) {
             super(commandInput);
         }

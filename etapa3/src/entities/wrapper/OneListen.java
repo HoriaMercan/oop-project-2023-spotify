@@ -1,7 +1,5 @@
 package entities.wrapper;
 
-import entities.audioFiles.AudioFile;
-import entities.users.AbstractUser;
 import entities.users.User;
 import lombok.Getter;
 
@@ -9,37 +7,51 @@ import lombok.Getter;
  * This class represents one listen made by a user made for an audio file
  */
 @Getter
-public class OneListen {
+public final class OneListen {
     private final User user;
 
     // Aici trebuie un Visitable
     private final Listenable audioFile;
 
-    private OneListen(Builder builder) {
+    private OneListen(final Builder builder) {
         user = builder.user;
         audioFile = builder.audioFile;
     }
 
-    public static class Builder {
+    /**
+     * Builder class for OneListen
+     */
+    public static final class Builder {
         private User user = null;
         private Listenable audioFile = null;
 
-        public Builder setUser(User user) {
-            Builder.this.user = user;
+        /**
+         * @param userBuild setUser
+         * @return same object
+         */
+        public Builder setUser(final User userBuild) {
+            Builder.this.user = userBuild;
             return Builder.this;
         }
 
-        public Builder setAudioFile(Listenable audioFile) {
-            Builder.this.audioFile = audioFile;
+        /**
+         * @param audioFileBuild setAudioFile
+         * @return same object
+         */
+        public Builder setAudioFile(final Listenable audioFileBuild) {
+            Builder.this.audioFile = audioFileBuild;
             return Builder.this;
         }
 
+        /**
+         * @return OneListen object with parameters specified
+         */
         public OneListen build() {
             return new OneListen(this);
         }
 
     }
 
-    public static Builder builder = new Builder();
+    public static final Builder BUILDER = new Builder();
 
 }

@@ -4,10 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 import pagesystem.EnumPages;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.function.Supplier;
 
 
+/**
+ * Page handler object for navigation
+ */
 @Getter
 @Setter
 public final class PageHandler {
@@ -28,6 +33,9 @@ public final class PageHandler {
         this.currentPage = currentPage;
     }
 
+    /**
+     * Reset next pages array
+     */
     public void resetNextPage() {
         this.nextPages = new LinkedList<>();
     }
