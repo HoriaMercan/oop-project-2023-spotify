@@ -10,7 +10,6 @@ import lombok.Getter;
 public final class OneListen {
     private final User user;
 
-    // Aici trebuie un Visitable
     private final Listenable audioFile;
 
     private OneListen(final Builder builder) {

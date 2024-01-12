@@ -91,8 +91,6 @@ public abstract class AbstractDataWrapping {
          * @return This method will be implemented in each Data Wrapping class for building
          * the wrapped output command
          */
-        public AbstractDataWrapping build() {
-            return null;
-        }
+        public abstract AbstractDataWrapping build();
     }
 }

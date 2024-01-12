@@ -5,6 +5,7 @@ package entities.audioFileSelector;
  * This interface handles getting the next element in a sequence,
  * without considering what happens after it ends (it's a primitive next)
  */
+@FunctionalInterface
 public interface AudioFileSelectorNext {
     /**
      * Next function will select the primitive following element

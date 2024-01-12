@@ -93,13 +93,10 @@ public abstract class WrapperStatistics {
     /**
      * @return DataWrapping
      */
-    public AbstractDataWrapping getDataWrapping() {
-        return null;
-    }
+    public abstract AbstractDataWrapping getDataWrapping();
 
     /**
      * @param listen adds a listen to be counted
      */
-    public void addOneListen(final OneListen listen) {
-    }
+    public abstract void addOneListen(OneListen listen);
 }

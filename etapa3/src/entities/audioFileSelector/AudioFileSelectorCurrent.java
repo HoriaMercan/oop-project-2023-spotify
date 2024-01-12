@@ -6,6 +6,7 @@ import entities.audioFiles.AudioFile;
 /**
  * Primitive getting current element class
  */
+@FunctionalInterface
 public interface AudioFileSelectorCurrent {
 
     /**
